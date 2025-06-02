@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>ChatIQ - AI Chat with Sessions</title>
+    <title>ChatIQ - Ambuj</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -58,12 +58,10 @@
             </div>
             <div id="authContainer" class="text-right flex items-center space-x-2 sm:space-x-3">
                 <button id="newChatBtn" class="hidden group flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75">
-                    <svg class="w-3 h-3 sm:w-4 sm:h-4 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                     <span class="hidden sm:inline">New Chat</span>
                     <span class="sm:hidden">New</span>
                 </button>
                 <button id="googleSignInBtnHeader" class="group flex items-center space-x-2 bg-white hover:bg-gray-200 text-slate-700 text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75">
-                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/><path fill="none" d="M1 1h22v22H1z"/></svg>
                     <span class="hidden sm:inline">Sign in with Google</span>
                     <span class="sm:hidden">Sign In</span>
                 </button>
@@ -79,7 +77,7 @@
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden relative"> {/* Added relative for overlay positioning context */}
+    <div class="flex flex-1 overflow-hidden relative"> 
         <aside id="chatHistorySidebar" 
                class="fixed top-0 left-0 h-screen w-60 bg-slate-100 border-r border-slate-300 shadow-xl 
                       flex flex-col p-3 space-y-2 overflow-y-auto 
@@ -87,7 +85,7 @@
                       sm:relative sm:translate-x-0 sm:w-0 sm:border-none sm:shadow-none sm:p-0">
             <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider px-2">Chat History</h3>
             <div id="sessionsList" class="space-y-1">
-                {/* Session items will be populated here */}
+               
             </div>
         </aside>
 
@@ -157,7 +155,7 @@
 
             <footer id="appFooter" class="footer-animate-entrance bg-gradient-to-b from-slate-800 via-purple-800 to-slate-800 text-white py-8 sm:py-10 text-center mt-auto pt-10 sm:pt-12" style="display: block;">
                 <h2 class="text-xl sm:text-2xl font-bold mb-4">About ChatIQ</h2>
-                <p class="max-w-2xl mx-auto mb-6 px-4 text-sm sm:text-base">ChatIQ assists by providing accurate, real-time answers to your questions through voice, text, and image interactions.</p>
+                <p class="max-w-2xl mx-auto mb-6 px-4 text-sm sm:text-base">ChatIQ assists by providing more precise, real-time answers to your questions through voice, text, and image interactions.</p>
                 <div class="space-y-2 text-sm sm:text-base">
                     <p>📞 <a href="tel:+919369572534" class="hover:underline hover:text-pink-300 transition-colors">+91 93695 72534</a></p>
                     <p>✉️ <a href="mailto:ambuj20maurya@gmail.com" class="hover:underline hover:text-pink-300 transition-colors">ambuj20maurya@gmail.com</a></p>
@@ -220,7 +218,7 @@
         let messagesUnsubscribe = null; 
         let sessionsUnsubscribe = null; 
 
-        const GOOGLE_API_KEY = "YOUR_GEMINI_API_KEY"; 
+        const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; 
         const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
         const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form, without bullet points or unnecessary special characters unless the format is essential for clarity (like in a recipe's steps). When a user asks "who are you", respond: 'I am a smart ChatIQ bot.' If the user asks about "your name", respond: 'I am a smart ChatIQ bot.' If the user asks "who made you", respond: 'I was made by ChatIQ.' --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
 
