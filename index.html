@@ -58,13 +58,13 @@
     </header>
 
     <div class="flex flex-1 overflow-hidden">
-        <aside id="chatHistorySidebar" class="w-0 sm:w-64 bg-slate-50 border-r border-slate-200 flex-col p-3 space-y-2 overflow-y-auto transition-all duration-300 ease-in-out hidden"> {/* Initially hidden, shown after sign-in */}
+        <aside id="chatHistorySidebar" class="w-0 sm:w-64 bg-slate-50 border-r border-slate-200 flex-col p-3 space-y-2 overflow-y-auto transition-all duration-300 ease-in-out hidden">
             <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider px-2">Chat History</h3>
             <div id="sessionsList" class="space-y-1">
                 </div>
         </aside>
 
-        <main class="flex-1 flex flex-col overflow-hidden container mx-auto px-0 sm:px-2 py-4">
+        <main class="flex-1 flex flex-col overflow-y-auto container mx-auto px-0 sm:px-2 py-4">
             <h4 class="text-center text-sm sm:text-base font-semibold
                 text-transparent bg-clip-text 
                 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 
@@ -79,8 +79,8 @@
             
             <section id="interactiveChatSection" 
                      class="w-full mx-auto 
-                            bg-white rounded-xl sm:rounded-2xl shadow-xl overflow-hidden flex flex-col flex-1" 
-                     style="display: none;"> 
+                            bg-white rounded-xl sm:rounded-2xl shadow-xl overflow-hidden flex flex-col" 
+                     style="display: none; min-height: 400px;"> {/* Added min-height for better visibility when active */}
                 <div class="flex-grow overflow-y-auto p-3 sm:p-4 space-y-3" id="chatBoxWrapper"> 
                     <div id="imagePreviewContainer" class="hidden flex flex-col items-center space-y-2 mb-3">
                         <img id="imagePreview" src="#" alt="Image Preview" class="max-w-full h-auto max-h-48 sm:max-h-60 rounded-lg shadow-md border-2 border-gray-200"/>
@@ -122,7 +122,7 @@
                 </div>
             </section>
 
-            <section class="text-center mt-8" id="alternativeVoiceSection">
+            <section class="text-center mt-8" id="alternativeVoiceSection" style="display: block;">
                 <h2 class="text-2xl font-semibold mb-4">One-to-One Voice Interaction</h2>
                 <button onclick="startListeningAdapter()" aria-label="Start Voice Chat with GIF">
                     <img src="https://cdn.dribbble.com/userupload/32122583/file/original-400827bdf243931c8ffd26a268a837ce.gif" alt="Voice Bot Banner" class="mx-auto w-full max-w-md rounded-2xl shadow-lg hover:scale-105 transition-transform"/>
@@ -135,58 +135,68 @@
                 </div>
             </section>
             
-            <div id="signInPromptBelowVoiceBot" class="text-center text-gray-600 p-4 mt-2" style="display: block;"> {/* Shown by default, hidden on sign-in */}
+            <div id="signInPromptBelowVoiceBot" class="text-center text-gray-600 p-4 mt-2" style="display: block;">
                 Please <button id="inlineSignInBtn" class="text-indigo-600 hover:text-indigo-800 font-semibold underline">sign in with Google</button> to use all features and save your chat history.
             </div>
             
-            <section id="featuresSection" class="mt-8">
+            <section id="featuresSection" class="mt-8" style="display: block;">
                <h2 class="text-2xl font-semibold text-center mb-8">Key Features</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
-                        <img src="https://img.freepik.com/premium-vector/ai-chat-bot-technology-concept-people-chatting-with-robot-asking-questions-receiving-answers_36358-1867.jpg" alt="AI Suggestions" class="mx-auto w-36 h-36 object-contain rounded mb-4"/>
+                        <img src="https://img.freepik.com/premium-vector/ai-chat-bot-technology-concept-people-chatting-with-robot-asking-questions-receiving-answers_36358-1867.jpg" 
+                             alt="AI Suggestions" class="mx-auto w-36 h-36 object-contain rounded mb-4"
+                             onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=AI+Feature';">
                         <h3 class="font-semibold text-lg">AI-Powered Suggestions</h3>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
-                        <img src="https://i.pinimg.com/originals/7d/9b/1d/7d9b1d662b28cd365b33a01a3d0288e1.gif" alt="Real-Time Voice Chat" class="mx-auto w-36 h-36 object-cover rounded-full mb-4"/>
+                        <img src="https://i.pinimg.com/originals/7d/9b/1d/7d9b1d662b28cd365b33a01a3d0288e1.gif" 
+                             alt="Real-Time Voice Chat" class="mx-auto w-36 h-36 object-cover rounded-full mb-4"
+                             onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=Voice+Chat';">
                         <h3 class="font-semibold text-lg">Real-Time Voice Chat</h3>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1048/1048937.png" alt="Image Recognition" class="mx-auto w-36 h-36 object-contain rounded mb-4"/>
+                        <img src="https://cdn-icons-png.flaticon.com/512/1048/1048937.png" 
+                             alt="Image Recognition" class="mx-auto w-36 h-36 object-contain rounded mb-4"
+                             onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=Image+AI';">
                         <h3 class="font-semibold text-lg">Image Vision AI</h3>
                     </div>
                 </div>
             </section>
 
-            <section id="feedbackSection" class="text-center mt-8">
+            <section id="feedbackSection" class="text-center mt-8" style="display: block;">
                 <h2 class="text-2xl font-semibold mb-4">We Value Your Feedback</h2>
                 <p class="mb-6 text-gray-600">Help us improve by sharing your thoughts.</p>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSc2N8OGqdbu2HFbxN4Y89Guv3Wnp9CHLYrz-bzu80kDjHQ3yg/viewform?usp=sharing" target="_blank" class="inline-block bg-gradient-to-r from-indigo-500 to-cyan-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:from-indigo-600 hover:to-cyan-500 transition">
                     Give Feedback
                 </a>
             </section>
-        </main>
-    </div>
-
-    <footer class="bg-gradient-to-b from-cyan-500 to-indigo-600 text-white py-10 text-center mt-12">
+            <footer class="bg-gradient-to-b from-cyan-500 to-indigo-600 text-white py-10 text-center mt-12">
         <h2 class="text-2xl font-bold mb-4">About ChatIQ</h2>
         <p class="max-w-2xl mx-auto mb-6 px-4">ChatIQ assists by providing accurate, real-time answers to your questions through voice, text, and image interactions.</p>
         <div class="space-y-2"><p>📞 <a href="tel:+919369572534" class="hover:underline">+91 93695 72534</a></p><p>✉️ <a href="mailto:ambuj20maurya@gmail.com" class="hover:underline">ambuj20maurya@gmail.com</a></p><p>📍 Mirzapur, Uttar Pradesh, India</p></div>
         <p class="mt-6 text-sm opacity-90">&copy; 2025 ChatIQ. All rights reserved.</p>
     </footer>
-        <div id="cameraModal" class="fixed top-0 left-0 w-full h-full bg-black/60 hidden items-center justify-center z-[1000]">
-            <div class="bg-white p-6 rounded-xl shadow-2xl w-11/12 max-w-md text-center">
-                <h3 class="text-xl font-semibold text-gray-700 mb-4">Camera Capture</h3>
-                <video id="videoPreviewModal" autoplay playsinline class="w-full max-h-[60vh] rounded-lg mb-4 border border-gray-300 bg-gray-100"></video>
-                <div class="flex justify-around mt-4">
-                    <button id="captureModalBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg transition">Capture</button>
-                    <button id="closeCameraModalBtn" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-lg transition">Close</button>
-                </div>
+        </main>
+        
+    </div>
+
+    
+
+    <div id="cameraModal" class="fixed top-0 left-0 w-full h-full bg-black/60 hidden items-center justify-center z-[1000]">
+        <div class="bg-white p-6 rounded-xl shadow-2xl w-11/12 max-w-md text-center">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">Camera Capture</h3>
+            <video id="videoPreviewModal" autoplay playsinline class="w-full max-h-[60vh] rounded-lg mb-4 border border-gray-300 bg-gray-100"></video>
+            <div class="flex justify-around mt-4">
+                <button id="captureModalBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg transition">Capture</button>
+                <button id="closeCameraModalBtn" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-lg transition">Close</button>
             </div>
         </div>
+    </div>
 
     <script type="module">
+        // Firebase Configuration (User Provided - ensure these are correct for your project)
         const firebaseConfig = {
-            apiKey: "AIzaSyCEpq8EAkEWbvxGab0wiW9qaYojUdVykyo", // USER PROVIDED
+            apiKey: "AIzaSyCEpq8EAkEWbvxGab0wiW9qaYojUdVykyo", 
             authDomain: "chatiq-45203.firebaseapp.com",
             databaseURL: "https://chatiq-45203-default-rtdb.firebaseio.com",
             projectId: "chatiq-45203",
@@ -196,47 +206,71 @@
             measurementId: "G-R135XXK005"
         };
 
+        // Firebase Imports
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, writeBatch, doc, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // Added deleteDoc, updateDoc, getDoc
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, writeBatch, doc, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 
+        // Initialize Firebase
         let app;
         if (!getApps().length) { app = initializeApp(firebaseConfig); } else { app = getApp(); }
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const analytics = getAnalytics(app);
-        const appIdForPath = firebaseConfig.appId;
+        const analytics = getAnalytics(app); // Initialize analytics if you plan to use it
+        const appIdForPath = firebaseConfig.appId; // Used in Firestore paths for uniqueness
 
-        let chatBox, userInput, sendBtn, fileUploadBtn, fileInput, cameraBtn, voiceInputBtn, imagePreviewContainer, imagePreview, removeImageBtn, loadingIndicator, errorMessageDisplay, googleSignInBtnHeader, userDetailsHeaderDiv, userDisplayNameHeaderSpan, signOutBtnHeader, interactiveChatSection, alternativeVoiceSection, swipeDownPromptElement, newChatBtn, signInPromptBelowVoiceBot, inlineSignInBtn, cameraModal, videoPreviewModal, captureModalBtn, closeCameraModalBtn, sessionsListEl;
-        let currentBase64Image = null, currentMimeType = null, mediaStream = null, speechRecognition = null, isRecording = false, currentBotAudio = null, currentUserId = null;
+        // DOM Element Variables
+        let chatBox, userInput, sendBtn, fileUploadBtn, fileInput, cameraBtn, voiceInputBtn, 
+            imagePreviewContainer, imagePreview, removeImageBtn, loadingIndicator, errorMessageDisplay, 
+            googleSignInBtnHeader, userDetailsHeaderDiv, userDisplayNameHeaderSpan, signOutBtnHeader, 
+            interactiveChatSection, alternativeVoiceSection, swipeDownPromptElement, newChatBtn, 
+            signInPromptBelowVoiceBot, inlineSignInBtn, cameraModal, videoPreviewModal, 
+            captureModalBtn, closeCameraModalBtn, sessionsListEl, featuresSection, feedbackSection;
+
+        // State Variables
+        let currentBase64Image = null, currentMimeType = null, mediaStream = null, 
+            speechRecognition = null, isRecording = false, currentBotAudio = null, currentUserId = null;
         
-        let activeSessionId = null; // To track the current chat session
-        let messagesUnsubscribe = null; // For messages of the active session
-        let sessionsUnsubscribe = null; // For the list of sessions
+        let activeSessionId = null; 
+        let messagesUnsubscribe = null; 
+        let sessionsUnsubscribe = null; 
 
-        const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; // <-- REPLACE!
-        const MURF_API_KEY = "ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e7";   // <-- REPLACE!
+        // API Keys & Endpoints (REPLACE WITH YOUR ACTUAL KEYS)
+        const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; // <<< IMPORTANT: REPLACE THIS!
+        const MURF_API_KEY = "ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e7";   // <<< IMPORTANT: REPLACE THIS!
         const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
         const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form, without bullet points or unnecessary special characters unless the format is essential for clarity (like in a recipe's steps). When a user asks "who are you", respond: 'I am a smart ChatIQ bot.' If the user asks about "your name", respond: 'I am a smart ChatIQ bot.' If the user asks "who made you", respond: 'I was made by ChatIQ.' --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
 
-
+        // --- Utility Functions ---
         function showError(messageText) { 
-            console.log("showError called with:", messageText);
+            console.error("ChatIQ Error:", messageText); // Log error to console for debugging
             const errorElement = document.getElementById('errorMessage');
             if (errorElement) {
-                errorElement.textContent = messageText; errorElement.classList.remove('hidden');
+                errorElement.textContent = messageText; 
+                errorElement.classList.remove('hidden');
                 setTimeout(() => { errorElement.classList.add('hidden'); }, 5000);
-            } else { console.error("DOM #errorMessage not found. Early error: " + messageText); alert("Notice: " + messageText); }
+            } else { 
+                // Fallback if error message display element isn't found early
+                alert("Notice: " + messageText); 
+            }
         }
         
+        // --- DOMContentLoaded: Initialize after page loads ---
         document.addEventListener('DOMContentLoaded', () => {
             // Assign all DOM Elements
-            chatBox = document.getElementById('chatBox'); userInput = document.getElementById('userInput'); sendBtn = document.getElementById('sendBtn');
-            fileUploadBtn = document.getElementById('fileUploadBtn'); fileInput = document.getElementById('fileInput'); cameraBtn = document.getElementById('cameraBtn');
-            voiceInputBtn = document.getElementById('voiceInputBtn'); imagePreviewContainer = document.getElementById('imagePreviewContainer');
-            imagePreview = document.getElementById('imagePreview'); removeImageBtn = document.getElementById('removeImageBtn');
-            loadingIndicator = document.getElementById('loadingIndicator'); errorMessageDisplay = document.getElementById('errorMessage'); 
+            chatBox = document.getElementById('chatBox'); 
+            userInput = document.getElementById('userInput'); 
+            sendBtn = document.getElementById('sendBtn');
+            fileUploadBtn = document.getElementById('fileUploadBtn'); 
+            fileInput = document.getElementById('fileInput'); 
+            cameraBtn = document.getElementById('cameraBtn');
+            voiceInputBtn = document.getElementById('voiceInputBtn'); 
+            imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            imagePreview = document.getElementById('imagePreview'); 
+            removeImageBtn = document.getElementById('removeImageBtn');
+            loadingIndicator = document.getElementById('loadingIndicator'); 
+            errorMessageDisplay = document.getElementById('errorMessage'); 
             googleSignInBtnHeader = document.getElementById('googleSignInBtnHeader');
             userDetailsHeaderDiv = document.getElementById('userDetailsHeader');
             userDisplayNameHeaderSpan = document.getElementById('userDisplayNameHeader');
@@ -252,22 +286,34 @@
             captureModalBtn = document.getElementById('captureModalBtn');
             closeCameraModalBtn = document.getElementById('closeCameraModalBtn');
             sessionsListEl = document.getElementById('sessionsList');
+            featuresSection = document.getElementById('featuresSection');
+            feedbackSection = document.getElementById('feedbackSection');
 
-            if(GOOGLE_API_KEY === "YOUR_GEMINI_API_KEY"||MURF_API_KEY === "YOUR_MURF_API_KEY" || GOOGLE_API_KEY.startsWith("AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4ku") || MURF_API_KEY.startsWith("ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e")){/* Production check might be more robust */}
+            // Check for placeholder API keys
+            if(GOOGLE_API_KEY === "YOUR_GEMINI_API_KEY" || MURF_API_KEY === "YOUR_MURF_API_KEY"){
+                showError("CRITICAL: Placeholder API keys detected. Please update them in the script for ChatIQ to function correctly.");
+            }
             
             initializeSpeechRecognition(); 
             setupEventListeners();
-            setupAuthListener();
+            setupAuthListener(); // This will also handle initial UI setup based on auth state
         });
         
+        // --- Event Listener Setup ---
         function setupEventListeners() { 
+            // Ensure elements exist before adding listeners to prevent errors
             if(googleSignInBtnHeader) googleSignInBtnHeader.addEventListener('click', signInWithGoogle);
             if(signOutBtnHeader) signOutBtnHeader.addEventListener('click', signOutUser);
             if(newChatBtn) newChatBtn.addEventListener('click', startNewChatSession);
             if(inlineSignInBtn) inlineSignInBtn.addEventListener('click', signInWithGoogle); 
 
             if(sendBtn) sendBtn.addEventListener('click', handleSendMessageWrapper);
-            if(userInput) userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessageWrapper(); }});
+            if(userInput) userInput.addEventListener('keypress', (e) => { 
+                if (e.key === 'Enter' && !e.shiftKey) { 
+                    e.preventDefault(); 
+                    handleSendMessageWrapper(); 
+                }
+            });
             if(fileUploadBtn) fileUploadBtn.addEventListener('click', () => fileInput.click());
             if(fileInput) fileInput.addEventListener('change', handleFileSelect);
             if(removeImageBtn) removeImageBtn.addEventListener('click', removeImagePreview);
@@ -279,130 +325,209 @@
             if(voiceInputBtn) voiceInputBtn.addEventListener('click', toggleVoiceInput);
         }
 
+        // --- Firebase Authentication ---
         async function signInWithGoogle() { 
-            if (!auth) { showError("Firebase Auth not initialized."); return; }
+            if (!auth) { showError("Firebase Auth service is not available."); return; }
             const provider = new GoogleAuthProvider();
-            try { await signInWithPopup(auth, provider); } 
-            catch (error) { console.error("Google Sign-In Error:", error); showError(`Google Sign-In Failed: ${error.message} (Code: ${error.code})`); }
+            try { 
+                await signInWithPopup(auth, provider); 
+                // onAuthStateChanged will handle UI updates
+            } 
+            catch (error) { 
+                console.error("Google Sign-In Error:", error); 
+                showError(`Google Sign-In Failed: ${error.message} (Code: ${error.code})`); 
+            }
         }
+
         async function signOutUser() { 
-            if (!auth) { showError("Firebase Auth not initialized."); return; }
-            try { await signOut(auth); activeSessionId = null; if(sessionsListEl) sessionsListEl.innerHTML = ''; } 
-            catch (error) { console.error("Sign Out Error:", error); showError("Error signing out: " + error.message); }
+            if (!auth) { showError("Firebase Auth service is not available."); return; }
+            try { 
+                await signOut(auth); 
+                activeSessionId = null; 
+                if(sessionsListEl) sessionsListEl.innerHTML = ''; 
+                if(chatBox) chatBox.innerHTML = '';
+                // onAuthStateChanged will handle UI updates
+            } 
+            catch (error) { 
+                console.error("Sign Out Error:", error); 
+                showError("Error signing out: " + error.message); 
+            }
         }
 
         function setupAuthListener() { 
-            if (!auth) { console.error("Firebase Auth not initialized for listener."); showError("Critical: Auth service not ready."); return; }
+            if (!auth) { 
+                console.error("Firebase Auth not initialized for listener. Cannot set up auth state changes."); 
+                showError("Critical: Authentication service is not ready. Please refresh."); 
+                // Display a very basic logged-out state if auth fails to initialize
+                if(interactiveChatSection) interactiveChatSection.style.display = 'none';
+                if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'block';
+                if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'block';
+                if(featuresSection) featuresSection.style.display = 'block';
+                if(feedbackSection) feedbackSection.style.display = 'block';
+                if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'inline-block';
+                if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'none';
+                if(newChatBtn) newChatBtn.style.display = 'none';
+                return; 
+            }
+
             const chatHistorySidebar = document.getElementById('chatHistorySidebar');
             onAuthStateChanged(auth, (user) => {
-                if (user) {
+                if (user) { // User is signed in
                     currentUserId = user.uid;
                     if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = `Hi, ${user.displayName || user.email.split('@')[0] || 'User'}!`;
                     if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'none';
                     if(newChatBtn) newChatBtn.style.display = 'inline-block'; 
                     if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'flex';
-                    if(interactiveChatSection) interactiveChatSection.style.display = 'flex';
+                    
+                    // Show chat, hide alternatives
+                    if(interactiveChatSection) interactiveChatSection.style.display = 'flex'; // Use flex for chat layout
                     if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'none'; 
                     if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'none';
-                    if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'inline-flex';
-                    if(chatHistorySidebar) chatHistorySidebar.classList.remove('hidden'); 
-                    if(chatHistorySidebar) chatHistorySidebar.classList.add('flex');
+                    if(featuresSection) featuresSection.style.display = 'none'; // Hide features when signed in
+                    if(feedbackSection) feedbackSection.style.display = 'none'; // Hide feedback when signed in
 
+                    if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'inline-flex'; // Or 'block' if preferred
+                    if(chatHistorySidebar) {
+                        chatHistorySidebar.classList.remove('hidden'); 
+                        chatHistorySidebar.classList.add('flex');
+                    }
                     loadChatSessions(); 
-                } else {
-                    currentUserId = null; activeSessionId = null;
+                } else { // User is signed out
+                    currentUserId = null; 
+                    activeSessionId = null;
                     if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = '';
                     if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'inline-block';
                     if(newChatBtn) newChatBtn.style.display = 'none'; 
                     if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'none';
+
+                    // Hide chat, show alternatives and info sections
                     if(interactiveChatSection) interactiveChatSection.style.display = 'none';
                     if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'block';
                     if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'block';
+                    if(featuresSection) featuresSection.style.display = 'block'; // Show features when signed out
+                    if(feedbackSection) feedbackSection.style.display = 'block'; // Show feedback when signed out
+
+
                     if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'none';
-                    if(chatHistorySidebar) chatHistorySidebar.classList.add('hidden');
-                    if(chatHistorySidebar) chatHistorySidebar.classList.remove('flex');
+                    if(chatHistorySidebar) {
+                        chatHistorySidebar.classList.add('hidden');
+                        chatHistorySidebar.classList.remove('flex');
+                    }
 
                     if(messagesUnsubscribe) messagesUnsubscribe(); 
                     if(sessionsUnsubscribe) sessionsUnsubscribe();
                     if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Please sign in with Google to use ChatIQ and see your history.</div>';
+                    if(sessionsListEl) sessionsListEl.innerHTML = '';
                 }
             });
         }
         
+        // --- Chat Session Management (Firestore) ---
         async function startNewChatSession() {
             if (!currentUserId || !db) { showError("Please sign in to start a new chat."); return; }
-            console.log("Starting new chat session");
+            console.log("Starting new chat session for user:", currentUserId);
             const newSessionName = `Chat ${new Date().toLocaleString()}`; 
             try {
                 const sessionsColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions`;
                 const sessionRef = await addDoc(collection(db, sessionsColPath), {
                     title: newSessionName,
-                    createdAt: serverTimestamp()
+                    createdAt: serverTimestamp(),
+                    lastActivity: serverTimestamp() // Initialize lastActivity
                 });
                 activeSessionId = sessionRef.id;
                 console.log("New session created with ID:", activeSessionId);
                 if (chatBox) chatBox.innerHTML = ''; 
-                // addMessageToChat(`New chat started: ${newSessionName}`, "bot"); // Optional UI message, not saved
-                loadChatHistory(activeSessionId); 
+                loadChatHistory(activeSessionId); // This will also handle the welcome message for new chats
+                // loadChatSessions() will update the sidebar via its onSnapshot listener
             } catch (error) {
                 console.error("Error creating new session:", error);
-                showError("Could not start a new chat session.");
+                showError("Could not start a new chat session. Firestore error: " + error.message);
             }
         }
 
         async function deleteSession(sessionIdToDelete) {
-            if (!currentUserId || !db || !sessionIdToDelete) return;
-            console.log(`Attempting to delete session: ${sessionIdToDelete}`);
-            const confirmed = confirm("Are you sure you want to delete this chat session and all its messages permanently?");
+            if (!currentUserId || !db || !sessionIdToDelete) {
+                showError("Cannot delete session: missing user, database, or session ID.");
+                return;
+            }
+            console.log(`Attempting to delete session: ${sessionIdToDelete} for user: ${currentUserId}`);
+            
+            // Using a custom modal for confirmation is better, but confirm() is simpler for now.
+            // In a real app, replace confirm() with a custom UI modal.
+            const confirmed = window.confirm("Are you sure you want to delete this chat session and all its messages permanently?");
             if (!confirmed) return;
 
             try {
+                // 1. Delete all messages in the subcollection
                 const messagesPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToDelete}/messages`;
                 const messagesQuery = query(collection(db, messagesPath));
                 const messagesSnapshot = await getDocs(messagesQuery);
                 const batch = writeBatch(db);
-                messagesSnapshot.forEach(doc => {
-                    batch.delete(doc.ref);
+                messagesSnapshot.forEach(docMsg => { // Renamed doc to docMsg to avoid conflict
+                    batch.delete(docMsg.ref);
                 });
                 await batch.commit();
                 console.log(`Messages for session ${sessionIdToDelete} deleted.`);
 
+                // 2. Delete the session document itself
                 const sessionDocPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToDelete}`;
                 await deleteDoc(doc(db, sessionDocPath)); 
                 console.log(`Session ${sessionIdToDelete} metadata deleted.`);
 
                 if (activeSessionId === sessionIdToDelete) {
                     activeSessionId = null;
-                    if (chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Session deleted. Start a new chat or select another.</div>';
+                    if (chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Session deleted. Start a new chat or select another from the history.</div>';
+                    // Attempt to load the next available session or prompt to start new
+                    const sessionItems = sessionsListEl.querySelectorAll('.session-item');
+                    if (sessionItems.length > 0) {
+                        selectSession(sessionItems[0].dataset.sessionId); // Select the first one in the list (most recent)
+                    } else {
+                        startNewChatSession(); // If no sessions left, start a new one
+                    }
                 }
+                // loadChatSessions() will refresh the list via its onSnapshot, which is good.
             } catch (error) {
                 console.error(`Error deleting session ${sessionIdToDelete}:`, error);
-                showError("Failed to delete chat session.");
+                showError("Failed to delete chat session. Firestore error: " + error.message);
             }
         }
 
         function loadChatSessions() {
-            if (!currentUserId || !db || !sessionsListEl) return;
-            if (sessionsUnsubscribe) sessionsUnsubscribe();
+            if (!currentUserId || !db || !sessionsListEl) {
+                console.warn("Cannot load chat sessions: missing user, DB, or sessions list element.");
+                if (sessionsListEl) sessionsListEl.innerHTML = '<li class="text-xs text-gray-400 p-2">Sign in to see history.</li>';
+                return;
+            }
+            if (sessionsUnsubscribe) sessionsUnsubscribe(); // Unsubscribe from previous listener
 
             const sessionsColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions`;
-            const q = query(collection(db, sessionsColPath), orderBy("createdAt", "desc"));
+            const q = query(collection(db, sessionsColPath), orderBy("lastActivity", "desc")); // Order by lastActivity
 
             sessionsUnsubscribe = onSnapshot(q, (snapshot) => {
+                if (!sessionsListEl) return;
                 sessionsListEl.innerHTML = ''; 
-                let firstSessionId = null;
+                let firstSessionIdFromSnapshot = null;
                 let sessionCount = 0;
+
+                if (snapshot.empty) {
+                    sessionsListEl.innerHTML = '<div class="text-xs text-gray-400 p-2 text-center">No chat history yet. Start a new chat!</div>';
+                    if (!activeSessionId) { // If no active session and history is empty, start a new one
+                        startNewChatSession();
+                    }
+                    return;
+                }
+
                 snapshot.forEach((docSnap) => {
                     sessionCount++;
                     const session = docSnap.data();
                     const sessionId = docSnap.id;
-                    if (!firstSessionId) firstSessionId = sessionId; 
+                    if (!firstSessionIdFromSnapshot) firstSessionIdFromSnapshot = sessionId; 
 
                     const item = document.createElement('div');
-                    item.dataset.sessionId = sessionId; // Important for selectSession highlighting
-                    item.classList.add('session-item', 'p-2', 'rounded-md', 'cursor-pointer', 'text-sm', 'text-slate-700', 'flex', 'justify-between', 'items-center');
+                    item.dataset.sessionId = sessionId; 
+                    item.classList.add('session-item', 'p-2', 'rounded-md', 'cursor-pointer', 'text-sm', 'text-slate-700', 'flex', 'justify-between', 'items-center', 'hover:bg-slate-100');
                     if (sessionId === activeSessionId) {
-                        item.classList.add('active');
+                        item.classList.add('active', 'bg-blue-100', 'text-blue-700'); // Ensure active class is visually distinct
                     }
                     
                     const titleSpan = document.createElement('span');
@@ -412,7 +537,7 @@
 
                     const deleteBtn = document.createElement('button');
                     deleteBtn.innerHTML = '&times;'; 
-                    deleteBtn.classList.add('text-red-400', 'hover:text-red-600', 'font-bold', 'px-1');
+                    deleteBtn.classList.add('text-red-400', 'hover:text-red-600', 'font-bold', 'px-2', 'py-1', 'rounded', 'hover:bg-red-100', 'transition-colors');
                     deleteBtn.title = "Delete this chat session";
                     deleteBtn.onclick = (event) => {
                         event.stopPropagation(); 
@@ -424,19 +549,31 @@
                     sessionsListEl.appendChild(item);
                 });
 
-                if (sessionCount > 0 && !activeSessionId) { 
-                    selectSession(firstSessionId);
-                } else if (sessionCount === 0 && !activeSessionId) { 
-                    startNewChatSession();
+                // If no session is currently active, and there are sessions, select the most recent one.
+                if (sessionCount > 0 && !activeSessionId && firstSessionIdFromSnapshot) { 
+                    selectSession(firstSessionIdFromSnapshot);
+                } else if (sessionCount > 0 && activeSessionId) {
+                    // Ensure the active session is still highlighted if the list re-renders
+                    const currentActiveItem = sessionsListEl.querySelector(`.session-item[data-session-id="${activeSessionId}"]`);
+                    if (currentActiveItem && !currentActiveItem.classList.contains('active')) {
+                        currentActiveItem.classList.add('active', 'bg-blue-100', 'text-blue-700');
+                    }
                 }
+
             }, (error) => {
                 console.error("Error loading chat sessions:", error);
-                showError("Could not load chat sessions.");
+                showError("Could not load chat sessions. Firestore error: " + error.message);
+                if (sessionsListEl) sessionsListEl.innerHTML = '<li class="text-xs text-red-500 p-2">Error loading history.</li>';
             });
         }
         
         function selectSession(sessionId) {
-            if (activeSessionId === sessionId && chatBox && chatBox.innerHTML !== '<div class="text-center text-gray-400 p-4">Loading chat...</div>') return; 
+            if (!sessionId) {
+                console.warn("Attempted to select a null/undefined session ID.");
+                return;
+            }
+            // Only proceed if changing session or if chatbox indicates it's not loaded for current active session
+            if (activeSessionId === sessionId && chatBox && !chatBox.innerHTML.includes('Loading chat...')) return; 
 
             console.log("Selecting session:", sessionId);
             activeSessionId = sessionId;
@@ -444,213 +581,571 @@
             if (chatBox) chatBox.innerHTML = '<div class="text-center text-gray-400 p-4">Loading chat...</div>'; 
             loadChatHistory(activeSessionId);
 
-            const sessionItems = sessionsListEl.querySelectorAll('.session-item');
-            sessionItems.forEach(item => {
-                if (item.dataset.sessionId === sessionId) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
+            // Update active class in sidebar
+            if (sessionsListEl) {
+                const sessionItems = sessionsListEl.querySelectorAll('.session-item');
+                sessionItems.forEach(item => {
+                    if (item.dataset.sessionId === sessionId) {
+                        item.classList.add('active', 'bg-blue-100', 'text-blue-700');
+                    } else {
+                        item.classList.remove('active', 'bg-blue-100', 'text-blue-700');
+                    }
+                });
+            }
         }
 
+        // --- Message Handling (Firestore & UI) ---
         async function saveMessageToFirestore(messageData) { 
-            if (!currentUserId || !activeSessionId) { showError("Not signed in or no active session. Message not saved."); return; }
+            if (!currentUserId || !activeSessionId) { 
+                showError("Cannot save message: Not signed in or no active chat session."); 
+                return; 
+            }
+            if (!db) {
+                showError("Cannot save message: Database service not available.");
+                return;
+            }
             try { 
-                const path = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}/messages`; 
-                await addDoc(collection(db, path), { ...messageData, userId: currentUserId, timestamp: serverTimestamp() }); 
+                const messagesColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}/messages`; 
+                await addDoc(collection(db, messagesColPath), { 
+                    ...messageData, 
+                    userId: currentUserId, // Ensure userId is part of the message data
+                    timestamp: serverTimestamp() 
+                }); 
                 
+                // Update session's lastActivity and potentially title
                 const sessionDocPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}`;
                 const sessionDocRef = doc(db, sessionDocPath);
                 const sessionSnap = await getDoc(sessionDocRef); 
+
                 if (sessionSnap.exists()) {
                     const sessionData = sessionSnap.data();
                     let updateData = { lastActivity: serverTimestamp() };
-                    // Update title if it's the first user text message and title is default-like
-                    if (sessionData.title && (sessionData.title.startsWith("Chat ") || sessionData.title.startsWith("New Chat")) && messageData.sender === 'user' && messageData.type === 'text' && messageData.content) {
-                         // Check if this is truly the first *user text* message by querying messages (can be complex)
-                         // For simplicity, we'll assume if title is default, this user message can set it.
-                         // A more robust way would be to check message count or a 'titleSetByUser' flag in sessionData.
-                        const messagesCollectionPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}/messages`;
-                        const messagesQuery = query(collection(db, messagesCollectionPath), orderBy("timestamp", "asc"));
+
+                    // Update title only if it's the very first user text message and title is default-like
+                    if (messageData.sender === 'user' && messageData.type === 'text' && messageData.content) {
+                        const messagesQuery = query(collection(db, messagesColPath), orderBy("timestamp", "asc"));
                         const existingMessagesSnap = await getDocs(messagesQuery);
-                        let userTextMessages = 0;
+                        let userTextMessagesCount = 0;
                         existingMessagesSnap.forEach(msgDoc => {
                             if (msgDoc.data().sender === 'user' && msgDoc.data().type === 'text') {
-                                userTextMessages++;
+                                userTextMessagesCount++;
                             }
                         });
 
-                        if (userTextMessages <= 1) { // If this is the first or only user text message
+                        if (userTextMessagesCount === 1 && sessionData.title && sessionData.title.startsWith("Chat ")) { 
                            updateData.title = messageData.content.substring(0, 35) + (messageData.content.length > 35 ? '...' : '');
                         }
                     }
                     await updateDoc(sessionDocRef, updateData); 
                 }
             } 
-            catch (error) { console.error("Error saving to Firestore:", error); showError("Error saving message."); }
+            catch (error) { 
+                console.error("Error saving message to Firestore:", error); 
+                showError("Error saving message. Firestore error: " + error.message); 
+            }
         }
 
         function loadChatHistory(sessionIdToLoad) { 
-            if (!db || !chatBox || !sessionIdToLoad) { 
-                if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Select a chat or start a new one.</div>';
+            if (!db || !chatBox || !sessionIdToLoad || !currentUserId) { 
+                if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Select a chat or start a new one to see messages.</div>';
+                console.warn("Cannot load chat history: missing DB, chatBox, session ID, or user ID.");
                 return; 
             }
-            if (messagesUnsubscribe) messagesUnsubscribe(); 
+            if (messagesUnsubscribe) messagesUnsubscribe(); // Unsubscribe from previous listener
             
-            const path = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToLoad}/messages`;
-            const q = query(collection(db, path), orderBy("timestamp", "asc")); 
+            const messagesColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToLoad}/messages`;
+            const q = query(collection(db, messagesColPath), orderBy("timestamp", "asc")); 
             
-            chatBox.innerHTML = ''; 
-            let initialWelcomeAdded = false;
+            chatBox.innerHTML = ''; // Clear chatbox before loading new messages
+            let initialWelcomeMessageAdded = false;
 
             messagesUnsubscribe = onSnapshot(q, (snapshot) => {
-                chatBox.innerHTML = ''; let count = 0;
-                snapshot.docChanges().forEach((change) => { // More efficient updates
-                    if (change.type === "added") {
-                        count++; 
-                        const msg = change.doc.data(); 
-                        if (msg.type === 'image') addImageToChatLog(msg.content, msg.mimeType, msg.sender); 
-                        else addMessageToChat(msg.content, msg.sender); 
+                if (!chatBox) return;
+                chatBox.innerHTML = ''; // Clear and re-render all messages on each snapshot for simplicity
+                let messageCount = 0;
+                snapshot.forEach((docMsg) => { 
+                    messageCount++;  
+                    const msg = docMsg.data();  
+                    if (msg.type === 'image') {
+                        addImageToChatLog(msg.content, msg.mimeType, msg.sender);  
+                    } else {
+                        addMessageToChat(msg.content, msg.sender);  
                     }
                 });
-                // If loading all messages (not just changes), use snapshot.forEach directly:
-                // snapshot.forEach((doc) => { count++; const msg = doc.data(); ... });
-                // For simplicity with initial load and avoiding duplicate welcome messages:
-                if (snapshot.empty && !initialWelcomeAdded) { // Check if collection is empty
-                     const welcome="Chat started! How can I assist you today?"; 
-                     addMessageToChat(welcome, "bot");
-                     initialWelcomeAdded = true; 
-                } else if (!snapshot.empty) {
-                    // If using docChanges, initialWelcomeAdded might need different logic
-                    // or ensure that count is based on total docs if not using docChanges for initial render.
-                    // The current simple `chatBox.innerHTML = ''; snapshot.forEach(...)` would re-render all,
-                    // so the welcome logic would need to be outside the forEach or based on total snapshot size.
-                    // Let's revert to simpler full re-render for clarity here, as docChanges can be complex for initial load logic.
-                    chatBox.innerHTML = ''; 
-                    count = 0;
-                     snapshot.forEach((doc) => { 
-                         count++;  
-                         const msg = doc.data();  
-                         if (msg.type === 'image') addImageToChatLog(msg.content, msg.mimeType, msg.sender);  
-                         else addMessageToChat(msg.content, msg.sender);  
-                     });
-                     if (count === 0 && !snapshot.metadata.hasPendingWrites && !initialWelcomeAdded) {  
-                         const welcome="Chat started! How can I assist you today?";  
-                         addMessageToChat(welcome, "bot");
-                         initialWelcomeAdded = true;  
-                     }
+
+                if (messageCount === 0 && !snapshot.metadata.hasPendingWrites && !initialWelcomeMessageAdded) {  
+                     const welcomeMessage = "Chat started! How can I assist you today?";  
+                     addMessageToChat(welcomeMessage, "bot");
+                     // This welcome message is UI only for new chats, not saved to DB.
+                     initialWelcomeMessageAdded = true;  
                 }
-
-
                 if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; 
-            }, (error) => { console.error("Error loading messages for session:", sessionIdToLoad, error); showError("Failed to load messages: " + error.message); });
+            }, (error) => { 
+                console.error(`Error loading messages for session ${sessionIdToLoad}:`, error); 
+                showError("Failed to load messages. Firestore error: " + error.message); 
+                if (chatBox) chatBox.innerHTML = `<div class="text-center text-red-500 p-4">Error loading messages.</div>`;
+            });
         }
         
-        function addMessageToChat(text, sender) { if (!chatBox) return; const messageDiv = document.createElement('div'); messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'py-1'); const bubbleDiv = document.createElement('div'); bubbleDiv.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot'); const codeBlockRegex = /```(\w*)\n([\s\S]*?)\n```/gm; let lastIndex = 0; let hasCode = false; let contentToAdd = document.createDocumentFragment(); text.replace(codeBlockRegex, (match, lang, codeContent, offset) => { hasCode = true; if (offset > lastIndex) { contentToAdd.appendChild(document.createTextNode(text.substring(lastIndex, offset))); } const preElement = document.createElement('pre'); const codeElement = document.createElement('code'); if (lang) codeElement.classList.add(`language-${lang}`); codeElement.textContent = codeContent.trim(); preElement.appendChild(codeElement); contentToAdd.appendChild(preElement); lastIndex = offset + match.length; return match; }); if (lastIndex < text.length) { contentToAdd.appendChild(document.createTextNode(text.substring(lastIndex))); } if (contentToAdd.hasChildNodes()) { bubbleDiv.appendChild(contentToAdd); } else if (!hasCode) { bubbleDiv.textContent = text; } messageDiv.appendChild(bubbleDiv); chatBox.appendChild(messageDiv); if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; }
-        function addImageToChatLog(base64, mime, sender) { if (!chatBox) return; const div = document.createElement('div'); div.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'my-1'); const bubble = document.createElement('div'); bubble.classList.add('image-chat-bubble'); bubble.style.backgroundColor = sender === 'user' ? '#DBEAFE' : '#D1FAE5'; const img = document.createElement('img'); img.src = `data:${mime};base64,${base64}`; img.alt = sender === 'user' ? "User image" : "Bot image"; bubble.appendChild(img); div.appendChild(bubble); chatBox.appendChild(div); if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; }
-        function showLoading(isLoading) { if(!loadingIndicator) return; loadingIndicator.classList.toggle('hidden', !isLoading); }
-        async function handleSendMessageWrapper() { if (!userInput || !chatBox || !currentUserId || !activeSessionId) { showError("Chat not ready. Please sign in and select/start a chat."); return; } await handleSendMessage(); }
-        async function handleSendMessage() { 
-            const textContent = userInput.value.trim(); const img64 = currentBase64Image; const imgMime = currentMimeType;
-            if (!textContent && !img64) { showError("Please type, speak, or upload an image."); return; }
-            if (!activeSessionId) { showError("No active chat session. Please start a new chat."); return; }
-
-            if (img64 && imgMime) await saveMessageToFirestore({ sender: 'user', type: 'image', content: img64, mimeType: imgMime });
-            if (textContent) await saveMessageToFirestore({ sender: 'user', type: 'text', content: textContent });
+        function addMessageToChat(text, sender) { 
+            if (!chatBox) { console.warn("addMessageToChat: chatBox element not found."); return; }
+            const messageDiv = document.createElement('div'); 
+            messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'py-1'); 
+            const bubbleDiv = document.createElement('div'); 
+            bubbleDiv.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot'); 
             
-            if(userInput) userInput.value = ''; removeImagePreview(); showLoading(true);
-            if (containsVulgar(textContent)) { const msg = "I cannot assist with that."; addMessageToChat(msg, "bot"); await saveMessageToFirestore({ sender: 'bot', type: 'text', content: msg }); showLoading(false); speakResponse(msg); return; }
+            // Handle code blocks (Markdown-like ``` ```)
+            const codeBlockRegex = /```(\w*)\n([\s\S]*?)\n```/gm; 
+            let lastIndex = 0; 
+            let hasCodeBlock = false; 
+            const contentFragment = document.createDocumentFragment(); 
+
+            text.replace(codeBlockRegex, (match, lang, codeContent, offset) => { 
+                hasCodeBlock = true; 
+                if (offset > lastIndex) { 
+                    contentFragment.appendChild(document.createTextNode(text.substring(lastIndex, offset))); 
+                } 
+                const preElement = document.createElement('pre'); 
+                const codeElement = document.createElement('code'); 
+                if (lang) codeElement.classList.add(`language-${lang}`); 
+                codeElement.textContent = codeContent.trim(); 
+                preElement.appendChild(codeElement); 
+                contentFragment.appendChild(preElement); 
+                lastIndex = offset + match.length; 
+                return match; // Required by .replace
+            }); 
+
+            if (lastIndex < text.length) { 
+                contentFragment.appendChild(document.createTextNode(text.substring(lastIndex))); 
+            } 
+
+            if (contentFragment.hasChildNodes()) { 
+                bubbleDiv.appendChild(contentFragment); 
+            } else if (!hasCodeBlock) { // Fallback for simple text if no code blocks were processed
+                bubbleDiv.textContent = text; 
+            }
+            
+            messageDiv.appendChild(bubbleDiv); 
+            chatBox.appendChild(messageDiv); 
+            if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; 
+        }
+
+        function addImageToChatLog(base64, mime, sender) { 
+            if (!chatBox) { console.warn("addImageToChatLog: chatBox element not found."); return; }
+            const div = document.createElement('div'); 
+            div.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'my-1'); 
+            const bubble = document.createElement('div'); 
+            bubble.classList.add('image-chat-bubble'); 
+            bubble.style.backgroundColor = sender === 'user' ? '#DBEAFE' : '#D1FAE5'; 
+            const img = document.createElement('img'); 
+            img.src = `data:${mime};base64,${base64}`; 
+            img.alt = sender === 'user' ? "User uploaded image" : "Bot generated image"; 
+            bubble.appendChild(img); 
+            div.appendChild(bubble); 
+            chatBox.appendChild(div); 
+            if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; 
+        }
+        
+        function showLoading(isLoading) { 
+            if(!loadingIndicator) { console.warn("showLoading: loadingIndicator element not found."); return; }
+            loadingIndicator.classList.toggle('hidden', !isLoading); 
+        }
+
+        // --- Send Message Wrapper & Core Logic ---
+        async function handleSendMessageWrapper() { 
+            if (!userInput || !chatBox ) { showError("Chat interface is not ready."); return; }
+            if (!currentUserId || !activeSessionId) { showError("Please sign in and select or start a chat session to send messages."); return; } 
+            await handleSendMessage(); 
+        }
+
+        async function handleSendMessage() { 
+            const textContent = userInput.value.trim(); 
+            const imageBase64 = currentBase64Image; // Use a different variable name to avoid confusion
+            const imageMimeType = currentMimeType;
+            
+            if (!textContent && !imageBase64) { 
+                showError("Please type a message, speak, or upload an image to send."); 
+                return; 
+            }
+            if (!activeSessionId) { 
+                showError("No active chat session. Please start or select a chat from history."); 
+                return; 
+            }
+
+            // Save user's image message (if any)
+            if (imageBase64 && imageMimeType) {
+                await saveMessageToFirestore({ sender: 'user', type: 'image', content: imageBase64, mimeType: imageMimeType });
+            }
+            // Save user's text message (if any)
+            if (textContent) {
+                await saveMessageToFirestore({ sender: 'user', type: 'text', content: textContent });
+            }
+            
+            if(userInput) userInput.value = ''; 
+            removeImagePreview(); // Clear image preview after sending
+            showLoading(true); // Show loading indicator
+
+            // Basic vulgarity check (replace with a more robust solution if needed)
+            if (textContent && containsVulgar(textContent)) { 
+                const vulgarResponseMessage = "I cannot assist with requests containing inappropriate language."; 
+                // addMessageToChat(vulgarResponseMessage, "bot"); // UI updated by Firestore listener
+                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: vulgarResponseMessage }); 
+                showLoading(false); 
+                speakResponse(vulgarResponseMessage); 
+                return; 
+            }
+
+            // Prepare payload for Gemini API
             try {
-                let parts = []; let prompt = botPersonaInstructions;
-                if (textContent) prompt += "\n\nUSER QUERY TEXT: " + textContent; else if (img64 && !textContent) prompt += "\n\nUSER QUERY TEXT: (No text provided, analyze image)";
-                parts.push({ text: prompt }); if (img64 && imgMime) parts.push({ inlineData: { mimeType: imgMime, data: img64 } });
-                const payload = { contents: [{ role: "user", parts: parts }] };
-                const resp = await fetch(geminiApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                let botText = "Sorry, couldn't process that request.";
-                if (!resp.ok) { 
-                    const errData = await resp.json().catch(()=>({error:{message:"API error with non-JSON response or parsing failed"}})); 
-                    botText = `API Error (${resp.status}): ${errData.error?.message || resp.statusText || "Unknown API error"}`; 
-                    if (resp.status === 429) botText = "API rate limit exceeded. Please try again later.";
+                let geminiParts = []; 
+                let combinedPromptForGemini = botPersonaInstructions; // Start with system instructions
+
+                if (textContent) {
+                    combinedPromptForGemini += "\n\nUSER QUERY TEXT: " + textContent;
+                } else if (imageBase64 && !textContent) {
+                    combinedPromptForGemini += "\n\nUSER QUERY TEXT: (No text provided, please analyze the following image)";
                 }
-                else { 
-                    const res = await resp.json(); 
-                    if (res.candidates?.[0]?.content?.parts?.[0]?.text) {
-                        botText = res.candidates[0].content.parts[0].text;
-                    } else if (res.promptFeedback?.blockReason) {
-                        botText = `Blocked: ${res.promptFeedback.blockReason}. Your query might have been flagged as potentially harmful.`;
-                    } else if (res.candidates?.[0]?.finishReason && res.candidates[0].finishReason !== "STOP") {
-                        botText = `Response generation was stopped due to: ${res.candidates[0].finishReason}. This might be due to safety settings or other limitations.`;
+                geminiParts.push({ text: combinedPromptForGemini }); 
+                
+                if (imageBase64 && imageMimeType) {
+                    geminiParts.push({ inlineData: { mimeType: imageMimeType, data: imageBase64 } });
+                }
+                
+                const payload = { contents: [{ role: "user", parts: geminiParts }] };
+                
+                const response = await fetch(geminiApiUrl, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(payload) 
+                });
+                
+                let botResponseText = "Sorry, I encountered an issue processing your request."; // Default error message
+                if (!response.ok) { 
+                    const errorData = await response.json().catch(()=>({error:{message:"API error with non-JSON response or parsing failed"}})); 
+                    botResponseText = `API Error (${response.status}): ${errorData.error?.message || response.statusText || "Unknown API error"}`; 
+                    if (response.status === 429) botResponseText = "API rate limit exceeded. Please try again in a few moments.";
+                    console.error("Gemini API Error:", botResponseText, errorData);
+                } else { 
+                    const result = await response.json(); 
+                    if (result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts[0] && result.candidates[0].content.parts[0].text) {
+                        botResponseText = result.candidates[0].content.parts[0].text;
+                    } else if (result.promptFeedback && result.promptFeedback.blockReason) {
+                        botResponseText = `Your request was blocked by the AI for the following reason: ${result.promptFeedback.blockReason}. This may be due to safety settings or content policy.`;
+                        console.warn("Gemini API Blocked:", result.promptFeedback);
+                    } else if (result.candidates && result.candidates[0] && result.candidates[0].finishReason && result.candidates[0].finishReason !== "STOP") {
+                        botResponseText = `The AI stopped responding due to: ${result.candidates[0].finishReason}. This might be due to safety settings, length limitations, or other factors.`;
+                        console.warn("Gemini API Finish Reason:", result.candidates[0].finishReason);
+                    } else {
+                        console.warn("Gemini API - Unexpected response structure:", result);
                     }
                 }
-                // addMessageToChat(botText, 'bot'); // UI update handled by onSnapshot listener
-                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: botText }); 
-                speakResponse(botText);
+                // addMessageToChat(botResponseText, 'bot'); // UI update handled by Firestore listener
+                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: botResponseText }); 
+                speakResponse(botResponseText);
             } catch (error) { 
-                console.error('API call or processing error:', error); 
-                let detailedError = `Error: ${error.message}`;
-                if (error.response && error.response.data && error.response.data.error && error.response.data.error.message) {
-                     detailedError = `API Error: ${error.response.data.error.message}`;
-                }
-                showError(detailedError); 
-                // addMessageToChat(detailedError, 'bot'); // UI update handled by onSnapshot listener
-                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: detailedError });
-            } finally { showLoading(false); }
+                console.error('Error during Gemini API call or processing:', error); 
+                let detailedErrorMessage = `An unexpected error occurred: ${error.message}`;
+                showError(detailedErrorMessage); 
+                // addMessageToChat(detailedErrorMessage, 'bot'); // UI update handled by Firestore listener
+                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: detailedErrorMessage });
+            } finally { 
+                showLoading(false); 
+            }
         }
+
+        // --- Speech Recognition (STT) & Synthesis (TTS) ---
         function initializeSpeechRecognition() { 
-            const SR_API = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SR_API) { speechRecognition = new SR_API(); speechRecognition.continuous = false; speechRecognition.lang = 'en-US'; speechRecognition.interimResults = false; speechRecognition.maxAlternatives = 1;
-                speechRecognition.onresult = (e) => { const r = e.results[0][0].transcript.trim(); if(userInput)userInput.value=r; stopRecording(); if(r)handleSendMessageWrapper(); else showError("Voice input was empty.");};
-                speechRecognition.onerror = (e) => { let m=`Speech recognition error: ${e.error}.`; if(e.error==='no-speech')m="No speech detected. Please try again."; else if(e.error==='audio-capture')m="Microphone error. Please check your microphone."; else if(e.error==='not-allowed')m="Microphone access denied. Please allow microphone access in your browser settings."; else if(e.error==='language-not-supported')m=`The language '${speechRecognition.lang}' is not supported for speech recognition.`; showError(m); stopRecording();};
-                speechRecognition.onend = () => { if (isRecording) stopRecording(); };
-            } else { if(voiceInputBtn) voiceInputBtn.disabled = true; showError('Speech recognition (voice input) is not supported by your browser.'); }
+            const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognitionAPI) { 
+                speechRecognition = new SpeechRecognitionAPI(); 
+                speechRecognition.continuous = false; // Stop after first recognized phrase
+                speechRecognition.lang = 'en-US'; // Default language, can be changed
+                speechRecognition.interimResults = false; 
+                speechRecognition.maxAlternatives = 1;
+                
+                speechRecognition.onresult = (event) => { 
+                    const transcript = event.results[0][0].transcript.trim(); 
+                    if(userInput) userInput.value = transcript; 
+                    stopRecording(); // UI update for button
+                    if(transcript) {
+                        handleSendMessageWrapper(); // Send the recognized text
+                    } else {
+                        showError("Voice input was empty or not recognized.");
+                    }
+                };
+                speechRecognition.onerror = (event) => { 
+                    let errorMessage = `Speech recognition error: ${event.error}.`; 
+                    if(event.error === 'no-speech') errorMessage = "No speech was detected. Please try speaking clearly."; 
+                    else if(event.error === 'audio-capture') errorMessage = "Microphone error. Please check your microphone connection and permissions."; 
+                    else if(event.error === 'not-allowed') errorMessage = "Microphone access denied. Please allow microphone access in your browser settings."; 
+                    else if(event.error === 'language-not-supported') errorMessage = `The language '${speechRecognition.lang}' is not supported for speech recognition.`;
+                    showError(errorMessage); 
+                    stopRecording(); 
+                };
+                speechRecognition.onend = () => { 
+                    // Ensure recording state is correctly updated if recognition ends unexpectedly
+                    if (isRecording) stopRecording(); 
+                };
+            } else { 
+                if(voiceInputBtn) voiceInputBtn.disabled = true; 
+                showError('Speech recognition (voice input) is not supported by your browser.'); 
+                console.warn("SpeechRecognition API not available.");
+            }
         }
-        async function getMurfAudioUrl(text, lang = 'en-US') { 
-            if (!MURF_API_KEY || MURF_API_KEY==="YOUR_MURF_API_KEY" || MURF_API_KEY.startsWith("ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e") ) { console.warn("Murf API key is a placeholder or invalid."); return null; }
-            const cfg={'en-US':{voice:'en-US-ryan',style:'Conversational', mood:'neutral'},'hi-IN':{voice:'hi-IN- Diksha',style:'Conversational', mood:'neutral'}}; // Example voices
-            const sel=cfg[lang]||cfg['en-US'];
-            const url="https://api.murf.ai/v1/speech/generate"; // V1 endpoint
-            const p={text, voice:sel.voice, style:sel.style, mood:sel.mood, format:"mp3", sampleRate: 24000, convertToSsml: true}; // Added mood, sampleRate, convertToSsml
+
+        async function getMurfAudioUrl(textToSpeak, languageCode = 'en-US') { 
+            if (!MURF_API_KEY || MURF_API_KEY==="YOUR_MURF_API_KEY" ) { 
+                console.warn("Murf API key is a placeholder or invalid. Skipping Murf TTS."); 
+                return null; 
+            }
+            // Murf voice configuration (examples, check Murf documentation for available voices)
+            const voiceConfig = {
+                'en-US': { voice: 'en-US-ryan', style: 'conversational', mood: 'neutral' }, // Example Murf voice
+                'hi-IN': { voice: 'hi-IN-Diksha', style: 'conversational', mood: 'neutral' } // Example Murf voice for Hindi
+            };
+            const selectedVoice = voiceConfig[languageCode] || voiceConfig['en-US']; // Default to en-US
+            
+            const murfApiUrl = "https://api.murf.ai/v1/speech/generate"; // Murf V1 endpoint
+            const payload = {
+                text: textToSpeak, 
+                voice: selectedVoice.voice, 
+                style: selectedVoice.style, 
+                mood: selectedVoice.mood,
+                format: "mp3", 
+                sampleRate: 24000, // Common sample rate for good quality
+                convertToSsml: true // Let Murf handle SSML conversion if needed
+            };
+            
             try { 
-                const r=await fetch(url,{method:"POST",headers:{"api-key":MURF_API_KEY,"X-Project-Id": "YOUR_MURF_PROJECT_ID_IF_ANY", "Content-Type":"application/json"},body:JSON.stringify(p)}); // X-Project-Id if needed
-                const d=await r.json();
-                if(!r.ok){showError(`Murf API Error (${r.status}): ${d.message||'Unknown error'}. Voice attempted: ${sel.voice}`);return null;} 
-                if(!d.audioFile){showError(`Murf API Error: No audioFile in response. ${d.message||''}`);return null;} 
-                return d.audioFile; // 'audioFile' is the typical key for Murf's V1 response
-            } catch(err){showError(`Murf API Exception: ${err.message}.`);return null;}
+                const response = await fetch(murfApiUrl, {
+                    method: "POST",
+                    headers: {
+                        "api-key": MURF_API_KEY,
+                        // "X-Project-Id": "YOUR_MURF_PROJECT_ID_IF_ANY", // Add if you use specific Murf projects
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                }); 
+                const data = await response.json();
+                if(!response.ok){
+                    showError(`Murf API Error (${response.status}): ${data.message || 'Unknown error'}. Voice: ${selectedVoice.voice}`);
+                    console.error("Murf API Error:", data);
+                    return null;
+                } 
+                if(!data.audioFile){ // 'audioFile' is typical for Murf V1
+                    showError(`Murf API Error: No audioFile in response. ${data.message || ''}`);
+                    console.error("Murf API - No audioFile:", data);
+                    return null;
+                } 
+                return data.audioFile; 
+            } catch(err){
+                showError(`Murf API Request Exception: ${err.message}.`);
+                console.error("Murf API Exception:", err);
+                return null;
+            }
         }
-        async function speakResponse(text) { 
-            if(currentBotAudio&&!currentBotAudio.paused)currentBotAudio.pause(); if('speechSynthesis'in window)speechSynthesis.cancel(); let lang='en-US'; if(/[\u0900-\u097F]/.test(text))lang='hi-IN'; let spoken=false;
-            const audioUrl=await getMurfAudioUrl(text,lang); if(audioUrl){try{currentBotAudio=new Audio(audioUrl);await currentBotAudio.play();spoken=true;}catch(e){console.error("Murf audio playback error:",e);currentBotAudio=null;}}
-            if(!spoken&&'speechSynthesis'in window){const utt=new SpeechSynthesisUtterance(text); utt.lang=lang; 
-                try { const voices = speechSynthesis.getVoices(); if(voices.length>0){const v=voices.find(i=>i.lang===lang);if(v)utt.voice=v;} } catch(e) { console.warn("Could not get/set voices for browser TTS", e); }
-                speechSynthesis.speak(utt);}else if(!spoken)console.warn('Text-to-speech is not available or Murf API failed.');
+
+        async function speakResponse(textToSpeak) { 
+            // Stop any currently playing bot audio or browser speech
+            if(currentBotAudio && !currentBotAudio.paused) currentBotAudio.pause(); 
+            if('speechSynthesis' in window) window.speechSynthesis.cancel(); 
+
+            let languageCode = 'en-US'; // Default
+            if(/[\u0900-\u097F]/.test(textToSpeak)) languageCode = 'hi-IN'; // Basic check for Hindi characters
+
+            let spokenViaMurf = false;
+            const murfAudioUrl = await getMurfAudioUrl(textToSpeak, languageCode); 
+            if(murfAudioUrl){
+                try{
+                    currentBotAudio = new Audio(murfAudioUrl);
+                    await currentBotAudio.play();
+                    spokenViaMurf = true;
+                } catch(e){
+                    console.error("Murf audio playback error:", e);
+                    currentBotAudio = null; // Reset if playback fails
+                }
+            }
+            
+            // Fallback to browser's built-in TTS if Murf fails or is not used
+            if(!spokenViaMurf && 'speechSynthesis' in window){
+                const utterance = new SpeechSynthesisUtterance(textToSpeak); 
+                utterance.lang = languageCode; 
+                try { 
+                    const voices = window.speechSynthesis.getVoices(); 
+                    if(voices.length > 0){
+                        const voiceForLang = voices.find(v => v.lang === languageCode);
+                        if(voiceForLang) utterance.voice = voiceForLang;
+                    } 
+                } catch(e) { 
+                    console.warn("Could not get/set voices for browser TTS:", e); 
+                }
+                window.speechSynthesis.speak(utterance);
+            } else if (!spokenViaMurf) {
+                console.warn('Text-to-speech is not available (neither Murf nor browser TTS).');
+            }
         }
-        function toggleVoiceInput(){ if(!speechRecognition){showError('Voice input is not available.');return;}if(isRecording)stopRecording();else startRecording();}
+
+        function toggleVoiceInput(){ 
+            if(!speechRecognition){ showError('Voice input (speech recognition) is not available in your browser.'); return; }
+            if(isRecording) stopRecording(); else startRecording();
+        }
+
         function startRecording() { 
-            try { if(userInput)userInput.value=""; if(currentBotAudio&&!currentBotAudio.paused)currentBotAudio.pause(); if('speechSynthesis'in window)speechSynthesis.cancel(); speechRecognition.start();isRecording=true; 
-                if(voiceInputBtn) { voiceInputBtn.classList.add('recording'); voiceInputBtn.title="Stop Recording"; }
+            if (!speechRecognition) { showError("Speech recognition not initialized."); return; }
+            try { 
+                if(userInput) userInput.value = ""; // Clear input field
+                if(currentBotAudio && !currentBotAudio.paused) currentBotAudio.pause(); // Stop TTS
+                if('speechSynthesis' in window) window.speechSynthesis.cancel(); // Cancel any browser speech
+
+                speechRecognition.start();
+                isRecording = true; 
+                if(voiceInputBtn) { 
+                    voiceInputBtn.classList.add('recording'); 
+                    voiceInputBtn.title = "Stop Recording"; 
+                    // Visual feedback for recording (e.g., change icon color) handled by CSS .recording class
+                }
             }
-            catch(e){if(e.name==='InvalidStateError'){/* Already stopping or stopped */ stopRecording(); } else {showError("Voice start error: "+e.message); isRecording=false; 
-                if(voiceInputBtn) { voiceInputBtn.classList.remove('recording'); voiceInputBtn.title="Voice Input"; }}
+            catch(e){
+                if(e.name === 'InvalidStateError'){ 
+                    // This can happen if stopRecording was called right before, or already recording.
+                    // Usually means it's already trying to stop or start.
+                    console.warn("Speech recognition InvalidStateError on start, likely already stopping/starting.");
+                    stopRecording(); // Ensure it's reset
+                } else {
+                    showError("Could not start voice recording: " + e.message); 
+                    isRecording = false; 
+                    if(voiceInputBtn) { 
+                        voiceInputBtn.classList.remove('recording'); 
+                        voiceInputBtn.title = "Voice Input"; 
+                    }
+                }
             }
         }
-        function stopRecording(){ if(speechRecognition&&isRecording)speechRecognition.stop();isRecording=false; if(voiceInputBtn) { voiceInputBtn.classList.remove('recording'); voiceInputBtn.title="Voice Input";}}
-        function handleFileSelect(e){ const f=e.target.files[0];if(f&&f.type.startsWith('image/')){closeCameraModalAndStream();const r=new FileReader();r.onload=(ev)=>{if(imagePreview)imagePreview.src=ev.target.result;currentBase64Image=ev.target.result.split(',')[1];currentMimeType=f.type;if(imagePreviewContainer)imagePreviewContainer.classList.remove('hidden');};r.readAsDataURL(f);}else if(f){showError("Please select an image file (e.g., JPG, PNG, GIF).");if(fileInput)fileInput.value=null;}}
-        function removeImagePreview(){ if(imagePreview)imagePreview.src='#';if(imagePreviewContainer)imagePreviewContainer.classList.add('hidden');currentBase64Image=null;currentMimeType=null;if(fileInput)fileInput.value=null;}
-        async function openCameraModal() { removeImagePreview(); if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { try { mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); if(videoPreviewModal) videoPreviewModal.srcObject = mediaStream; if(cameraModal) cameraModal.classList.remove('hidden'); cameraModal.classList.add('flex'); cameraModal.classList.remove('hidden'); } catch (err) { showError("Camera access error: " + err.message + ". Ensure permissions are granted."); } } else { showError("Camera API not supported by your browser."); } }
-        function closeCameraModalAndStream() { if (mediaStream) { mediaStream.getTracks().forEach(track => track.stop()); mediaStream = null; } if(videoPreviewModal) videoPreviewModal.srcObject = null; if(cameraModal) {cameraModal.classList.add('hidden'); cameraModal.classList.remove('flex');} }
-        function captureImageFromModal() { if (!mediaStream || !videoPreviewModal || !videoPreviewModal.videoWidth) { showError("Camera stream not available or not ready."); return; } const canvas = document.createElement('canvas'); canvas.width = videoPreviewModal.videoWidth; canvas.height = videoPreviewModal.videoHeight; canvas.getContext('2d').drawImage(videoPreviewModal, 0, 0, canvas.width, canvas.height); const dataUrl = canvas.toDataURL('image/png'); if(imagePreview) imagePreview.src = dataUrl; currentBase64Image = dataUrl.split(',')[1]; currentMimeType = 'image/png'; if(imagePreviewContainer) imagePreviewContainer.classList.remove('hidden'); closeCameraModalAndStream(); showError("Image captured! You can now describe it or add text and send."); }
-        function containsVulgar(t){if(!t)return false;const V=["examplebadword","anotheroffensive","testvulgar","profanity"];return V.some(b=>t.toLowerCase().includes(b));} // Replace with actual list
+
+        function stopRecording(){ 
+            if(speechRecognition && isRecording) {
+                try {
+                    speechRecognition.stop();
+                } catch (e) {
+                    console.warn("Error stopping speech recognition (might already be stopped):", e.message);
+                }
+            }
+            isRecording = false; 
+            if(voiceInputBtn) { 
+                voiceInputBtn.classList.remove('recording'); 
+                voiceInputBtn.title = "Voice Input"; 
+            }
+        }
+
+        // --- File & Camera Handling ---
+        function handleFileSelect(event){ 
+            const file = event.target.files[0];
+            if(file && file.type.startsWith('image/')){
+                closeCameraModalAndStream(); // Close camera if it was open
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if(imagePreview) imagePreview.src = e.target.result;
+                    currentBase64Image = e.target.result.split(',')[1]; // Get base64 part
+                    currentMimeType = file.type;
+                    if(imagePreviewContainer) imagePreviewContainer.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            } else if (file) {
+                showError("Please select a valid image file (e.g., JPG, PNG, GIF).");
+                if(fileInput) fileInput.value = null; // Reset file input
+            }
+        }
+
+        function removeImagePreview(){ 
+            if(imagePreview) imagePreview.src = '#'; // Clear preview
+            if(imagePreviewContainer) imagePreviewContainer.classList.add('hidden');
+            currentBase64Image = null;
+            currentMimeType = null;
+            if(fileInput) fileInput.value = null; // Reset file input
+        }
+
+        async function openCameraModal() { 
+            removeImagePreview(); // Clear any existing file preview
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { 
+                try { 
+                    mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); 
+                    if(videoPreviewModal) videoPreviewModal.srcObject = mediaStream; 
+                    if(cameraModal) {
+                        cameraModal.classList.remove('hidden'); 
+                        cameraModal.classList.add('flex'); // Use flex for centering
+                    }
+                } catch (err) { 
+                    showError("Camera access error: " + err.message + ". Please ensure permissions are granted in your browser settings."); 
+                    console.error("Camera access error:", err);
+                } 
+            } else { 
+                showError("Camera API is not supported by your browser."); 
+            } 
+        }
+
+        function closeCameraModalAndStream() { 
+            if (mediaStream) { 
+                mediaStream.getTracks().forEach(track => track.stop()); 
+                mediaStream = null; 
+            } 
+            if(videoPreviewModal) videoPreviewModal.srcObject = null; 
+            if(cameraModal) {
+                cameraModal.classList.add('hidden'); 
+                cameraModal.classList.remove('flex');
+            }
+        }
+
+        function captureImageFromModal() { 
+            if (!mediaStream || !videoPreviewModal || !videoPreviewModal.videoWidth || videoPreviewModal.videoWidth === 0) { 
+                showError("Camera stream is not available or not ready to capture."); 
+                return; 
+            } 
+            const canvas = document.createElement('canvas'); 
+            canvas.width = videoPreviewModal.videoWidth; 
+            canvas.height = videoPreviewModal.videoHeight; 
+            const context = canvas.getContext('2d');
+            if (!context) {
+                showError("Could not get 2D context from canvas to capture image.");
+                return;
+            }
+            context.drawImage(videoPreviewModal, 0, 0, canvas.width, canvas.height); 
+            
+            const dataUrl = canvas.toDataURL('image/png'); // Capture as PNG
+            if(imagePreview) imagePreview.src = dataUrl; 
+            currentBase64Image = dataUrl.split(',')[1]; 
+            currentMimeType = 'image/png'; 
+            if(imagePreviewContainer) imagePreviewContainer.classList.remove('hidden');
+            
+            closeCameraModalAndStream(); 
+            showError("Image captured! You can now describe it or add text and send your message."); 
+        }
+
+        // --- Miscellaneous ---
+        function containsVulgar(text){ // Basic placeholder, replace with a robust library or service for production
+            if(!text) return false;
+            const vulgarWords = ["badword1", "offensiveword2", "exampleprofanity"]; // Add more as needed
+            return vulgarWords.some(word => text.toLowerCase().includes(word));
+        }
+        
+        // Adapter for the "Start Voice Chat" button in the non-signed-in view
         function startListeningAdapter() { 
-            const mainChat = document.getElementById('interactiveChatSection');
-            const signInBtn = document.getElementById('googleSignInBtnHeader');
-            if (mainChat) { 
-                if(currentUserId) { mainChat.scrollIntoView({ behavior: 'smooth', block: 'start' }); setTimeout(() => { if (userInput) userInput.focus({preventScroll:true}); toggleVoiceInput(); }, 300); } 
-                else { if(signInBtn && signInBtn.style.display !== 'none') { signInBtn.click(); } else { showError("Please sign in with Google first to use voice chat."); } }
+            const mainChatSection = document.getElementById('interactiveChatSection');
+            const signInButton = document.getElementById('googleSignInBtnHeader');
+            
+            if (currentUserId && mainChatSection) { // User is signed in
+                mainChatSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
+                setTimeout(() => { 
+                    if (userInput) userInput.focus({preventScroll:true}); // Focus input without scrolling page
+                    toggleVoiceInput(); // Start voice input
+                }, 300); // Delay to allow scroll to finish
+            } else if (signInButton && signInButton.style.display !== 'none') { // User not signed in, prompt to sign in
+                signInButton.click(); 
+            } else { 
+                showError("Please sign in with Google first to use the voice chat feature."); 
             }
         }
-        window.startListeningAdapter = startListeningAdapter; // Make it globally accessible for inline HTML onclick
+        // Make startListeningAdapter globally accessible for the inline HTML onclick attribute
+        window.startListeningAdapter = startListeningAdapter; 
 
     </script>
 </body>
