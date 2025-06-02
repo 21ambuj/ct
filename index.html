@@ -217,7 +217,8 @@
         const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; // <-- REPLACE!
         const MURF_API_KEY = "ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e7";   // <-- REPLACE!
         const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GOOGLE_API_KEY}`;
-        const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. CORE LANGUAGE RULE: You MUST identify the language of the 'USER QUERY'. Your entire response, including any predefined answers, MUST be in that same language. RESPONSE STYLE FOR NATURAL SPEECH (IMPORTANT FOR VOICE OUTPUT): Your response will be read aloud. Structure answers as natural, flowing, conversational sentences. CRITICAL: AVOID using list markers like asterisks (*), hyphens (-), or bullet points (•). Integrate list items into full sentences. When providing code examples, ALWAYS enclose them in Markdown code blocks with language specification if possible (e.g., \`\`\`python\\nprint("Hello")\\n\`\`\`). Aim for concise responses (5-6 lines or ~50 words for simple questions), but provide detail for complex requests, respecting language and spoken-style. You are smart and can answer any question. Answer humanized, in user's language. PREDEFINED ANSWERS (MUST BE TRANSLATED & SPOKEN NATURALLY): 1. "who are you" -> 'I am a smart ChatIQ bot.' 2. "your name" -> 'I am a smart ChatIQ bot.' (e.g., Hindi: 'मैं एक स्मार्ट चैटआईक्यू बॉट हूँ।'). 3. "who made you" -> 'I was made by ChatIQ.' --- User's request below. Determine language. If predefined, use translated answer. Otherwise, answer per guidelines. If image provided, consider it.`;
+        const botPersonaInstructions = `SYSTEM GUIDELINES:You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form, without bullet points or unnecessary special characters unless the format is essential for clarity (like in a recipe's steps). When a user asks "who are you", respond: 'I am a smart ChatIQ bot.' If the user asks about "your name", respond: 'I am a smart ChatIQ bot.' If the user asks "who made you", respond: 'I was made by ChatIQ.' --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
+
 
         function showError(messageText) { /* ... same robust version ... */ 
             console.log("showError called with:", messageText);
@@ -603,8 +604,20 @@
         function stopRecording(){ /* ... same, but now using SVGs ... */ if(speechRecognition&&isRecording)speechRecognition.stop();isRecording=false; if(voiceInputBtn) { voiceInputBtn.classList.remove('recording'); voiceInputBtn.title="Voice Input";}}
         function handleFileSelect(e){ /* ... same ... */ const f=e.target.files[0];if(f&&f.type.startsWith('image/')){closeCameraModalAndStream();const r=new FileReader();r.onload=(ev)=>{if(imagePreview)imagePreview.src=ev.target.result;currentBase64Image=ev.target.result.split(',')[1];currentMimeType=f.type;if(imagePreviewContainer)imagePreviewContainer.classList.remove('hidden');};r.readAsDataURL(f);}else if(f){showError("Select image file.");if(fileInput)fileInput.value=null;}}
         function removeImagePreview(){ /* ... same ... */ if(imagePreview)imagePreview.src='#';if(imagePreviewContainer)imagePreviewContainer.classList.add('hidden');currentBase64Image=null;currentMimeType=null;if(fileInput)fileInput.value=null;}
-        function openCameraModal() { /* ... same ... */ removeImagePreview(); if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { try { mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); if(videoPreviewModal) videoPreviewModal.srcObject = mediaStream; if(cameraModal) cameraModal.classList.remove('hidden'); } catch (err) { showError("Camera access error: " + err.message); } } else { showError("Camera API not supported."); } }
-        function closeCameraModalAndStream() { /* ... same ... */ if (mediaStream) { mediaStream.getTracks().forEach(track => track.stop()); mediaStream = null; } if(videoPreviewModal) videoPreviewModal.srcObject = null; if(cameraModal) cameraModal.classList.add('hidden'); }
+async function openCameraModal() {
+            removeImagePreview(); // Clear any uploaded image first
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                try {
+                    mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); // Correct assignment
+                    if(videoPreviewModal) videoPreviewModal.srcObject = mediaStream; 
+                    if(cameraModal) cameraModal.classList.remove('hidden'); 
+                } catch (err) { 
+                    showError("Camera access error: " + err.message); 
+                } 
+            } else { 
+                showError("Camera API not supported."); 
+            } 
+        }        function closeCameraModalAndStream() { /* ... same ... */ if (mediaStream) { mediaStream.getTracks().forEach(track => track.stop()); mediaStream = null; } if(videoPreviewModal) videoPreviewModal.srcObject = null; if(cameraModal) cameraModal.classList.add('hidden'); }
         function captureImageFromModal() { /* ... same ... */ if (!mediaStream || !videoPreviewModal || !videoPreviewModal.videoWidth) { showError("Camera not ready."); return; } const canvas = document.createElement('canvas'); canvas.width = videoPreviewModal.videoWidth; canvas.height = videoPreviewModal.videoHeight; canvas.getContext('2d').drawImage(videoPreviewModal, 0, 0, canvas.width, canvas.height); const dataUrl = canvas.toDataURL('image/png'); currentBase64Image = dataUrl.split(',')[1]; currentMimeType = 'image/png'; closeCameraModalAndStream(); showError("Image captured! Describe it or add text and send."); }
         function containsVulgar(t){if(!t)return false;const V=["badword1","offensiveword","fuck","shit","asshole","bitch"];return V.some(b=>t.toLowerCase().includes(b));}
         function startListeningAdapter() { /* ... same ... */ 
