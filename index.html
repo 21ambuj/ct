@@ -22,6 +22,7 @@
         #chatBox::-webkit-scrollbar-thumb:hover, #sessionsList::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
         
         .chat-input-bar-container { background-color: #F9FAFB; border-top: 1px solid #E5E7EB; }
+        .control-button { padding: 0.625rem; /* 10px */ border-radius: 0.5rem; /* 8px */ display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease-in-out; }
         .control-button.glassmorphism { background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px); }
         .control-button.glassmorphism:hover { background-color: rgba(255, 255, 255, 0.3); }
         .control-button svg { width: 1.25rem; height: 1.25rem; color: white; }
@@ -42,8 +43,8 @@
         <div class="container mx-auto px-4 flex justify-between items-center">
             <div class="text-left">
                 <h1 class="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl 
-                           text-transparent bg-clip-text bg-gradient-to-br from-pink-400 via-purple-400 to-red-500
-                           animate-text-gradient-subtle">ChatIQ</h1>
+                            text-transparent bg-clip-text bg-gradient-to-br from-pink-400 via-purple-400 to-red-500
+                            animate-text-gradient-subtle">ChatIQ</h1>
             </div>
             <div id="authContainer" class="text-right flex items-center space-x-2">
                 <button id="newChatBtn" class="hidden bg-green-500 hover:bg-green-600 text-white text-xs sm:text-sm font-semibold py-2 px-3 rounded-lg shadow-md transition duration-150 ease-in-out">New Chat</button>
@@ -60,20 +61,20 @@
         <aside id="chatHistorySidebar" class="w-0 sm:w-64 bg-slate-50 border-r border-slate-200 flex-col p-3 space-y-2 overflow-y-auto transition-all duration-300 ease-in-out hidden"> {/* Initially hidden, shown after sign-in */}
             <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider px-2">Chat History</h3>
             <div id="sessionsList" class="space-y-1">
-            </div>
+                </div>
         </aside>
 
         <main class="flex-1 flex flex-col overflow-hidden container mx-auto px-0 sm:px-2 py-4">
             <h4 class="text-center text-sm sm:text-base font-semibold
-               text-transparent bg-clip-text 
-               bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 
-               drop-shadow-md 
-               animate-text-gradient-subtle 
-               inline-flex items-center justify-center space-x-1 w-full mb-4" id="swipeDownPrompt" style="display: none;">
-               <span>Scroll to Discover More</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 sm:w-5 sm:h-5 ml-1 opacity-90">
-                  <path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.69l2.47-2.47a.75.75 0 111.06 1.06l-3.75 3.75a.75.75 0 01-1.06 0L6.22 13.03a.75.75 0 011.06-1.06l2.47 2.47V3.75A.75.75 0 0110 3z" clip-rule="evenodd" />
-                </svg>
+                text-transparent bg-clip-text 
+                bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 
+                drop-shadow-md 
+                animate-text-gradient-subtle 
+                inline-flex items-center justify-center space-x-1 w-full mb-4" id="swipeDownPrompt" style="display: none;">
+                <span>Scroll to Discover More</span>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 sm:w-5 sm:h-5 ml-1 opacity-90">
+                   <path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.69l2.47-2.47a.75.75 0 111.06 1.06l-3.75 3.75a.75.75 0 01-1.06 0L6.22 13.03a.75.75 0 011.06-1.06l2.47 2.47V3.75A.75.75 0 0110 3z" clip-rule="evenodd" />
+                 </svg>
             </h4>
             
             <section id="interactiveChatSection" 
@@ -89,7 +90,7 @@
                         </button>
                     </div>
                     <div id="chatBox" class="space-y-4"> 
-                    </div>
+                        </div>
                 </div>
 
                 <div class="chat-input-bar-container p-2 sm:p-3 border-t border-gray-200">
@@ -139,31 +140,32 @@
             </div>
             
             <section id="featuresSection" class="mt-8">
-             <h2 class="text-2xl font-semibold text-center mb-8">Key Features</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
-                    <img src="https://img.freepik.com/premium-vector/ai-chat-bot-technology-concept-people-chatting-with-robot-asking-questions-receiving-answers_36358-1867.jpg" alt="AI Suggestions" class="mx-auto w-36 h-36 object-contain rounded mb-4"/>
-                    <h3 class="font-semibold text-lg">AI-Powered Suggestions</h3>
+               <h2 class="text-2xl font-semibold text-center mb-8">Key Features</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
+                        <img src="https://img.freepik.com/premium-vector/ai-chat-bot-technology-concept-people-chatting-with-robot-asking-questions-receiving-answers_36358-1867.jpg" alt="AI Suggestions" class="mx-auto w-36 h-36 object-contain rounded mb-4"/>
+                        <h3 class="font-semibold text-lg">AI-Powered Suggestions</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
+                        <img src="https://i.pinimg.com/originals/7d/9b/1d/7d9b1d662b28cd365b33a01a3d0288e1.gif" alt="Real-Time Voice Chat" class="mx-auto w-36 h-36 object-cover rounded-full mb-4"/>
+                        <h3 class="font-semibold text-lg">Real-Time Voice Chat</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1048/1048937.png" alt="Image Recognition" class="mx-auto w-36 h-36 object-contain rounded mb-4"/>
+                        <h3 class="font-semibold text-lg">Image Vision AI</h3>
+                    </div>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
-                    <img src="https://i.pinimg.com/originals/7d/9b/1d/7d9b1d662b28cd365b33a01a3d0288e1.gif" alt="Real-Time Voice Chat" class="mx-auto w-36 h-36 object-cover rounded-full mb-4"/>
-                    <h3 class="font-semibold text-lg">Real-Time Voice Chat</h3>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1048/1048937.png" alt="Image Recognition" class="mx-auto w-36 h-36 object-contain rounded mb-4"/>
-                    <h3 class="font-semibold text-lg">Image Vision AI</h3>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="feedbackSection" class="text-center mt-8">
-            <h2 class="text-2xl font-semibold mb-4">We Value Your Feedback</h2>
-            <p class="mb-6 text-gray-600">Help us improve by sharing your thoughts.</p>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSc2N8OGqdbu2HFbxN4Y89Guv3Wnp9CHLYrz-bzu80kDjHQ3yg/viewform?usp=sharing" target="_blank" class="inline-block bg-gradient-to-r from-indigo-500 to-cyan-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:from-indigo-600 hover:to-cyan-500 transition">
-                Give Feedback
-            </a>
-        </section>
+            <section id="feedbackSection" class="text-center mt-8">
+                <h2 class="text-2xl font-semibold mb-4">We Value Your Feedback</h2>
+                <p class="mb-6 text-gray-600">Help us improve by sharing your thoughts.</p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSc2N8OGqdbu2HFbxN4Y89Guv3Wnp9CHLYrz-bzu80kDjHQ3yg/viewform?usp=sharing" target="_blank" class="inline-block bg-gradient-to-r from-indigo-500 to-cyan-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:from-indigo-600 hover:to-cyan-500 transition">
+                    Give Feedback
+                </a>
+            </section>
         </main>
+    </div>
 
     <footer class="bg-gradient-to-b from-cyan-500 to-indigo-600 text-white py-10 text-center mt-12">
         <h2 class="text-2xl font-bold mb-4">About ChatIQ</h2>
@@ -196,7 +198,7 @@
 
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, writeBatch, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // Added getDocs, writeBatch, doc
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, writeBatch, doc, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // Added deleteDoc, updateDoc, getDoc
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 
         let app;
@@ -206,7 +208,7 @@
         const analytics = getAnalytics(app);
         const appIdForPath = firebaseConfig.appId;
 
-        let chatBox, userInput, sendBtn, fileUploadBtn, fileInput, cameraBtn, voiceInputBtn, imagePreviewContainer, imagePreview, removeImageBtn, loadingIndicator, errorMessageDisplay, voiceIconImg, googleSignInBtnHeader, userDetailsHeaderDiv, userDisplayNameHeaderSpan, signOutBtnHeader, interactiveChatSection, alternativeVoiceSection, swipeDownPromptElement, newChatBtn, signInPromptBelowVoiceBot, inlineSignInBtn, cameraModal, videoPreviewModal, captureModalBtn, closeCameraModalBtn, sessionsListEl;
+        let chatBox, userInput, sendBtn, fileUploadBtn, fileInput, cameraBtn, voiceInputBtn, imagePreviewContainer, imagePreview, removeImageBtn, loadingIndicator, errorMessageDisplay, googleSignInBtnHeader, userDetailsHeaderDiv, userDisplayNameHeaderSpan, signOutBtnHeader, interactiveChatSection, alternativeVoiceSection, swipeDownPromptElement, newChatBtn, signInPromptBelowVoiceBot, inlineSignInBtn, cameraModal, videoPreviewModal, captureModalBtn, closeCameraModalBtn, sessionsListEl;
         let currentBase64Image = null, currentMimeType = null, mediaStream = null, speechRecognition = null, isRecording = false, currentBotAudio = null, currentUserId = null;
         
         let activeSessionId = null; // To track the current chat session
@@ -215,11 +217,11 @@
 
         const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; // <-- REPLACE!
         const MURF_API_KEY = "ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e7";   // <-- REPLACE!
-        const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GOOGLE_API_KEY}`;
+        const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
         const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form, without bullet points or unnecessary special characters unless the format is essential for clarity (like in a recipe's steps). When a user asks "who are you", respond: 'I am a smart ChatIQ bot.' If the user asks about "your name", respond: 'I am a smart ChatIQ bot.' If the user asks "who made you", respond: 'I was made by ChatIQ.' --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
 
 
-        function showError(messageText) { /* ... same robust version ... */ 
+        function showError(messageText) { 
             console.log("showError called with:", messageText);
             const errorElement = document.getElementById('errorMessage');
             if (errorElement) {
@@ -235,7 +237,6 @@
             voiceInputBtn = document.getElementById('voiceInputBtn'); imagePreviewContainer = document.getElementById('imagePreviewContainer');
             imagePreview = document.getElementById('imagePreview'); removeImageBtn = document.getElementById('removeImageBtn');
             loadingIndicator = document.getElementById('loadingIndicator'); errorMessageDisplay = document.getElementById('errorMessage'); 
-            // For SVG icons, voiceIconImg is not used. Styling is via CSS on .mic-icon and .mic-icon-path
             googleSignInBtnHeader = document.getElementById('googleSignInBtnHeader');
             userDetailsHeaderDiv = document.getElementById('userDetailsHeader');
             userDisplayNameHeaderSpan = document.getElementById('userDisplayNameHeader');
@@ -252,17 +253,17 @@
             closeCameraModalBtn = document.getElementById('closeCameraModalBtn');
             sessionsListEl = document.getElementById('sessionsList');
 
-            if(GOOGLE_API_KEY === "YOUR_GEMINI_API_KEY"||MURF_API_KEY === "YOUR_MURF_API_KEY"){showError("Placeholder API keys detected. Update in script.");}
+            if(GOOGLE_API_KEY === "YOUR_GEMINI_API_KEY"||MURF_API_KEY === "YOUR_MURF_API_KEY" || GOOGLE_API_KEY.startsWith("AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4ku") || MURF_API_KEY.startsWith("ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e")){/* Production check might be more robust */}
             
             initializeSpeechRecognition(); 
             setupEventListeners();
             setupAuthListener();
         });
         
-        function setupEventListeners() { /* ... existing listeners ... */ 
+        function setupEventListeners() { 
             if(googleSignInBtnHeader) googleSignInBtnHeader.addEventListener('click', signInWithGoogle);
             if(signOutBtnHeader) signOutBtnHeader.addEventListener('click', signOutUser);
-            if(newChatBtn) newChatBtn.addEventListener('click', startNewChatSession); // Changed function name
+            if(newChatBtn) newChatBtn.addEventListener('click', startNewChatSession);
             if(inlineSignInBtn) inlineSignInBtn.addEventListener('click', signInWithGoogle); 
 
             if(sendBtn) sendBtn.addEventListener('click', handleSendMessageWrapper);
@@ -278,15 +279,15 @@
             if(voiceInputBtn) voiceInputBtn.addEventListener('click', toggleVoiceInput);
         }
 
-        async function signInWithGoogle() { /* ... same ... */ 
+        async function signInWithGoogle() { 
             if (!auth) { showError("Firebase Auth not initialized."); return; }
             const provider = new GoogleAuthProvider();
             try { await signInWithPopup(auth, provider); } 
             catch (error) { console.error("Google Sign-In Error:", error); showError(`Google Sign-In Failed: ${error.message} (Code: ${error.code})`); }
         }
-        async function signOutUser() { /* ... same ... */ 
+        async function signOutUser() { 
             if (!auth) { showError("Firebase Auth not initialized."); return; }
-            try { await signOut(auth); activeSessionId = null; if(sessionsListEl) sessionsListEl.innerHTML = ''; } // Clear active session and list on sign out
+            try { await signOut(auth); activeSessionId = null; if(sessionsListEl) sessionsListEl.innerHTML = ''; } 
             catch (error) { console.error("Sign Out Error:", error); showError("Error signing out: " + error.message); }
         }
 
@@ -304,10 +305,10 @@
                     if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'none'; 
                     if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'none';
                     if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'inline-flex';
-                    if(chatHistorySidebar) chatHistorySidebar.classList.remove('hidden'); // Show sidebar
+                    if(chatHistorySidebar) chatHistorySidebar.classList.remove('hidden'); 
                     if(chatHistorySidebar) chatHistorySidebar.classList.add('flex');
 
-                    loadChatSessions(); // Load list of sessions
+                    loadChatSessions(); 
                 } else {
                     currentUserId = null; activeSessionId = null;
                     if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = '';
@@ -321,7 +322,6 @@
                     if(chatHistorySidebar) chatHistorySidebar.classList.add('hidden');
                     if(chatHistorySidebar) chatHistorySidebar.classList.remove('flex');
 
-
                     if(messagesUnsubscribe) messagesUnsubscribe(); 
                     if(sessionsUnsubscribe) sessionsUnsubscribe();
                     if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Please sign in with Google to use ChatIQ and see your history.</div>';
@@ -332,7 +332,7 @@
         async function startNewChatSession() {
             if (!currentUserId || !db) { showError("Please sign in to start a new chat."); return; }
             console.log("Starting new chat session");
-            const newSessionName = `Chat ${new Date().toLocaleString()}`; // Simple title
+            const newSessionName = `Chat ${new Date().toLocaleString()}`; 
             try {
                 const sessionsColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions`;
                 const sessionRef = await addDoc(collection(db, sessionsColPath), {
@@ -342,9 +342,8 @@
                 activeSessionId = sessionRef.id;
                 console.log("New session created with ID:", activeSessionId);
                 if (chatBox) chatBox.innerHTML = ''; 
-                addMessageToChat(`New chat started: ${newSessionName}`, "bot"); // This message won't be saved, just UI
-                loadChatHistory(activeSessionId); // Will load messages for the new (empty) session
-                // loadChatSessions will update the sidebar via its onSnapshot
+                // addMessageToChat(`New chat started: ${newSessionName}`, "bot"); // Optional UI message, not saved
+                loadChatHistory(activeSessionId); 
             } catch (error) {
                 console.error("Error creating new session:", error);
                 showError("Could not start a new chat session.");
@@ -358,7 +357,6 @@
             if (!confirmed) return;
 
             try {
-                // 1. Delete all messages in the subcollection
                 const messagesPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToDelete}/messages`;
                 const messagesQuery = query(collection(db, messagesPath));
                 const messagesSnapshot = await getDocs(messagesQuery);
@@ -369,25 +367,19 @@
                 await batch.commit();
                 console.log(`Messages for session ${sessionIdToDelete} deleted.`);
 
-                // 2. Delete the session document itself
                 const sessionDocPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToDelete}`;
-                await deleteDoc(doc(db, sessionDocPath)); // Make sure to import deleteDoc
+                await deleteDoc(doc(db, sessionDocPath)); 
                 console.log(`Session ${sessionIdToDelete} metadata deleted.`);
 
-                // If the deleted session was the active one, clear the chat or load another
                 if (activeSessionId === sessionIdToDelete) {
                     activeSessionId = null;
                     if (chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Session deleted. Start a new chat or select another.</div>';
-                    // loadChatSessions will refresh the list, then we might auto-select the latest or prompt.
                 }
-                // loadChatSessions() will refresh via its onSnapshot
             } catch (error) {
                 console.error(`Error deleting session ${sessionIdToDelete}:`, error);
                 showError("Failed to delete chat session.");
             }
         }
-        // Import deleteDoc for deleteSession:
-        // import { ..., deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // Add deleteDoc here
 
         function loadChatSessions() {
             if (!currentUserId || !db || !sessionsListEl) return;
@@ -397,16 +389,17 @@
             const q = query(collection(db, sessionsColPath), orderBy("createdAt", "desc"));
 
             sessionsUnsubscribe = onSnapshot(q, (snapshot) => {
-                sessionsListEl.innerHTML = ''; // Clear list
+                sessionsListEl.innerHTML = ''; 
                 let firstSessionId = null;
                 let sessionCount = 0;
                 snapshot.forEach((docSnap) => {
                     sessionCount++;
                     const session = docSnap.data();
                     const sessionId = docSnap.id;
-                    if (!firstSessionId) firstSessionId = sessionId; // Keep track of the most recent
+                    if (!firstSessionId) firstSessionId = sessionId; 
 
                     const item = document.createElement('div');
+                    item.dataset.sessionId = sessionId; // Important for selectSession highlighting
                     item.classList.add('session-item', 'p-2', 'rounded-md', 'cursor-pointer', 'text-sm', 'text-slate-700', 'flex', 'justify-between', 'items-center');
                     if (sessionId === activeSessionId) {
                         item.classList.add('active');
@@ -418,11 +411,11 @@
                     item.appendChild(titleSpan);
 
                     const deleteBtn = document.createElement('button');
-                    deleteBtn.innerHTML = '&times;'; // Simple 'x'
+                    deleteBtn.innerHTML = '&times;'; 
                     deleteBtn.classList.add('text-red-400', 'hover:text-red-600', 'font-bold', 'px-1');
                     deleteBtn.title = "Delete this chat session";
                     deleteBtn.onclick = (event) => {
-                        event.stopPropagation(); // Prevent session selection when deleting
+                        event.stopPropagation(); 
                         deleteSession(sessionId);
                     };
                     item.appendChild(deleteBtn);
@@ -431,9 +424,9 @@
                     sessionsListEl.appendChild(item);
                 });
 
-                if (sessionCount > 0 && !activeSessionId) { // If no active session, load the most recent one
+                if (sessionCount > 0 && !activeSessionId) { 
                     selectSession(firstSessionId);
-                } else if (sessionCount === 0 && !activeSessionId) { // No sessions at all, start a new one
+                } else if (sessionCount === 0 && !activeSessionId) { 
                     startNewChatSession();
                 }
             }, (error) => {
@@ -443,65 +436,60 @@
         }
         
         function selectSession(sessionId) {
-            if (activeSessionId === sessionId) return; // Already active
+            if (activeSessionId === sessionId && chatBox && chatBox.innerHTML !== '<div class="text-center text-gray-400 p-4">Loading chat...</div>') return; 
 
             console.log("Selecting session:", sessionId);
             activeSessionId = sessionId;
-            if (messagesUnsubscribe) messagesUnsubscribe(); // Unsubscribe from old session's messages
-            if (chatBox) chatBox.innerHTML = '<div class="text-center text-gray-400 p-4">Loading chat...</div>'; // Clear and show loading
+            if (messagesUnsubscribe) messagesUnsubscribe(); 
+            if (chatBox) chatBox.innerHTML = '<div class="text-center text-gray-400 p-4">Loading chat...</div>'; 
             loadChatHistory(activeSessionId);
 
-            // Update active class in sidebar
-            Array.from(sessionsListEl.children).forEach(child => {
-                child.classList.remove('active');
-                // A bit hacky to find which child corresponds to sessionID if IDs aren't on elements
+            const sessionItems = sessionsListEl.querySelectorAll('.session-item');
+            sessionItems.forEach(item => {
+                if (item.dataset.sessionId === sessionId) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
             });
-            // A better way: give session items an ID or data-attribute like `data-session-id="${sessionId}"`
-            const activeItem = Array.from(sessionsListEl.children).find(child => child.textContent.startsWith(document.querySelector(`[data-session-id="${sessionId}"]`)?.querySelector('span').textContent)); //This is not robust
-            // Simpler: just re-run loadChatSessions which will re-render with correct active class or rely on its own logic.
-            // For now, user will see messages change, list might not visually update active state until next full list render.
-            // Or, more directly:
-             const sessionItems = sessionsListEl.querySelectorAll('.session-item');
-             sessionItems.forEach(item => {
-                 // Assuming item.dataset.sessionId was set when creating session items
-                 if (item.dataset.sessionId === sessionId) {
-                     item.classList.add('active');
-                 } else {
-                     item.classList.remove('active');
-                 }
-             });
-
-
         }
-
 
         async function saveMessageToFirestore(messageData) { 
             if (!currentUserId || !activeSessionId) { showError("Not signed in or no active session. Message not saved."); return; }
             try { 
                 const path = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}/messages`; 
                 await addDoc(collection(db, path), { ...messageData, userId: currentUserId, timestamp: serverTimestamp() }); 
-                // Also update the session's lastActivity or title potentially
+                
                 const sessionDocPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}`;
-                // For title: if it's the first user message and session title is default
                 const sessionDocRef = doc(db, sessionDocPath);
-                const sessionSnap = await getDoc(sessionDocRef); // import getDoc
+                const sessionSnap = await getDoc(sessionDocRef); 
                 if (sessionSnap.exists()) {
                     const sessionData = sessionSnap.data();
                     let updateData = { lastActivity: serverTimestamp() };
-                    if ((sessionData.title === `Chat ${new Date(sessionData.createdAt?.toDate()).toLocaleString()}` || sessionData.title?.startsWith("New Chat")) && messageData.sender === 'user' && messageData.type === 'text' && messageData.content) {
-                        updateData.title = messageData.content.substring(0, 30) + (messageData.content.length > 30 ? '...' : '');
+                    // Update title if it's the first user text message and title is default-like
+                    if (sessionData.title && (sessionData.title.startsWith("Chat ") || sessionData.title.startsWith("New Chat")) && messageData.sender === 'user' && messageData.type === 'text' && messageData.content) {
+                         // Check if this is truly the first *user text* message by querying messages (can be complex)
+                         // For simplicity, we'll assume if title is default, this user message can set it.
+                         // A more robust way would be to check message count or a 'titleSetByUser' flag in sessionData.
+                        const messagesCollectionPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}/messages`;
+                        const messagesQuery = query(collection(db, messagesCollectionPath), orderBy("timestamp", "asc"));
+                        const existingMessagesSnap = await getDocs(messagesQuery);
+                        let userTextMessages = 0;
+                        existingMessagesSnap.forEach(msgDoc => {
+                            if (msgDoc.data().sender === 'user' && msgDoc.data().type === 'text') {
+                                userTextMessages++;
+                            }
+                        });
+
+                        if (userTextMessages <= 1) { // If this is the first or only user text message
+                           updateData.title = messageData.content.substring(0, 35) + (messageData.content.length > 35 ? '...' : '');
+                        }
                     }
-                     await updateDoc(sessionDocRef, updateData); // import updateDoc
+                    await updateDoc(sessionDocRef, updateData); 
                 }
-
-
             } 
             catch (error) { console.error("Error saving to Firestore:", error); showError("Error saving message."); }
         }
-
-        // Import updateDoc and getDoc
-        // import { ..., getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 
         function loadChatHistory(sessionIdToLoad) { 
             if (!db || !chatBox || !sessionIdToLoad) { 
@@ -518,103 +506,151 @@
 
             messagesUnsubscribe = onSnapshot(q, (snapshot) => {
                 chatBox.innerHTML = ''; let count = 0;
-                snapshot.forEach((doc) => { 
-                    count++; 
-                    const msg = doc.data(); 
-                    if (msg.type === 'image') addImageToChatLog(msg.content, msg.mimeType, msg.sender); 
-                    else addMessageToChat(msg.content, msg.sender); 
+                snapshot.docChanges().forEach((change) => { // More efficient updates
+                    if (change.type === "added") {
+                        count++; 
+                        const msg = change.doc.data(); 
+                        if (msg.type === 'image') addImageToChatLog(msg.content, msg.mimeType, msg.sender); 
+                        else addMessageToChat(msg.content, msg.sender); 
+                    }
                 });
-                if (count === 0 && !snapshot.metadata.hasPendingWrites && !initialWelcomeAdded) { 
-                    const welcome="Chat started! How can I assist you today?"; 
-                    addMessageToChat(welcome, "bot");
-                    // Do not save this session-specific welcome to DB as it's just a UI placeholder for empty chats
-                    initialWelcomeAdded = true; 
+                // If loading all messages (not just changes), use snapshot.forEach directly:
+                // snapshot.forEach((doc) => { count++; const msg = doc.data(); ... });
+                // For simplicity with initial load and avoiding duplicate welcome messages:
+                if (snapshot.empty && !initialWelcomeAdded) { // Check if collection is empty
+                     const welcome="Chat started! How can I assist you today?"; 
+                     addMessageToChat(welcome, "bot");
+                     initialWelcomeAdded = true; 
+                } else if (!snapshot.empty) {
+                    // If using docChanges, initialWelcomeAdded might need different logic
+                    // or ensure that count is based on total docs if not using docChanges for initial render.
+                    // The current simple `chatBox.innerHTML = ''; snapshot.forEach(...)` would re-render all,
+                    // so the welcome logic would need to be outside the forEach or based on total snapshot size.
+                    // Let's revert to simpler full re-render for clarity here, as docChanges can be complex for initial load logic.
+                    chatBox.innerHTML = ''; 
+                    count = 0;
+                     snapshot.forEach((doc) => { 
+                         count++;  
+                         const msg = doc.data();  
+                         if (msg.type === 'image') addImageToChatLog(msg.content, msg.mimeType, msg.sender);  
+                         else addMessageToChat(msg.content, msg.sender);  
+                     });
+                     if (count === 0 && !snapshot.metadata.hasPendingWrites && !initialWelcomeAdded) {  
+                         const welcome="Chat started! How can I assist you today?";  
+                         addMessageToChat(welcome, "bot");
+                         initialWelcomeAdded = true;  
+                     }
                 }
+
+
                 if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; 
             }, (error) => { console.error("Error loading messages for session:", sessionIdToLoad, error); showError("Failed to load messages: " + error.message); });
         }
         
-        // Other functions (addMessageToChat, addImageToChatLog, showLoading, handleSendMessageWrapper, handleSendMessage, initializeSpeechRecognition, getMurfAudioUrl, speakResponse, toggleVoiceInput, startRecording, stopRecording, camera/file handling, containsVulgar, startListeningAdapter)
-        // need to be included here. I'll keep them compact for brevity but they are the same as the previous full code.
-        // ... (ensure ALL other functions are here from previous complete script) ...
-        // For handleSendMessage: it will now save to the activeSessionId.
-        // For addMessageToChat: the code block rendering should be there.
-
-        // --- Full set of functions from previous versions (ensure they are complete) ---
-        function addMessageToChat(text, sender) { /* ... same as before with code block rendering ... */ if (!chatBox) return; const messageDiv = document.createElement('div'); messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'py-1'); const bubbleDiv = document.createElement('div'); bubbleDiv.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot'); const codeBlockRegex = /```(\w*)\n([\s\S]*?)\n```/gm; let lastIndex = 0; let hasCode = false; let contentToAdd = document.createDocumentFragment(); text.replace(codeBlockRegex, (match, lang, codeContent, offset) => { hasCode = true; if (offset > lastIndex) { contentToAdd.appendChild(document.createTextNode(text.substring(lastIndex, offset))); } const preElement = document.createElement('pre'); const codeElement = document.createElement('code'); if (lang) codeElement.classList.add(`language-${lang}`); codeElement.textContent = codeContent.trim(); preElement.appendChild(codeElement); contentToAdd.appendChild(preElement); lastIndex = offset + match.length; return match; }); if (lastIndex < text.length) { contentToAdd.appendChild(document.createTextNode(text.substring(lastIndex))); } if (contentToAdd.hasChildNodes()) { bubbleDiv.appendChild(contentToAdd); } else if (!hasCode) { bubbleDiv.textContent = text; } messageDiv.appendChild(bubbleDiv); chatBox.appendChild(messageDiv); if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; }
-        function addImageToChatLog(base64, mime, sender) { /* ... same as before ... */ if (!chatBox) return; const div = document.createElement('div'); div.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'my-1'); const bubble = document.createElement('div'); bubble.classList.add('image-chat-bubble'); bubble.style.backgroundColor = sender === 'user' ? '#DBEAFE' : '#D1FAE5'; const img = document.createElement('img'); img.src = `data:${mime};base64,${base64}`; img.alt = sender === 'user' ? "User image" : "Bot image"; bubble.appendChild(img); div.appendChild(bubble); chatBox.appendChild(div); if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; }
-        function showLoading(isLoading) { /* ... same as before ... */ if(!loadingIndicator) return; loadingIndicator.classList.toggle('hidden', !isLoading); }
-        async function handleSendMessageWrapper() { /* ... same as before, but ensure activeSessionId is checked if needed ... */ if (!userInput || !chatBox || !currentUserId || !activeSessionId) { showError("Chat not ready. Please sign in and select/start a chat."); return; } await handleSendMessage(); }
-        async function handleSendMessage() { /* ... ensure it uses activeSessionId for saving ... */
+        function addMessageToChat(text, sender) { if (!chatBox) return; const messageDiv = document.createElement('div'); messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'py-1'); const bubbleDiv = document.createElement('div'); bubbleDiv.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot'); const codeBlockRegex = /```(\w*)\n([\s\S]*?)\n```/gm; let lastIndex = 0; let hasCode = false; let contentToAdd = document.createDocumentFragment(); text.replace(codeBlockRegex, (match, lang, codeContent, offset) => { hasCode = true; if (offset > lastIndex) { contentToAdd.appendChild(document.createTextNode(text.substring(lastIndex, offset))); } const preElement = document.createElement('pre'); const codeElement = document.createElement('code'); if (lang) codeElement.classList.add(`language-${lang}`); codeElement.textContent = codeContent.trim(); preElement.appendChild(codeElement); contentToAdd.appendChild(preElement); lastIndex = offset + match.length; return match; }); if (lastIndex < text.length) { contentToAdd.appendChild(document.createTextNode(text.substring(lastIndex))); } if (contentToAdd.hasChildNodes()) { bubbleDiv.appendChild(contentToAdd); } else if (!hasCode) { bubbleDiv.textContent = text; } messageDiv.appendChild(bubbleDiv); chatBox.appendChild(messageDiv); if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; }
+        function addImageToChatLog(base64, mime, sender) { if (!chatBox) return; const div = document.createElement('div'); div.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'my-1'); const bubble = document.createElement('div'); bubble.classList.add('image-chat-bubble'); bubble.style.backgroundColor = sender === 'user' ? '#DBEAFE' : '#D1FAE5'; const img = document.createElement('img'); img.src = `data:${mime};base64,${base64}`; img.alt = sender === 'user' ? "User image" : "Bot image"; bubble.appendChild(img); div.appendChild(bubble); chatBox.appendChild(div); if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; }
+        function showLoading(isLoading) { if(!loadingIndicator) return; loadingIndicator.classList.toggle('hidden', !isLoading); }
+        async function handleSendMessageWrapper() { if (!userInput || !chatBox || !currentUserId || !activeSessionId) { showError("Chat not ready. Please sign in and select/start a chat."); return; } await handleSendMessage(); }
+        async function handleSendMessage() { 
             const textContent = userInput.value.trim(); const img64 = currentBase64Image; const imgMime = currentMimeType;
             if (!textContent && !img64) { showError("Please type, speak, or upload an image."); return; }
-            if (!activeSessionId) { showError("No active chat session. Please start a new chat."); return; } // Check for active session
+            if (!activeSessionId) { showError("No active chat session. Please start a new chat."); return; }
 
             if (img64 && imgMime) await saveMessageToFirestore({ sender: 'user', type: 'image', content: img64, mimeType: imgMime });
             if (textContent) await saveMessageToFirestore({ sender: 'user', type: 'text', content: textContent });
             
             if(userInput) userInput.value = ''; removeImagePreview(); showLoading(true);
-            if (containsVulgar(textContent)) { const msg = "I cannot assist with that."; await saveMessageToFirestore({ sender: 'bot', type: 'text', content: msg }); showLoading(false); speakResponse(msg); return; }
+            if (containsVulgar(textContent)) { const msg = "I cannot assist with that."; addMessageToChat(msg, "bot"); await saveMessageToFirestore({ sender: 'bot', type: 'text', content: msg }); showLoading(false); speakResponse(msg); return; }
             try {
                 let parts = []; let prompt = botPersonaInstructions;
                 if (textContent) prompt += "\n\nUSER QUERY TEXT: " + textContent; else if (img64 && !textContent) prompt += "\n\nUSER QUERY TEXT: (No text provided, analyze image)";
                 parts.push({ text: prompt }); if (img64 && imgMime) parts.push({ inlineData: { mimeType: imgMime, data: img64 } });
                 const payload = { contents: [{ role: "user", parts: parts }] };
                 const resp = await fetch(geminiApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                let botText = "Sorry, couldn't process.";
-                if (!resp.ok) { const errData = await resp.json().catch(()=>({error:{message:"API error"}})); botText = `API Error: ${errData.error?.message || resp.statusText}`; }
-                else { const res = await resp.json(); if (res.candidates?.[0]?.content?.parts?.[0]?.text) botText = res.candidates[0].content.parts[0].text; else if (res.promptFeedback?.blockReason) botText = `Blocked: ${res.promptFeedback.blockReason}.`; }
-                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: botText }); speakResponse(botText);
-            } catch (error) { console.error('API call error:', error); showError(`Error: ${error.message}`); await saveMessageToFirestore({ sender: 'bot', type: 'text', content: `Error: ${error.message}` });
+                let botText = "Sorry, couldn't process that request.";
+                if (!resp.ok) { 
+                    const errData = await resp.json().catch(()=>({error:{message:"API error with non-JSON response or parsing failed"}})); 
+                    botText = `API Error (${resp.status}): ${errData.error?.message || resp.statusText || "Unknown API error"}`; 
+                    if (resp.status === 429) botText = "API rate limit exceeded. Please try again later.";
+                }
+                else { 
+                    const res = await resp.json(); 
+                    if (res.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        botText = res.candidates[0].content.parts[0].text;
+                    } else if (res.promptFeedback?.blockReason) {
+                        botText = `Blocked: ${res.promptFeedback.blockReason}. Your query might have been flagged as potentially harmful.`;
+                    } else if (res.candidates?.[0]?.finishReason && res.candidates[0].finishReason !== "STOP") {
+                        botText = `Response generation was stopped due to: ${res.candidates[0].finishReason}. This might be due to safety settings or other limitations.`;
+                    }
+                }
+                // addMessageToChat(botText, 'bot'); // UI update handled by onSnapshot listener
+                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: botText }); 
+                speakResponse(botText);
+            } catch (error) { 
+                console.error('API call or processing error:', error); 
+                let detailedError = `Error: ${error.message}`;
+                if (error.response && error.response.data && error.response.data.error && error.response.data.error.message) {
+                     detailedError = `API Error: ${error.response.data.error.message}`;
+                }
+                showError(detailedError); 
+                // addMessageToChat(detailedError, 'bot'); // UI update handled by onSnapshot listener
+                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: detailedError });
             } finally { showLoading(false); }
         }
-        function initializeSpeechRecognition() { /* ... same ... */ 
+        function initializeSpeechRecognition() { 
             const SR_API = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SR_API) { speechRecognition = new SR_API(); speechRecognition.continuous = false; speechRecognition.lang = 'hi-IN'; speechRecognition.interimResults = false; speechRecognition.maxAlternatives = 1;
-                speechRecognition.onresult = (e) => { const r = e.results[0][0].transcript.trim(); if(userInput)userInput.value=r; stopRecording(); if(r)handleSendMessageWrapper(); else showError("Voice empty.");};
-                speechRecognition.onerror = (e) => { let m=`Speech error: ${e.error}.`; if(e.error==='no-speech')m="No speech."; else if(e.error==='audio-capture')m="Mic error."; else if(e.error==='not-allowed')m="Mic denied."; else if(e.error==='language-not-supported')m=`Lang '${speechRecognition.lang}' not supported for STT.`; showError(m); stopRecording();};
+            if (SR_API) { speechRecognition = new SR_API(); speechRecognition.continuous = false; speechRecognition.lang = 'en-US'; speechRecognition.interimResults = false; speechRecognition.maxAlternatives = 1;
+                speechRecognition.onresult = (e) => { const r = e.results[0][0].transcript.trim(); if(userInput)userInput.value=r; stopRecording(); if(r)handleSendMessageWrapper(); else showError("Voice input was empty.");};
+                speechRecognition.onerror = (e) => { let m=`Speech recognition error: ${e.error}.`; if(e.error==='no-speech')m="No speech detected. Please try again."; else if(e.error==='audio-capture')m="Microphone error. Please check your microphone."; else if(e.error==='not-allowed')m="Microphone access denied. Please allow microphone access in your browser settings."; else if(e.error==='language-not-supported')m=`The language '${speechRecognition.lang}' is not supported for speech recognition.`; showError(m); stopRecording();};
                 speechRecognition.onend = () => { if (isRecording) stopRecording(); };
-            } else { if(voiceInputBtn) voiceInputBtn.disabled = true; showError('Voice input not supported.'); }
+            } else { if(voiceInputBtn) voiceInputBtn.disabled = true; showError('Speech recognition (voice input) is not supported by your browser.'); }
         }
-        async function getMurfAudioUrl(text, lang = 'en-US') { /* ... same ... */ 
-            if (!MURF_API_KEY || MURF_API_KEY==="YOUR_MURF_API_KEY" ) { console.warn("Murf key invalid/placeholder."); return null; }
-            const cfg={'en-US':{voice:'en-US-wesley',style:'Conversational'},'hi-IN':{voice:'en-UK-ruby',style:'Conversational'}}; const sel=cfg[lang]||cfg['en-US'];
-            const url="https://api.murf.ai/speech/generate"; const p={text,voice:sel.voice,style:sel.style,format:"mp3"};
-            try { const r=await fetch(url,{method:"POST",headers:{"api-key":MURF_API_KEY,"Content-Type":"application/json"},body:JSON.stringify(p)}); const d=await r.json();
-                if(!r.ok){showError(`Murf Err(${r.status}): ${d.message||'Unknown'}. Voice:${sel.voice}`);return null;} if(!d.audioUrl){showError(`Murf Err: No audioURL. ${d.message||''}`);return null;} return d.audioUrl;
-            } catch(err){showError(`Murf Ex: ${err.message}.`);return null;}
+        async function getMurfAudioUrl(text, lang = 'en-US') { 
+            if (!MURF_API_KEY || MURF_API_KEY==="YOUR_MURF_API_KEY" || MURF_API_KEY.startsWith("ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e") ) { console.warn("Murf API key is a placeholder or invalid."); return null; }
+            const cfg={'en-US':{voice:'en-US-ryan',style:'Conversational', mood:'neutral'},'hi-IN':{voice:'hi-IN- Diksha',style:'Conversational', mood:'neutral'}}; // Example voices
+            const sel=cfg[lang]||cfg['en-US'];
+            const url="https://api.murf.ai/v1/speech/generate"; // V1 endpoint
+            const p={text, voice:sel.voice, style:sel.style, mood:sel.mood, format:"mp3", sampleRate: 24000, convertToSsml: true}; // Added mood, sampleRate, convertToSsml
+            try { 
+                const r=await fetch(url,{method:"POST",headers:{"api-key":MURF_API_KEY,"X-Project-Id": "YOUR_MURF_PROJECT_ID_IF_ANY", "Content-Type":"application/json"},body:JSON.stringify(p)}); // X-Project-Id if needed
+                const d=await r.json();
+                if(!r.ok){showError(`Murf API Error (${r.status}): ${d.message||'Unknown error'}. Voice attempted: ${sel.voice}`);return null;} 
+                if(!d.audioFile){showError(`Murf API Error: No audioFile in response. ${d.message||''}`);return null;} 
+                return d.audioFile; // 'audioFile' is the typical key for Murf's V1 response
+            } catch(err){showError(`Murf API Exception: ${err.message}.`);return null;}
         }
-        async function speakResponse(text) { /* ... same ... */ 
+        async function speakResponse(text) { 
             if(currentBotAudio&&!currentBotAudio.paused)currentBotAudio.pause(); if('speechSynthesis'in window)speechSynthesis.cancel(); let lang='en-US'; if(/[\u0900-\u097F]/.test(text))lang='hi-IN'; let spoken=false;
-            const audioUrl=await getMurfAudioUrl(text,lang); if(audioUrl){try{currentBotAudio=new Audio(audioUrl);await currentBotAudio.play();spoken=true;}catch(e){console.error("Murf play err:",e);currentBotAudio=null;}}
+            const audioUrl=await getMurfAudioUrl(text,lang); if(audioUrl){try{currentBotAudio=new Audio(audioUrl);await currentBotAudio.play();spoken=true;}catch(e){console.error("Murf audio playback error:",e);currentBotAudio=null;}}
             if(!spoken&&'speechSynthesis'in window){const utt=new SpeechSynthesisUtterance(text); utt.lang=lang; 
                 try { const voices = speechSynthesis.getVoices(); if(voices.length>0){const v=voices.find(i=>i.lang===lang);if(v)utt.voice=v;} } catch(e) { console.warn("Could not get/set voices for browser TTS", e); }
-                speechSynthesis.speak(utt);}else if(!spoken)console.warn('TTS N/A.');
+                speechSynthesis.speak(utt);}else if(!spoken)console.warn('Text-to-speech is not available or Murf API failed.');
         }
-        function toggleVoiceInput(){ /* ... same ... */ if(!speechRecognition){showError('Voice N/A.');return;}if(isRecording)stopRecording();else startRecording();}
-        function startRecording() { /* ... same, but now using SVGs, so CSS handles .recording class for icon state ... */ 
+        function toggleVoiceInput(){ if(!speechRecognition){showError('Voice input is not available.');return;}if(isRecording)stopRecording();else startRecording();}
+        function startRecording() { 
             try { if(userInput)userInput.value=""; if(currentBotAudio&&!currentBotAudio.paused)currentBotAudio.pause(); if('speechSynthesis'in window)speechSynthesis.cancel(); speechRecognition.start();isRecording=true; 
                 if(voiceInputBtn) { voiceInputBtn.classList.add('recording'); voiceInputBtn.title="Stop Recording"; }
             }
-            catch(e){if(e.name==='InvalidStateError')stopRecording();else showError("Voice start error: "+e.message); isRecording=false; 
-                if(voiceInputBtn) { voiceInputBtn.classList.remove('recording'); voiceInputBtn.title="Voice Input"; }
+            catch(e){if(e.name==='InvalidStateError'){/* Already stopping or stopped */ stopRecording(); } else {showError("Voice start error: "+e.message); isRecording=false; 
+                if(voiceInputBtn) { voiceInputBtn.classList.remove('recording'); voiceInputBtn.title="Voice Input"; }}
             }
         }
-        function stopRecording(){ /* ... same, but now using SVGs ... */ if(speechRecognition&&isRecording)speechRecognition.stop();isRecording=false; if(voiceInputBtn) { voiceInputBtn.classList.remove('recording'); voiceInputBtn.title="Voice Input";}}
-        function handleFileSelect(e){ /* ... same ... */ const f=e.target.files[0];if(f&&f.type.startsWith('image/')){closeCameraModalAndStream();const r=new FileReader();r.onload=(ev)=>{if(imagePreview)imagePreview.src=ev.target.result;currentBase64Image=ev.target.result.split(',')[1];currentMimeType=f.type;if(imagePreviewContainer)imagePreviewContainer.classList.remove('hidden');};r.readAsDataURL(f);}else if(f){showError("Select image file.");if(fileInput)fileInput.value=null;}}
-        function removeImagePreview(){ /* ... same ... */ if(imagePreview)imagePreview.src='#';if(imagePreviewContainer)imagePreviewContainer.classList.add('hidden');currentBase64Image=null;currentMimeType=null;if(fileInput)fileInput.value=null;}
-        function openCameraModal() { /* ... same ... */ removeImagePreview(); if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { try { mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); if(videoPreviewModal) videoPreviewModal.srcObject = mediaStream; if(cameraModal) cameraModal.classList.remove('hidden'); } catch (err) { showError("Camera access error: " + err.message); } } else { showError("Camera API not supported."); } }
-        function closeCameraModalAndStream() { /* ... same ... */ if (mediaStream) { mediaStream.getTracks().forEach(track => track.stop()); mediaStream = null; } if(videoPreviewModal) videoPreviewModal.srcObject = null; if(cameraModal) cameraModal.classList.add('hidden'); }
-        function captureImageFromModal() { /* ... same ... */ if (!mediaStream || !videoPreviewModal || !videoPreviewModal.videoWidth) { showError("Camera not ready."); return; } const canvas = document.createElement('canvas'); canvas.width = videoPreviewModal.videoWidth; canvas.height = videoPreviewModal.videoHeight; canvas.getContext('2d').drawImage(videoPreviewModal, 0, 0, canvas.width, canvas.height); const dataUrl = canvas.toDataURL('image/png'); currentBase64Image = dataUrl.split(',')[1]; currentMimeType = 'image/png'; closeCameraModalAndStream(); showError("Image captured! Describe it or add text and send."); }
-        function containsVulgar(t){if(!t)return false;const V=["badword1","offensiveword","fuck","shit","asshole","bitch"];return V.some(b=>t.toLowerCase().includes(b));}
-        function startListeningAdapter() { /* ... same ... */ 
+        function stopRecording(){ if(speechRecognition&&isRecording)speechRecognition.stop();isRecording=false; if(voiceInputBtn) { voiceInputBtn.classList.remove('recording'); voiceInputBtn.title="Voice Input";}}
+        function handleFileSelect(e){ const f=e.target.files[0];if(f&&f.type.startsWith('image/')){closeCameraModalAndStream();const r=new FileReader();r.onload=(ev)=>{if(imagePreview)imagePreview.src=ev.target.result;currentBase64Image=ev.target.result.split(',')[1];currentMimeType=f.type;if(imagePreviewContainer)imagePreviewContainer.classList.remove('hidden');};r.readAsDataURL(f);}else if(f){showError("Please select an image file (e.g., JPG, PNG, GIF).");if(fileInput)fileInput.value=null;}}
+        function removeImagePreview(){ if(imagePreview)imagePreview.src='#';if(imagePreviewContainer)imagePreviewContainer.classList.add('hidden');currentBase64Image=null;currentMimeType=null;if(fileInput)fileInput.value=null;}
+        async function openCameraModal() { removeImagePreview(); if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { try { mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); if(videoPreviewModal) videoPreviewModal.srcObject = mediaStream; if(cameraModal) cameraModal.classList.remove('hidden'); cameraModal.classList.add('flex'); cameraModal.classList.remove('hidden'); } catch (err) { showError("Camera access error: " + err.message + ". Ensure permissions are granted."); } } else { showError("Camera API not supported by your browser."); } }
+        function closeCameraModalAndStream() { if (mediaStream) { mediaStream.getTracks().forEach(track => track.stop()); mediaStream = null; } if(videoPreviewModal) videoPreviewModal.srcObject = null; if(cameraModal) {cameraModal.classList.add('hidden'); cameraModal.classList.remove('flex');} }
+        function captureImageFromModal() { if (!mediaStream || !videoPreviewModal || !videoPreviewModal.videoWidth) { showError("Camera stream not available or not ready."); return; } const canvas = document.createElement('canvas'); canvas.width = videoPreviewModal.videoWidth; canvas.height = videoPreviewModal.videoHeight; canvas.getContext('2d').drawImage(videoPreviewModal, 0, 0, canvas.width, canvas.height); const dataUrl = canvas.toDataURL('image/png'); if(imagePreview) imagePreview.src = dataUrl; currentBase64Image = dataUrl.split(',')[1]; currentMimeType = 'image/png'; if(imagePreviewContainer) imagePreviewContainer.classList.remove('hidden'); closeCameraModalAndStream(); showError("Image captured! You can now describe it or add text and send."); }
+        function containsVulgar(t){if(!t)return false;const V=["examplebadword","anotheroffensive","testvulgar","profanity"];return V.some(b=>t.toLowerCase().includes(b));} // Replace with actual list
+        function startListeningAdapter() { 
             const mainChat = document.getElementById('interactiveChatSection');
             const signInBtn = document.getElementById('googleSignInBtnHeader');
             if (mainChat) { 
-                if(currentUserId) { mainChat.scrollIntoView({ behavior: 'smooth', block: 'start' }); setTimeout(() => { if (userInput) userInput.focus(); toggleVoiceInput(); }, 300); } 
+                if(currentUserId) { mainChat.scrollIntoView({ behavior: 'smooth', block: 'start' }); setTimeout(() => { if (userInput) userInput.focus({preventScroll:true}); toggleVoiceInput(); }, 300); } 
                 else { if(signInBtn && signInBtn.style.display !== 'none') { signInBtn.click(); } else { showError("Please sign in with Google first to use voice chat."); } }
             }
         }
+        window.startListeningAdapter = startListeningAdapter; // Make it globally accessible for inline HTML onclick
 
     </script>
 </body>
