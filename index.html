@@ -204,7 +204,7 @@
     window.speechSynthesis.speak(msg);
   }
 </script>
-<div class="text-center p-4 mt-4 rounded-lg shadow-md text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 max-w-2xl mx-auto">
+<div class="text-center p-4 mt-4 rounded-lg shadow-md text-white bg-transparent max-w-2xl mx-auto">
   <p class="text-lg font-semibold">Please sign in with Google to use all features and save your chat history.</p>
   <p class="mt-2 text-sm">You can also use <span class="font-medium underline">voice chat</span>, <span class="font-medium underline">image recognition</span>, and <span class="font-medium underline">AI suggestions</span>.</p>
 </div>
@@ -228,7 +228,7 @@
 
             <footer id="appFooter" class="footer-animate-entrance bg-gradient-to-b from-slate-800 via-purple-800 to-slate-800 text-white py-8 sm:py-10 text-center mt-auto pt-10 sm:pt-12" style="display: block;">
                 <h2 class="text-xl sm:text-2xl font-bold mb-4">About ChatIQ</h2>
-                <p class="max-w-2xl mx-auto mb-6 px-4 text-sm sm:text-base">ChatIQ assists by providing accurate, real-time answers to your questions through voice, text, and image interactions.</p>
+                <p class="max-w-2xl mx-auto mb-6 px-4 text-sm sm:text-base">ChatIQ assists by providing more precise, real-time answers to your questions through voice, text, and image interactions.</p>
                 <div class="space-y-2 text-sm sm:text-base">
                     <p>📞 <a href="tel:+919369572534" class="hover:underline hover:text-pink-300 transition-colors">+91 93695 72534</a></p>
                     <p>✉️ <a href="mailto:ambuj20maurya@gmail.com" class="hover:underline hover:text-pink-300 transition-colors">ambuj20maurya@gmail.com</a></p>
@@ -293,7 +293,7 @@
 
         const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; 
         const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
-        const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form, without bullet points or unnecessary special characters unless the format is essential for clarity (like in a recipe's steps). When a user asks "who are you", respond: 'I am a smart ChatIQ bot.' If the user asks about "your name", respond: 'I am a smart ChatIQ bot.' If the user asks "who made you", respond: 'I was made by ChatIQ.' --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
+        const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form, without bullet points or unnecessary special characters. When a user asks "who are you", respond: 'I am a smart ChatIQ bot.' If the user asks about "your name", respond: 'I am a smart ChatIQ bot.' If the user asks "who made you", respond: 'I was made by ChatIQ.' --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
 
         function showError(messageText) { 
             console.error("ChatIQ Error:", messageText); 
