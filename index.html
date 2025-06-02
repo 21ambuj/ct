@@ -3,145 +3,283 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>ChatIQ - AI Chat with Sessions</title>
+    <title>ChatIQ - Unified AI Chat</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        .chat-bubble-user { background-color: #DBEAFE; color: #1E3A8A; border-radius: 0.75rem; padding: 0.75rem 1rem; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.05); word-wrap: break-word; }
-        .chat-bubble-bot { background-color: #D1FAE5; color: #065F46; border-radius: 0.75rem; padding: 0.75rem 1rem; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.05); word-wrap: break-word; }
-        .image-chat-bubble { padding: 0.375rem; border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); max-width: 60%; display: inline-block; }
-        .image-chat-bubble img { max-width: 100%; height: auto; border-radius: 0.25rem; object-fit: contain; max-height: 20rem; }
-        
-        .chat-bubble-bot pre, .chat-bubble-user pre { background-color: #1F2937; color: #F3F4F6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; margin-top: 0.5rem; margin-bottom: 0.5rem;}
-        .chat-bubble-bot code, .chat-bubble-user code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 0.875em; }
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Light theme chat bubbles for the main chatBox */
+        .chat-bubble-user {
+            background-color: #DBEAFE; /* Tailwind: blue-100 */
+            color: #1E3A8A; /* Tailwind: blue-800 */
+            border-radius: 0.75rem; /* rounded-lg */
+            padding: 0.75rem 1rem; /* px-4 py-3 */
+            max-width: 80%;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        .chat-bubble-bot {
+            background-color: #D1FAE5; /* Tailwind: green-100 */
+            color: #065F46; /* Tailwind: green-700 */
+            border-radius: 0.75rem; /* rounded-lg */
+            padding: 0.75rem 1rem; /* px-4 py-3 */
+            max-width: 80%;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        /* Removed .scroll-smooth as it's on body */
 
-        #chatBox::-webkit-scrollbar, #sessionsList::-webkit-scrollbar { width: 6px; }
-        #chatBox::-webkit-scrollbar-track, #sessionsList::-webkit-scrollbar-track { background: #F3F4F6; border-radius: 10px; }
-        #chatBox::-webkit-scrollbar-thumb, #sessionsList::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 10px; }
-        #chatBox::-webkit-scrollbar-thumb:hover, #sessionsList::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
-        
-        .chat-input-bar-container { background-color: #F9FAFB; border-top: 1px solid #E5E7EB; }
-        .control-button.glassmorphism { background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px); }
-        .control-button.glassmorphism:hover { background-color: rgba(255, 255, 255, 0.3); }
-        .control-button svg { width: 1.25rem; height: 1.25rem; color: white; }
-        @media (min-width: 640px) { .control-button svg { width: 1.5rem; height: 1.5rem; } }
-        
-        @keyframes textGradientShiftSubtle { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .animate-text-gradient-subtle { background-size: 250% 250%; animation: textGradientShiftSubtle 8s ease infinite; }
-        #voiceInputBtn.recording .mic-icon-path { fill: #ef4444 !important; }
+        #voiceInputBtn.recording .mic-icon-path {
+            fill: #ef4444; /* Red 500 for recording state */
+        }
+        #voiceInputBtn .mic-icon-path { /* Default fill for mic icon */
+            fill: currentColor;
+        }
 
-        .session-item { transition: background-color 0.2s ease-in-out; }
-        .session-item.active { background-color: #DBEAFE; /* blue-100 */ color: #1E40AF; /* blue-800 */ font-weight: 600;}
-        .session-item:hover:not(.active) { background-color: #EFF6FF; /* blue-50 */}
+        /* Custom scrollbar for chatBox */
+        #chatBoxWrapper::-webkit-scrollbar { /* Changed from #chatBox to its wrapper for better layout control */
+            width: 8px;
+        }
+        #chatBoxWrapper::-webkit-scrollbar-track {
+            background: #F3F4F6; /* gray-100 */
+            border-radius: 10px;
+        }
+        #chatBoxWrapper::-webkit-scrollbar-thumb {
+            background: #D1D5DB; /* gray-300 */
+            border-radius: 10px;
+        }
+        #chatBoxWrapper::-webkit-scrollbar-thumb:hover {
+            background: #9CA3AF; /* gray-400 */
+        }
+
+        /* Styles for the input bar container (light theme) */
+        .chat-input-bar-container {
+            background-color: #F9FAFB; /* gray-50 */
+            border-top: 1px solid #E5E7EB; /* gray-200 */
+        }
+        /* Styles for input field and control buttons are largely handled by Tailwind below,
+           but these specific styles for input field are kept if needed. */
+        .chat-input-field { /* This class is not directly used on the main userInput, but kept for potential future use */
+            background-color: #FFFFFF; /* white */
+            border: 1px solid #D1D5DB; /* gray-300 */
+            color: #1F2937; /* gray-800 */
+        }
+        .chat-input-field::placeholder {
+            color: #6B7280; /* gray-500 */
+        }
+
+        /* Generic control button styling - overridden by Tailwind for the main buttons */
+        .control-button {
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.5rem; /* p-2 */
+            transition: background-color 0.15s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .control-button:hover {
+            background-color: #E5E7EB; /* gray-200 for hover on non-colored buttons */
+        }
+        .control-button svg {
+            width: 1.25rem; /* w-5 */
+            height: 1.25rem; /* h-5 */
+            color: #4B5563; /* gray-600 for default icon color */
+        }
+
+        /* The specific background colors for #sendBtn, #fileUploadBtn etc. have been removed
+           as the current HTML uses Tailwind's bg-white/20 style, making these rules unused. */
+
+        #voiceInputBtn.recording { background-color: #ef4444 !important; /* Red-500 when recording, needs !important if Tailwind class is more specific */ }
+        #voiceInputBtn.recording:hover { background-color: #dc2626 !important; /* Red-600 when recording hover */ }
+
+        /* Transition for loading/error messages */
+        .fade-transition {
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            opacity: 1;
+            visibility: visible;
+        }
+        .fade-transition.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 flex flex-col h-screen">
+<body class="bg-gray-100 text-gray-800">
 
-    <header class="relative bg-gradient-to-r from-cyan-500 to-indigo-600 text-white py-3 sm:py-4 shadow-lg overflow-hidden z-20">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <div class="text-left">
-                <h1 class="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl 
-                           text-transparent bg-clip-text bg-gradient-to-br from-pink-400 via-purple-400 to-red-500
-                           animate-text-gradient-subtle">ChatIQ</h1>
-            </div>
-            <div id="authContainer" class="text-right flex items-center space-x-2">
-                <button id="newChatBtn" class="hidden bg-green-500 hover:bg-green-600 text-white text-xs sm:text-sm font-semibold py-2 px-3 rounded-lg shadow-md transition duration-150 ease-in-out">New Chat</button>
-                <button id="googleSignInBtnHeader" class="bg-white text-indigo-600 hover:bg-indigo-50 text-xs sm:text-sm font-semibold py-2 px-3 sm:px-4 rounded-lg shadow-md transition duration-150 ease-in-out">Sign in with Google</button>
-                <div id="userDetailsHeader" class="hidden items-center">
-                    <span id="userDisplayNameHeader" class="text-xs sm:text-sm mr-2 sm:mr-3 truncate max-w-[100px] sm:max-w-[150px]"></span>
-                    <button id="signOutBtnHeader" class="bg-pink-500 hover:bg-pink-600 text-white text-xs sm:text-sm font-semibold py-2 px-3 rounded-lg shadow-md transition duration-150 ease-in-out">Sign Out</button>
-                </div>
-            </div>
+    <header class="relative bg-gradient-to-r from-cyan-500 to-indigo-600 text-white py-6 sm:py-8 text-center shadow-xl overflow-hidden">
+        <h1 class="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl text-transparent bg-clip-text bg-gradient-to-br from-pink-400 via-purple-400 to-red-500 animate-text-gradient">
+            ChatIQ
+        </h1>
+        <p class="text-xs font-medium text-indigo-100 mt-2 tracking-normal sm:text-sm sm:tracking-wider sm:mt-2 opacity-95">
+            Your Professional AI Companion
+        </p>
+        <div class="absolute bottom-2 left-1/2 -translate-x-1/2 h-[2px] w-1/4
+                    sm:w-1/5 sm:bottom-3
+                    bg-gradient-to-r from-transparent via-white to-transparent
+                    opacity-40 rounded-full">
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden">
-        <aside id="chatHistorySidebar" class="w-0 sm:w-64 bg-slate-50 border-r border-slate-200 flex-col p-3 space-y-2 overflow-y-auto transition-all duration-300 ease-in-out hidden"> {/* Initially hidden, shown after sign-in */}
-            <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider px-2">Chat History</h3>
-            <div id="sessionsList" class="space-y-1">
-               
-            </div>
-        </aside>
+    <main class="container mx-auto px-4 py-8 space-y-12">
 
-        <main class="flex-1 flex flex-col overflow-hidden container mx-auto px-0 sm:px-2 py-4">
-            <h4 class="text-center text-sm sm:text-base font-semibold
-               text-transparent bg-clip-text 
-               bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 
-               drop-shadow-md 
-               animate-text-gradient-subtle 
-               inline-flex items-center justify-center space-x-1 w-full mb-4" id="swipeDownPrompt" style="display: none;">
-               <span>Scroll to Discover More</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 sm:w-5 sm:h-5 ml-1 opacity-90">
-                  <path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.69l2.47-2.47a.75.75 0 111.06 1.06l-3.75 3.75a.75.75 0 01-1.06 0L6.22 13.03a.75.75 0 011.06-1.06l2.47 2.47V3.75A.75.75 0 0110 3z" clip-rule="evenodd" />
-                </svg>
-            </h4>
-            
-            <section id="interactiveChatSection" 
-                     class="w-full mx-auto 
-                            bg-white rounded-xl sm:rounded-2xl shadow-xl overflow-hidden flex flex-col flex-1" 
-                     style="display: none;"> 
-                <div class="flex-grow overflow-y-auto p-3 sm:p-4 space-y-3" id="chatBoxWrapper"> 
-                    <div id="imagePreviewContainer" class="hidden flex flex-col items-center space-y-2 mb-3">
-                        <img id="imagePreview" src="#" alt="Image Preview" class="max-w-full h-auto max-h-48 sm:max-h-60 rounded-lg shadow-md border-2 border-gray-200"/>
-                        <button id="removeImageBtn" class="text-red-400 hover:text-red-300 text-sm font-medium flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                            Remove Image
-                        </button>
-                    </div>
-                    <div id="chatBox" class="space-y-4"> 
-                        {/* Sign-in prompt or chat messages will be loaded here */}
-                    </div>
-                </div>
+        <section id="interactiveChatSection"
+            class="w-full mx-auto sm:max-w-2xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col"
+            style="min-height: 70vh; max-height:85vh;">
 
-                <div class="chat-input-bar-container p-2 sm:p-3 border-t border-gray-200">
-                    <div id="loadingIndicator" class="hidden text-center pb-2">
-                        <div class="flex justify-center items-center"><div class="animate-spin rounded-full h-5 w-5 border-b-2 border-cyan-600"></div><p class="text-cyan-700 ml-2 text-sm">ChatIQ is thinking...</p></div>
-                    </div>
-                    <div id="errorMessage" class="hidden bg-red-100 text-red-700 p-2 rounded-md text-center mb-2 text-sm"></div>
-                    <div class="flex items-center flex-wrap gap-2 sm:gap-3 p-3 bg-gradient-to-r from-cyan-500 to-indigo-600 rounded-xl shadow-lg">
-                        <input type="text" id="userInput" placeholder="Ask ChatIQ or describe image..."
-                               class="flex-grow min-w-[150px] p-3 rounded-lg text-sm sm:text-base outline-none bg-slate-900/30 text-white placeholder:text-slate-300 focus:ring-2 focus:ring-sky-300 focus:bg-slate-900/40 transition duration-200 ease-in-out backdrop-blur-sm shadow-sm"/>
-                        <button id="sendBtn" title="Send Message" class="control-button glassmorphism">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg>
-                        </button>
-                        <button id="fileUploadBtn" title="Upload Image" class="control-button glassmorphism">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V4.5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5V15c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9c0 1.66 1.34 3 3 3s3-1.34 3-3V4.5C16 2.01 13.99 0 11.5 0S7 2.01 7 4.5V15c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"></path></svg>
-                        </button>
-                        <input type="file" id="fileInput" class="hidden" accept="image/*">
-                        <button id="cameraBtn" title="Use Camera" class="control-button glassmorphism">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" /><path fill-rule="evenodd" d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.426 1.458 2.426 2.915V19.5a2.25 2.25 0 01-2.25 2.25H5.25a2.25 2.25 0 01-2.25-2.25V9.525c0-1.456.994-2.676 2.426-2.915.382-.064.766-.123 1.152-.177.465-.067.87-.327 1.11-.71l.82-1.318a2.996 2.996 0 012.332-1.39zM12 6.75a5.25 5.25 0 100 10.5 5.25 5.25 0 000-10.5z" clip-rule="evenodd" /></svg>
-                        </button>
-                        <button id="voiceInputBtn" title="Voice Input" class="control-button glassmorphism">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mic-icon">
-                                <path class="mic-icon-path" fill-rule="evenodd" d="M12.75 3.006a3.75 3.75 0 013.75 3.75v6.75a3.75 3.75 0 01-7.5 0v-6.75a3.75 3.75 0 013.75-3.75zM8.25 8.254a.75.75 0 000 1.5v.75c0 1.657 1.343 3 3 3s3-1.343 3-3v-.75a.75.75 0 000-1.5h-.75a2.25 2.25 0 01-2.25-2.25v-.75a.75.75 0 00-1.5 0v.75A2.25 2.25 0 019 8.254h-.75zM15 13.5a.75.75 0 001.5 0v-2.628A6.002 6.002 0 006.75 8.25v2.628a.75.75 0 001.5 0V8.25c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5v5.25z" clip-rule="evenodd" fill="currentColor"/>
-                                <path class="mic-icon-path" d="M6 10.5a.75.75 0 01.75.75v.75a4.5 4.5 0 009 0V11.25a.75.75 0 011.5 0v.75a6 6 0 01-12 0V11.25A.75.75 0 016 10.5zM12 16.5a.75.75 0 00-.75.75v.75h1.5v-.75a.75.75 0 00-.75-.75z" fill="currentColor"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <h6 class="text-slate-500 text-center text-xs mt-3 sm:mt-4">ChatIQ can make mistakes. Please recheck and verify information.</h6>
-                </div>
-            </section>
-
-            <section class="text-center mt-8" id="alternativeVoiceSection">
-                <h2 class="text-2xl font-semibold mb-4">One-to-One Voice Interaction</h2>
-                <button onclick="startListeningAdapter()" aria-label="Start Voice Chat with GIF">
-                    <img src="https://cdn.dribbble.com/userupload/32122583/file/original-400827bdf243931c8ffd26a268a837ce.gif" alt="Voice Bot Banner" class="mx-auto w-full max-w-md rounded-2xl shadow-lg hover:scale-105 transition-transform"/>
-                </button>
-                <div class="mt-6">
-                    <button onclick="startListeningAdapter()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-md transition text-lg font-medium flex items-center justify-center mx-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="mr-2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm7 9a7 7 0 0 1-14 0H3a9 9 0 0 0 8 8.94V22h2v-3.06A9 9 0 0 0 21 10h-2z"></path></svg>
-                        Start Voice Chat
+            <div class="flex-grow overflow-y-auto p-3 sm:p-4 space-y-3" id="chatBoxWrapper">
+                <div id="imagePreviewContainer" class="hidden flex flex-col items-center space-y-2 mb-3">
+                    <img id="imagePreview" src="#" alt="Image Preview" class="max-w-full h-auto max-h-48 sm:max-h-60 rounded-lg shadow-md border-2 border-gray-200"/>
+                    <button id="removeImageBtn" class="text-red-500 hover:text-red-400 text-sm font-medium flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        Remove Image
                     </button>
                 </div>
-            </section>
-            
-            <div id="signInPromptBelowVoiceBot" class="text-center text-gray-600 p-4 mt-2" style="display: block;"> 
-                Please <button id="inlineSignInBtn" class="text-indigo-600 hover:text-indigo-800 font-semibold underline">sign in with Google</button> to use all features and save your chat history.
+                <div id="videoPreviewContainer" class="hidden flex flex-col items-center space-y-2 mb-3">
+                    <video id="videoPreview" autoplay playsinline class="max-w-full h-auto max-h-48 sm:max-h-60 rounded-lg shadow-md border-2 border-gray-200 bg-gray-200"></video>
+                    <div class="flex space-x-2 mt-2">
+                        <button id="captureImageBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-3 rounded-lg transition duration-150 text-sm">Capture</button>
+                        <button id="stopCameraBtn" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-3 rounded-lg transition duration-150 text-sm">Stop Camera</button>
+                    </div>
+                </div>
+                <div id="chatBox" class="space-y-4">
+                    <div class="flex justify-start w-full">
+                        <div class="chat-bubble-bot">
+                            Hello! How can I assist you today?
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <section id="featuresSection" class="mt-8">
-             <h2 class="text-2xl font-semibold text-center mb-8">Key Features</h2>
+
+            <div class="chat-input-bar-container p-2 sm:p-3 border-t border-gray-200">
+                <div id="loadingIndicator" class="hidden fade-transition text-center pb-2">
+                    <div class="flex justify-center items-center">
+                        <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-cyan-600"></div>
+                        <p class="text-cyan-700 ml-2 text-sm">ChatIQ is thinking...</p>
+                    </div>
+                </div>
+                <div id="errorMessage" class="hidden fade-transition bg-red-100 text-red-700 p-2 rounded-md text-center mb-2 text-sm"></div>
+
+                <div class="flex items-center flex-wrap gap-2 sm:gap-3 p-3 sm:p-4 bg-gradient-to-r from-cyan-500 to-indigo-600 rounded-xl shadow-lg">
+                    <input
+                        type="text"
+                        id="userInput"
+                        placeholder="Ask ChatIQ or describe image..."
+                        class="flex-grow min-w-[150px] p-3 rounded-lg text-sm sm:text-base outline-none
+                               bg-slate-900/30
+                               text-white
+                               placeholder:text-slate-300
+                               focus:ring-2 focus:ring-sky-300 focus:bg-slate-900/40
+                               transition duration-200 ease-in-out
+                               backdrop-blur-sm
+                               shadow-sm"
+                    />
+
+                    <button
+                        id="sendBtn"
+                        title="Send Message"
+                        class="group bg-white/20 hover:bg-white/30 backdrop-blur-sm
+                               p-3 rounded-lg shadow-md
+                               text-white
+                               transition duration-200 ease-in-out
+                               flex items-center justify-center
+                               hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+                            <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+                        </svg>
+                    </button>
+
+                    <button
+                        id="fileUploadBtn"
+                        title="Upload Image"
+                        class="group bg-white/20 hover:bg-white/30 backdrop-blur-sm
+                               p-3 rounded-lg shadow-md
+                               text-white
+                               transition duration-200 ease-in-out
+                               flex items-center justify-center
+                               hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+                            <path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V4.5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5V15c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9c0 1.66 1.34 3 3 3s3-1.34 3-3V4.5C16 2.01 13.99 0 11.5 0S7 2.01 7 4.5V15c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"></path>
+                        </svg>
+                        <span class="ml-1 text-xs hidden sm:inline">Upload</span>
+                    </button>
+                    <input type="file" id="fileInput" class="hidden" accept="image/*">
+
+                    <button
+                        id="cameraBtn"
+                        title="Use Camera"
+                        class="group bg-white/20 hover:bg-white/30 backdrop-blur-sm
+                               p-3 rounded-lg shadow-md
+                               text-white
+                               transition duration-200 ease-in-out
+                               flex items-center justify-center
+                               hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+                            <path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" />
+                            <path fill-rule="evenodd" d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.426 1.458 2.426 2.915V19.5a2.25 2.25 0 01-2.25 2.25H5.25a2.25 2.25 0 01-2.25-2.25V9.525c0-1.456.994-2.676 2.426-2.915.382-.064.766-.123 1.152-.177.465-.067.87-.327 1.11-.71l.82-1.318a2.996 2.996 0 012.332-1.39zM12 6.75a5.25 5.25 0 100 10.5 5.25 5.25 0 000-10.5z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="ml-1 text-xs hidden sm:inline">Camera</span>
+                    </button>
+
+                    <button
+                        id="voiceInputBtn"
+                        title="Voice Input"
+                        class="group bg-white/20 hover:bg-white/30 backdrop-blur-sm
+                               p-3 rounded-lg shadow-md
+                               text-white
+                               transition duration-200 ease-in-out
+                               flex items-center justify-center
+                               hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mic-icon w-5 h-5 sm:w-6 sm:h-6" fill="currentColor">
+                            <path class="mic-icon-path" fill-rule="evenodd" d="M12.75 3.006a3.75 3.75 0 013.75 3.75v6.75a3.75 3.75 0 01-7.5 0v-6.75a3.75 3.75 0 013.75-3.75zM8.25 8.254a.75.75 0 000 1.5v.75c0 1.657 1.343 3 3 3s3-1.343 3-3v-.75a.75.75 0 000-1.5h-.75a2.25 2.25 0 01-2.25-2.25v-.75a.75.75 0 00-1.5 0v.75A2.25 2.25 0 019 8.254h-.75zM15 13.5a.75.75 0 001.5 0v-2.628A6.002 6.002 0 006.75 8.25v2.628a.75.75 0 001.5 0V8.25c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5v5.25z" clip-rule="evenodd" />
+                            <path class="mic-icon-path" d="M6 10.5a.75.75 0 01.75.75v.75a4.5 4.5 0 009 0V11.25a.75.75 0 011.5 0v.75a6 6 0 01-12 0V11.25A.75.75 0 016 10.5zM12 16.5a.75.75 0 00-.75.75v.75h1.5v-.75a.75.75 0 00-.75-.75z" />
+                        </svg>
+                        <span class="ml-1 text-xs hidden sm:inline">Speak</span>
+                    </button>
+                </div>
+
+                <h6 class="text-slate-500 text-center text-xs mt-3 sm:mt-4">ChatIQ can make mistakes. Please recheck and verify information.</h6>
+            </div>
+            <h4 class="text-center text-lg font-semibold
+                text-transparent bg-clip-text
+                bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500
+                drop-shadow-md
+                animate-text-gradient-subtle
+                inline-flex items-center justify-center space-x-1 sm:space-x-2 py-2 mx-auto">
+                <span> ⬇ Swipe Down to See More</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 ml-1 opacity-90">
+                    <path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.69l2.47-2.47a.75.75 0 111.06 1.06l-3.75 3.75a.75.75 0 01-1.06 0L6.22 13.03a.75.75 0 011.06-1.06l2.47 2.47V3.75A.75.75 0 0110 3z" clip-rule="evenodd" />
+                </svg>
+            </h4>
+        </section>
+
+        <section class="text-center">
+            <h2 class="text-2xl font-semibold mb-4">One-to-One Voice Interaction</h2>
+            <p class="text-gray-600 mb-3">Click the image or button below to start a voice chat using the main chat interface.</p>
+            <button onclick="startListeningAdapter()" aria-label="Start Voice Chat with GIF" class="block mx-auto mb-4">
+                <img
+                    src="https://cdn.dribbble.com/userupload/32122583/file/original-400827bdf243931c8ffd26a268a837ce.gif"
+                    alt="Voice Bot Banner"
+                    class="mx-auto w-full max-w-md rounded-2xl shadow-lg hover:scale-105 transition-transform"
+                />
+            </button>
+            <button
+                onclick="startListeningAdapter()"
+                class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-md transition text-lg font-medium flex items-center justify-center mx-auto"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="mr-2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm7 9a7 7 0 0 1-14 0H3a9 9 0 0 0 8 8.94V22h2v-3.06A9 9 0 0 0 21 10h-2z"></path></svg>
+                Start Voice Chat
+            </button>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-semibold text-center mb-8">Key Features</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
                     <img src="https://img.freepik.com/premium-vector/ai-chat-bot-technology-concept-people-chatting-with-robot-asking-questions-receiving-answers_36358-1867.jpg" alt="AI Suggestions" class="mx-auto w-36 h-36 object-contain rounded mb-4"/>
@@ -152,482 +290,544 @@
                     <h3 class="font-semibold text-lg">Real-Time Voice Chat</h3>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1048/1048937.png" alt="Image Recognition" class="mx-auto w-36 h-36 object-contain rounded mb-4"/>
-                    <h3 class="font-semibold text-lg">Image Vision AI</h3>
+                    <img src="https://itsm.tools/wp-content/uploads/2021/11/bot-and-human.png" alt="Human-Bot Collaboration" class="mx-auto w-36 h-36 object-contain rounded mb-4"/>
+                    <h3 class="font-semibold text-lg">Human-Bot Collaboration</h3>
                 </div>
             </div>
         </section>
 
-        <section id="feedbackSection" class="text-center mt-8">
+        <section class="text-center">
             <h2 class="text-2xl font-semibold mb-4">We Value Your Feedback</h2>
-            <p class="mb-6 text-gray-600">Help us improve by sharing your thoughts.</p>
+            <p class="mb-6 text-gray-600">Help us improve by sharing your thoughts via our feedback form.</p>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSc2N8OGqdbu2HFbxN4Y89Guv3Wnp9CHLYrz-bzu80kDjHQ3yg/viewform?usp=sharing" target="_blank" class="inline-block bg-gradient-to-r from-indigo-500 to-cyan-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:from-indigo-600 hover:to-cyan-500 transition">
                 Give Feedback
             </a>
         </section>
-        </main>
- <footer class="bg-gradient-to-b from-cyan-500 to-indigo-600 text-white py-10 text-center mt-12">
+    </main>
+
+    <footer class="bg-gradient-to-b from-cyan-500 to-indigo-600 text-white py-10 text-center mt-12">
         <h2 class="text-2xl font-bold mb-4">About ChatIQ</h2>
-        <p class="max-w-2xl mx-auto mb-6 px-4">ChatIQ assists by providing accurate, real-time answers to your questions through voice, text, and image interactions.</p>
-        <div class="space-y-2"><p>📞 <a href="tel:+919369572534" class="hover:underline">+91 93695 72534</a></p><p>✉️ <a href="mailto:ambuj20maurya@gmail.com" class="hover:underline">ambuj20maurya@gmail.com</a></p><p>📍 Mirzapur, Uttar Pradesh, India</p></div>
+        <p class="max-w-2xl mx-auto mb-6 px-4">
+            ChatIQ assists by providing accurate, real-time answers to your questions through voice, text, and image interactions.
+        </p>
+        <div class="space-y-2">
+            <p>📞 <a href="tel:+919369572534" class="hover:underline">+91 93695 72534</a></p>
+            <p>✉️ <a href="mailto:ambuj20maurya@gmail.com" class="hover:underline">ambuj20maurya@gmail.com</a></p>
+            <p>📍 Mirzapur, Uttar Pradesh, India</p>
+        </div>
         <p class="mt-6 text-sm opacity-90">&copy; 2025 ChatIQ. All rights reserved.</p>
     </footer>
-        <div id="cameraModal" class="fixed top-0 left-0 w-full h-full bg-black/60 hidden items-center justify-center z-[1000]">
-            <div class="bg-white p-6 rounded-xl shadow-2xl w-11/12 max-w-md text-center">
-                <h3 class="text-xl font-semibold text-gray-700 mb-4">Camera Capture</h3>
-                <video id="videoPreviewModal" autoplay playsinline class="w-full max-h-[60vh] rounded-lg mb-4 border border-gray-300 bg-gray-100"></video>
-                <div class="flex justify-around mt-4">
-                    <button id="captureModalBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg transition">Capture</button>
-                    <button id="closeCameraModalBtn" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-lg transition">Close</button>
-                </div>
-            </div>
-        </div>
 
-    <script type="module">
-        const firebaseConfig = {
-            apiKey: "AIzaSyCEpq8EAkEWbvxGab0wiW9qaYojUdVykyo", // USER PROVIDED
-            authDomain: "chatiq-45203.firebaseapp.com",
-            databaseURL: "https://chatiq-45203-default-rtdb.firebaseio.com",
-            projectId: "chatiq-45203",
-            storageBucket: "chatiq-45203.appspot.com",
-            messagingSenderId: "642857846726",
-            appId: "1:642857846726:web:f95990ff4f4c37971514c7",
-            measurementId: "G-R135XXK005"
+    <script>
+    // --- API Keys & Configuration ---
+    // WARNING: Storing API keys in client-side JavaScript is a major security risk.
+    // These keys can be easily extracted by anyone viewing the page source.
+    // For production applications, API calls should be proxied through a backend server
+    // where keys can be stored securely.
+    const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; // Replace with your actual Google API Key
+    const MURF_API_KEY = "ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e7";   // Replace with your actual Murf API Key
+
+    // Updated Gemini API URL - using gemini-1.5-flash-latest which is good for multimodal chat
+    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GOOGLE_API_KEY}`;
+
+    // --- DOM Elements ---
+    const chatBoxWrapper = document.getElementById('chatBoxWrapper'); // Scrollable container
+    const chatBox = document.getElementById('chatBox');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const fileUploadBtn = document.getElementById('fileUploadBtn');
+    const fileInput = document.getElementById('fileInput');
+    const cameraBtn = document.getElementById('cameraBtn');
+    const voiceInputBtn = document.getElementById('voiceInputBtn');
+
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const removeImageBtn = document.getElementById('removeImageBtn');
+
+    const videoPreviewContainer = document.getElementById('videoPreviewContainer');
+    const videoPreview = document.getElementById('videoPreview');
+    const captureImageBtn = document.getElementById('captureImageBtn');
+    const stopCameraBtn = document.getElementById('stopCameraBtn');
+
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // --- State Variables ---
+    let currentBase64Image = null;
+    let currentMimeType = null;
+    let mediaStream = null;
+    let speechRecognition = null;
+    let isRecording = false;
+    let currentBotAudio = null; // To control Murf audio playback
+
+    // --- Profanity Filter (Basic) ---
+    const VULGAR_WORDS = ["badword1", "badword2", "offensiveword", "fuck", "shit", "asshole", "bitch"]; // Add more as needed
+    function containsVulgar(text) {
+        if (!text) return false;
+        const lowerText = text.toLowerCase();
+        return VULGAR_WORDS.some(vulgarWord => lowerText.includes(vulgarWord));
+    }
+
+    // --- Speech Recognition Initialization ---
+    function initializeSpeechRecognition() {
+        const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognitionAPI) {
+            speechRecognition = new SpeechRecognitionAPI();
+            speechRecognition.continuous = false; // Process speech after user stops talking
+            speechRecognition.lang = 'hi-IN'; // Language set to Hindi (India). Change as needed e.g., 'en-US' for English.
+            speechRecognition.interimResults = false; // Only final results
+            speechRecognition.maxAlternatives = 1;
+
+            speechRecognition.onresult = (event) => {
+                const speechResult = event.results[0][0].transcript.trim();
+                userInput.value = speechResult;
+                stopRecording(); // Visual cue and state update
+                if (speechResult) {
+                    handleSendMessage();
+                } else {
+                    showError("Voice input was empty. Please try again.");
+                }
+            };
+
+            speechRecognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                let errorMsg = `Speech recognition error: ${event.error}.`;
+                if (event.error === 'no-speech') {
+                    errorMsg = "No speech was detected. Please make sure your microphone is working and try again.";
+                } else if (event.error === 'audio-capture') {
+                    errorMsg = "Audio capture failed. Ensure your microphone is enabled and not in use by another application.";
+                } else if (event.error === 'not-allowed') {
+                    errorMsg = "Microphone access was denied. Please allow microphone access in your browser settings for this site.";
+                } else if (event.error === 'language-not-supported') {
+                    errorMsg = `The selected language ('${speechRecognition.lang}') is not supported by your browser's speech recognition.`;
+                }
+                showError(errorMsg);
+                stopRecording();
+            };
+
+            speechRecognition.onend = () => {
+                // This 'onend' fires even after a result or error, so ensure recording state is correctly managed.
+                if (isRecording) {
+                    stopRecording();
+                }
+            };
+        } else {
+            console.warn('Speech Recognition API not supported in this browser.');
+            showError('Voice input is not supported in your browser.');
+            if(voiceInputBtn) voiceInputBtn.disabled = true;
+        }
+    }
+    initializeSpeechRecognition(); // Initialize on page load
+
+    // --- UI Update Functions ---
+    function addMessageToChat(text, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full');
+
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot');
+        // Using textContent is safer to prevent XSS if text could contain HTML.
+        // For controlled Markdown rendering from AI, a sanitizer + innerHTML would be needed.
+        bubbleDiv.textContent = text;
+        messageDiv.appendChild(bubbleDiv);
+        chatBox.appendChild(messageDiv);
+        chatBoxWrapper.scrollTop = chatBoxWrapper.scrollHeight; // Scroll to bottom
+    }
+
+    function showLoading(isLoading) {
+        loadingIndicator.classList.toggle('hidden', !isLoading);
+    }
+
+    function showError(messageText) {
+        errorMessage.textContent = messageText;
+        errorMessage.classList.remove('hidden');
+        // Auto-hide after some time
+        setTimeout(() => {
+            errorMessage.classList.add('hidden');
+        }, 7000); // Increased timeout for better readability
+    }
+
+    // --- Text-to-Speech (TTS) Functions ---
+    async function getMurfAudioUrl(text) {
+        if (!MURF_API_KEY || (MURF_API_KEY.startsWith("ap2_") && MURF_API_KEY.length < 30)) { // Basic check for placeholder/invalid Murf key
+            console.warn("MURF_API_KEY appears to be a placeholder or is not configured properly. Skipping Murf TTS.");
+            return null;
+        }
+        const url = "https://api.murf.ai/speech/generate";
+        const payload = {
+            voice: "en-US-nancy", // Example voice, check Murf documentation for options
+            text: text,
+            format: "mp3", // Murf supports mp3, wav, etc.
+            // "speed": "100%", // Optional parameters
+            // "pitch": "0%"
+        };
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { "api-key": MURF_API_KEY, "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            if (!response.ok) {
+                const errorData = await response.text();
+                console.error("Murf TTS API Error:", response.status, errorData);
+                showError(`Murf TTS Error (${response.status}). Check console for details.`);
+                return null;
+            }
+            const data = await response.json();
+            return data.audioUrl || null;
+        } catch (err) {
+            console.error("Murf TTS Request Exception:", err);
+            showError("Failed to connect to Murf TTS service. Check console.");
+            return null;
+        }
+    }
+
+    async function speakResponse(text) {
+        // Stop any currently playing bot audio or browser speech
+        if (currentBotAudio && !currentBotAudio.paused) {
+            currentBotAudio.pause();
+            currentBotAudio.currentTime = 0; // Reset audio
+        }
+        if (window.speechSynthesis && speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+        }
+
+        let spokenViaMurf = false;
+        // Only attempt Murf if a valid-looking key is present
+        if (MURF_API_KEY && !(MURF_API_KEY.startsWith("ap2_") && MURF_API_KEY.length < 30)) {
+            const audioUrl = await getMurfAudioUrl(text);
+            if (audioUrl) {
+                try {
+                    currentBotAudio = new Audio(audioUrl);
+                    await currentBotAudio.play();
+                    spokenViaMurf = true;
+                } catch (error) {
+                    console.error("Error playing Murf audio:", error);
+                    showError("Error playing audio response. Check console.");
+                    currentBotAudio = null; // Clear if error
+                }
+            }
+        }
+
+        // Fallback to browser's Web Speech API if Murf didn't play
+        if (!spokenViaMurf && 'speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            // Optionally, configure utterance.voice, utterance.lang, etc.
+            // utterance.lang = 'en-US'; // Or infer from bot response language
+            speechSynthesis.speak(utterance);
+        } else if (!spokenViaMurf) {
+            console.warn('Browser TTS not available or Murf failed and no fallback.');
+            // Optionally inform user if no TTS is possible: showError("Text-to-speech is not available.");
+        }
+    }
+
+    // --- Gemini API Call and Main Chat Logic ---
+    async function handleSendMessage() {
+        const userQueryText = userInput.value.trim();
+
+        // Stop any ongoing TTS or voice recording before processing new message
+        if (currentBotAudio && !currentBotAudio.paused) currentBotAudio.pause();
+        if (speechSynthesis.speaking) speechSynthesis.cancel();
+        if (isRecording) stopRecording();
+
+        if (!userQueryText && !currentBase64Image) {
+            showError("Please type a message, speak, or upload an image.");
+            return;
+        }
+
+        if (userQueryText) {
+            addMessageToChat(userQueryText, 'user');
+        }
+        userInput.value = ''; // Clear input after capturing
+
+        if (containsVulgar(userQueryText)) {
+            const rejectionMsg = "I cannot process or respond to inappropriate language. Please keep our conversation respectful.";
+            addMessageToChat(rejectionMsg, 'bot');
+            speakResponse(rejectionMsg);
+            if (currentBase64Image) removeImagePreview(); // Clear image if it was part of a vulgar request
+            return;
+        }
+
+        showLoading(true);
+        errorMessage.classList.add('hidden'); // Hide any previous errors
+
+        const botPersonaInstructions = `SYSTEM GUIDELINES:
+You are ChatIQ, a helpful and professional AI assistant.
+- Aim for concise and precise responses. For simple questions, keep answers to 2-4 sentences or around 50 words.
+- For more complex requests (like recipes, detailed explanations, code), provide a more detailed and structured answer as needed.
+- Respond in a human-like, conversational manner. Avoid excessive bullet points or special characters unless essential for clarity (e.g., steps in a recipe, code blocks).
+- If the user asks "who are you" or "what is your name", respond: "I am ChatIQ, your AI assistant."
+- If the user asks "who made you" or "who created you", respond: "I was created by the developers at ChatIQ."
+- If an image is provided with the query, analyze the image and incorporate your understanding of it into the response to the user's text query. If no text query is provided with an image, describe the image.
+---
+User's request is below. Adhere strictly to the persona guidelines. If the user asks a predefined question (who are you, who made you), use ONLY the predefined answer. Otherwise, answer their general query.`;
+
+        let messageParts = [];
+        let fullPromptText = botPersonaInstructions;
+
+        if (userQueryText) {
+            fullPromptText += "\n\nUSER QUERY: " + userQueryText;
+        } else if (currentBase64Image && !userQueryText) {
+            // If only image is provided, ask to describe it.
+            fullPromptText += "\n\nUSER QUERY: Please describe this image in detail.";
+        }
+        messageParts.push({ text: fullPromptText });
+
+        if (currentBase64Image && currentMimeType) {
+            messageParts.push({ inlineData: { mimeType: currentMimeType, data: currentBase64Image } });
+        }
+
+        const payload = {
+            contents: [{ role: "user", parts: messageParts }],
+            // Optional: Add safetySettings if needed
+            // safetySettings: [
+            //   { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+            //   // ... other categories
+            // ],
+            // Optional: Add generationConfig for temperature, topK, etc.
+            // generationConfig: { temperature: 0.7, topK: 40 }
         };
 
-        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, writeBatch, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // Added getDocs, writeBatch, doc
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+        try {
+            const response = await fetch(geminiApiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-        let app;
-        if (!getApps().length) { app = initializeApp(firebaseConfig); } else { app = getApp(); }
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const analytics = getAnalytics(app);
-        const appIdForPath = firebaseConfig.appId;
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Gemini API Error Response:", errorData);
+                const apiErrorMessage = errorData?.error?.message || `API request failed with status: ${response.status}`;
+                throw new Error(apiErrorMessage);
+            }
 
-        let chatBox, userInput, sendBtn, fileUploadBtn, fileInput, cameraBtn, voiceInputBtn, imagePreviewContainer, imagePreview, removeImageBtn, loadingIndicator, errorMessageDisplay, voiceIconImg, googleSignInBtnHeader, userDetailsHeaderDiv, userDisplayNameHeaderSpan, signOutBtnHeader, interactiveChatSection, alternativeVoiceSection, swipeDownPromptElement, newChatBtn, signInPromptBelowVoiceBot, inlineSignInBtn, cameraModal, videoPreviewModal, captureModalBtn, closeCameraModalBtn, sessionsListEl;
-        let currentBase64Image = null, currentMimeType = null, mediaStream = null, speechRecognition = null, isRecording = false, currentBotAudio = null, currentUserId = null;
-        
-        let activeSessionId = null; // To track the current chat session
-        let messagesUnsubscribe = null; // For messages of the active session
-        let sessionsUnsubscribe = null; // For the list of sessions
+            const result = await response.json();
+            let botResponseText = "I'm sorry, I encountered an issue processing your request. Please try again."; // Default error
 
-        const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; // <-- REPLACE!
-        const MURF_API_KEY = "ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e7";   // <-- REPLACE!
-        const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GOOGLE_API_KEY}`;
-        const botPersonaInstructions = `SYSTEM GUIDELINES:You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form, without bullet points or unnecessary special characters unless the format is essential for clarity (like in a recipe's steps). When a user asks "who are you", respond: 'I am a smart ChatIQ bot.' If the user asks about "your name", respond: 'I am a smart ChatIQ bot.' If the user asks "who made you", respond: 'I was made by ChatIQ.' --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
+            if (result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts[0] && result.candidates[0].content.parts[0].text) {
+                botResponseText = result.candidates[0].content.parts[0].text;
+            } else if (result.promptFeedback && result.promptFeedback.blockReason) {
+                botResponseText = `Your request was blocked. Reason: ${result.promptFeedback.blockReason}.`;
+                if(result.promptFeedback.blockReasonMessage) botResponseText += ` Details: ${result.promptFeedback.blockReasonMessage}`;
+                console.warn("Gemini API content blocked:", result.promptFeedback);
+            } else if (!result.candidates || result.candidates.length === 0) {
+                // This case might indicate the content was blocked by safety filters if no candidates are returned.
+                 botResponseText = "I am unable to provide a response to this request due to content policy. Please try a different query.";
+                 console.warn("Gemini API returned no candidates, possibly due to safety filters or an issue:", result);
+            }
 
 
-        function showError(messageText) { /* ... same robust version ... */ 
-            console.log("showError called with:", messageText);
-            const errorElement = document.getElementById('errorMessage');
-            if (errorElement) {
-                errorElement.textContent = messageText; errorElement.classList.remove('hidden');
-                setTimeout(() => { errorElement.classList.add('hidden'); }, 5000);
-            } else { console.error("DOM #errorMessage not found. Early error: " + messageText); alert("Notice: " + messageText); }
+            addMessageToChat(botResponseText, 'bot');
+            speakResponse(botResponseText);
+
+        } catch (error) {
+            console.error('Error in handleSendMessage:', error);
+            showError(`An error occurred: ${error.message}. Please check the console for more details.`);
+            addMessageToChat(`Sorry, I couldn't process that request due to an error. Please try again.`, 'bot');
+        } finally {
+            showLoading(false);
+            if (currentBase64Image) removeImagePreview(); // Clear image after processing
         }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            // Assign all DOM Elements
-            chatBox = document.getElementById('chatBox'); userInput = document.getElementById('userInput'); sendBtn = document.getElementById('sendBtn');
-            fileUploadBtn = document.getElementById('fileUploadBtn'); fileInput = document.getElementById('fileInput'); cameraBtn = document.getElementById('cameraBtn');
-            voiceInputBtn = document.getElementById('voiceInputBtn'); imagePreviewContainer = document.getElementById('imagePreviewContainer');
-            imagePreview = document.getElementById('imagePreview'); removeImageBtn = document.getElementById('removeImageBtn');
-            loadingIndicator = document.getElementById('loadingIndicator'); errorMessageDisplay = document.getElementById('errorMessage'); 
-            // For SVG icons, voiceIconImg is not used. Styling is via CSS on .mic-icon and .mic-icon-path
-            googleSignInBtnHeader = document.getElementById('googleSignInBtnHeader');
-            userDetailsHeaderDiv = document.getElementById('userDetailsHeader');
-            userDisplayNameHeaderSpan = document.getElementById('userDisplayNameHeader');
-            signOutBtnHeader = document.getElementById('signOutBtnHeader');
-            interactiveChatSection = document.getElementById('interactiveChatSection');
-            alternativeVoiceSection = document.getElementById('alternativeVoiceSection');
-            swipeDownPromptElement = document.getElementById('swipeDownPrompt');
-            newChatBtn = document.getElementById('newChatBtn');
-            signInPromptBelowVoiceBot = document.getElementById('signInPromptBelowVoiceBot');
-            inlineSignInBtn = document.getElementById('inlineSignInBtn');
-            cameraModal = document.getElementById('cameraModal');
-            videoPreviewModal = document.getElementById('videoPreviewModal');
-            captureModalBtn = document.getElementById('captureModalBtn');
-            closeCameraModalBtn = document.getElementById('closeCameraModalBtn');
-            sessionsListEl = document.getElementById('sessionsList');
+    }
 
-            if(GOOGLE_API_KEY === "YOUR_GEMINI_API_KEY"||MURF_API_KEY === "YOUR_MURF_API_KEY"){showError("Placeholder API keys detected. Update in script.");}
-            
-            initializeSpeechRecognition(); 
-            setupEventListeners();
-            setupAuthListener();
-        });
-        
-        function setupEventListeners() { /* ... existing listeners ... */ 
-            if(googleSignInBtnHeader) googleSignInBtnHeader.addEventListener('click', signInWithGoogle);
-            if(signOutBtnHeader) signOutBtnHeader.addEventListener('click', signOutUser);
-            if(newChatBtn) newChatBtn.addEventListener('click', startNewChatSession); // Changed function name
-            if(inlineSignInBtn) inlineSignInBtn.addEventListener('click', signInWithGoogle); 
-
-            if(sendBtn) sendBtn.addEventListener('click', handleSendMessageWrapper);
-            if(userInput) userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessageWrapper(); }});
-            if(fileUploadBtn) fileUploadBtn.addEventListener('click', () => fileInput.click());
-            if(fileInput) fileInput.addEventListener('change', handleFileSelect);
-            if(removeImageBtn) removeImageBtn.addEventListener('click', removeImagePreview);
-            
-            if(cameraBtn) cameraBtn.addEventListener('click', openCameraModal); 
-            if(captureModalBtn) captureModalBtn.addEventListener('click', captureImageFromModal);
-            if(closeCameraModalBtn) closeCameraModalBtn.addEventListener('click', closeCameraModalAndStream);
-
-            if(voiceInputBtn) voiceInputBtn.addEventListener('click', toggleVoiceInput);
+    // --- File and Camera Handling ---
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            stopCameraStream(); // Stop camera if it was active
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                currentBase64Image = e.target.result.split(',')[1]; // Get base64 part
+                currentMimeType = file.type;
+                imagePreviewContainer.classList.remove('hidden');
+                videoPreviewContainer.classList.add('hidden');
+                userInput.placeholder = "Describe the uploaded image or ask a question...";
+            };
+            reader.readAsDataURL(file);
+        } else if (file) {
+            showError("Invalid file type. Please select an image file (e.g., PNG, JPG, WEBP).");
+            fileInput.value = null; // Reset file input
         }
+    }
 
-        async function signInWithGoogle() { /* ... same ... */ 
-            if (!auth) { showError("Firebase Auth not initialized."); return; }
-            const provider = new GoogleAuthProvider();
-            try { await signInWithPopup(auth, provider); } 
-            catch (error) { console.error("Google Sign-In Error:", error); showError(`Google Sign-In Failed: ${error.message} (Code: ${error.code})`); }
-        }
-        async function signOutUser() { /* ... same ... */ 
-            if (!auth) { showError("Firebase Auth not initialized."); return; }
-            try { await signOut(auth); activeSessionId = null; if(sessionsListEl) sessionsListEl.innerHTML = ''; } // Clear active session and list on sign out
-            catch (error) { console.error("Sign Out Error:", error); showError("Error signing out: " + error.message); }
-        }
+    function removeImagePreview() {
+        imagePreview.src = '#'; // Clear src
+        imagePreviewContainer.classList.add('hidden');
+        currentBase64Image = null;
+        currentMimeType = null;
+        fileInput.value = null; // Reset file input so the same file can be re-selected
+        userInput.placeholder = "Ask ChatIQ or describe image...";
+    }
 
-        function setupAuthListener() { 
-            if (!auth) { console.error("Firebase Auth not initialized for listener."); showError("Critical: Auth service not ready."); return; }
-            const chatHistorySidebar = document.getElementById('chatHistorySidebar');
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    currentUserId = user.uid;
-                    if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = `Hi, ${user.displayName || user.email.split('@')[0] || 'User'}!`;
-                    if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'none';
-                    if(newChatBtn) newChatBtn.style.display = 'inline-block'; 
-                    if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'flex';
-                    if(interactiveChatSection) interactiveChatSection.style.display = 'flex';
-                    if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'none'; 
-                    if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'none';
-                    if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'inline-flex';
-                    if(chatHistorySidebar) chatHistorySidebar.classList.remove('hidden'); // Show sidebar
-                    if(chatHistorySidebar) chatHistorySidebar.classList.add('flex');
-
-                    loadChatSessions(); // Load list of sessions
+    async function startCamera() {
+        removeImagePreview(); // Clear any existing static image preview
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); // Prefer rear camera
+                videoPreview.srcObject = mediaStream;
+                videoPreviewContainer.classList.remove('hidden');
+                imagePreviewContainer.classList.add('hidden');
+                userInput.placeholder = "Capture an image or ask a question...";
+            } catch (err) {
+                console.error("Camera access error:", err);
+                showError(`Camera access denied or unavailable: ${err.message}. Please check permissions.`);
+                if (err.name === "NotAllowedError") {
+                     showError("Camera access was denied. Please allow camera access in your browser settings.");
+                } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
+                     showError("No camera found on your device.");
                 } else {
-                    currentUserId = null; activeSessionId = null;
-                    if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = '';
-                    if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'inline-block';
-                    if(newChatBtn) newChatBtn.style.display = 'none'; 
-                    if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'none';
-                    if(interactiveChatSection) interactiveChatSection.style.display = 'none';
-                    if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'block';
-                    if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'block';
-                    if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'none';
-                    if(chatHistorySidebar) chatHistorySidebar.classList.add('hidden');
-                    if(chatHistorySidebar) chatHistorySidebar.classList.remove('flex');
-
-
-                    if(messagesUnsubscribe) messagesUnsubscribe(); 
-                    if(sessionsUnsubscribe) sessionsUnsubscribe();
-                    if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Please sign in with Google to use ChatIQ and see your history.</div>';
+                     showError("Could not access camera: " + err.message);
                 }
-            });
-        }
-        
-        async function startNewChatSession() {
-            if (!currentUserId || !db) { showError("Please sign in to start a new chat."); return; }
-            console.log("Starting new chat session");
-            const newSessionName = `Chat ${new Date().toLocaleString()}`; // Simple title
-            try {
-                const sessionsColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions`;
-                const sessionRef = await addDoc(collection(db, sessionsColPath), {
-                    title: newSessionName,
-                    createdAt: serverTimestamp()
-                });
-                activeSessionId = sessionRef.id;
-                console.log("New session created with ID:", activeSessionId);
-                if (chatBox) chatBox.innerHTML = ''; 
-                addMessageToChat(`New chat started: ${newSessionName}`, "bot"); // This message won't be saved, just UI
-                loadChatHistory(activeSessionId); // Will load messages for the new (empty) session
-                // loadChatSessions will update the sidebar via its onSnapshot
-            } catch (error) {
-                console.error("Error creating new session:", error);
-                showError("Could not start a new chat session.");
             }
+        } else {
+            showError("Camera API is not supported in your browser.");
         }
+    }
 
-        async function deleteSession(sessionIdToDelete) {
-            if (!currentUserId || !db || !sessionIdToDelete) return;
-            console.log(`Attempting to delete session: ${sessionIdToDelete}`);
-            const confirmed = confirm("Are you sure you want to delete this chat session and all its messages permanently?");
-            if (!confirmed) return;
+    function stopCameraStream() {
+        if (mediaStream) {
+            mediaStream.getTracks().forEach(track => track.stop());
+            mediaStream = null;
+        }
+        videoPreview.srcObject = null;
+        videoPreviewContainer.classList.add('hidden');
+        userInput.placeholder = "Ask ChatIQ or describe image...";
+    }
 
-            try {
-                // 1. Delete all messages in the subcollection
-                const messagesPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToDelete}/messages`;
-                const messagesQuery = query(collection(db, messagesPath));
-                const messagesSnapshot = await getDocs(messagesQuery);
-                const batch = writeBatch(db);
-                messagesSnapshot.forEach(doc => {
-                    batch.delete(doc.ref);
-                });
-                await batch.commit();
-                console.log(`Messages for session ${sessionIdToDelete} deleted.`);
+    function captureImageFromVideo() {
+        if (!mediaStream || !videoPreview.videoWidth || videoPreview.videoWidth === 0) {
+            showError("Camera is not active or not ready. Please start the camera first.");
+            return;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = videoPreview.videoWidth;
+        canvas.height = videoPreview.videoHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/png'); // Or 'image/jpeg'
 
-                // 2. Delete the session document itself
-                const sessionDocPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToDelete}`;
-                await deleteDoc(doc(db, sessionDocPath)); // Make sure to import deleteDoc
-                console.log(`Session ${sessionIdToDelete} metadata deleted.`);
+        imagePreview.src = dataUrl;
+        currentBase64Image = dataUrl.split(',')[1];
+        currentMimeType = 'image/png'; // Or 'image/jpeg'
+        imagePreviewContainer.classList.remove('hidden');
+        userInput.placeholder = "Describe the captured image or ask a question...";
+        stopCameraStream(); // Stop camera after capture
+    }
 
-                // If the deleted session was the active one, clear the chat or load another
-                if (activeSessionId === sessionIdToDelete) {
-                    activeSessionId = null;
-                    if (chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Session deleted. Start a new chat or select another.</div>';
-                    // loadChatSessions will refresh the list, then we might auto-select the latest or prompt.
-                }
-                // loadChatSessions() will refresh via its onSnapshot
-            } catch (error) {
-                console.error(`Error deleting session ${sessionIdToDelete}:`, error);
-                showError("Failed to delete chat session.");
+    // --- Voice Input Controls ---
+    function toggleVoiceInput() {
+        if (!speechRecognition) {
+            showError('Voice input is not supported or not initialized in your browser.');
+            return;
+        }
+        if (isRecording) {
+            stopRecording();
+        } else {
+            startRecording();
+        }
+    }
+
+    function startRecording() {
+        if (!speechRecognition) return;
+        try {
+            userInput.value = ""; // Clear input field
+            // Stop any ongoing TTS
+            if (currentBotAudio && !currentBotAudio.paused) currentBotAudio.pause();
+            if (speechSynthesis.speaking) speechSynthesis.cancel();
+
+            speechRecognition.start();
+            isRecording = true;
+            voiceInputBtn.classList.add('recording');
+            voiceInputBtn.title = "Stop Recording";
+            userInput.placeholder = "Listening...";
+        } catch (e) {
+            console.warn("Speech recognition start error:", e.message);
+            // Handle cases where recognition might already be active or in an error state
+            if (e.name === 'InvalidStateError') {
+                // May occur if start() is called while already started or in error.
+                // Try to stop and reset.
+                stopRecording(); // Attempt to reset state
+                showError("Voice recording couldn't start due to an internal state issue. Please try again.");
+            } else {
+                showError("Could not start voice recording: " + e.message);
             }
+            // Ensure UI is reset if start fails
+            isRecording = false;
+            voiceInputBtn.classList.remove('recording');
+            voiceInputBtn.title = "Voice Input";
+            userInput.placeholder = "Ask ChatIQ or describe image...";
         }
-        // Import deleteDoc for deleteSession:
-        // import { ..., deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // Add deleteDoc here
+    }
 
-        function loadChatSessions() {
-            if (!currentUserId || !db || !sessionsListEl) return;
-            if (sessionsUnsubscribe) sessionsUnsubscribe();
-
-            const sessionsColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions`;
-            const q = query(collection(db, sessionsColPath), orderBy("createdAt", "desc"));
-
-            sessionsUnsubscribe = onSnapshot(q, (snapshot) => {
-                sessionsListEl.innerHTML = ''; // Clear list
-                let firstSessionId = null;
-                let sessionCount = 0;
-                snapshot.forEach((docSnap) => {
-                    sessionCount++;
-                    const session = docSnap.data();
-                    const sessionId = docSnap.id;
-                    if (!firstSessionId) firstSessionId = sessionId; // Keep track of the most recent
-
-                    const item = document.createElement('div');
-                    item.classList.add('session-item', 'p-2', 'rounded-md', 'cursor-pointer', 'text-sm', 'text-slate-700', 'flex', 'justify-between', 'items-center');
-                    if (sessionId === activeSessionId) {
-                        item.classList.add('active');
-                    }
-                    
-                    const titleSpan = document.createElement('span');
-                    titleSpan.textContent = session.title || `Chat from ${session.createdAt?.toDate().toLocaleDateString() || 'Unknown date'}`;
-                    titleSpan.classList.add('truncate', 'flex-1', 'mr-2');
-                    item.appendChild(titleSpan);
-
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.innerHTML = '&times;'; // Simple 'x'
-                    deleteBtn.classList.add('text-red-400', 'hover:text-red-600', 'font-bold', 'px-1');
-                    deleteBtn.title = "Delete this chat session";
-                    deleteBtn.onclick = (event) => {
-                        event.stopPropagation(); // Prevent session selection when deleting
-                        deleteSession(sessionId);
-                    };
-                    item.appendChild(deleteBtn);
-                    
-                    item.onclick = () => selectSession(sessionId);
-                    sessionsListEl.appendChild(item);
-                });
-
-                if (sessionCount > 0 && !activeSessionId) { // If no active session, load the most recent one
-                    selectSession(firstSessionId);
-                } else if (sessionCount === 0 && !activeSessionId) { // No sessions at all, start a new one
-                    startNewChatSession();
-                }
-            }, (error) => {
-                console.error("Error loading chat sessions:", error);
-                showError("Could not load chat sessions.");
-            });
+    function stopRecording() {
+        if (!speechRecognition) return;
+        if (isRecording) { // Only stop if actually recording
+            speechRecognition.stop();
         }
-        
-        function selectSession(sessionId) {
-            if (activeSessionId === sessionId) return; // Already active
-
-            console.log("Selecting session:", sessionId);
-            activeSessionId = sessionId;
-            if (messagesUnsubscribe) messagesUnsubscribe(); // Unsubscribe from old session's messages
-            if (chatBox) chatBox.innerHTML = '<div class="text-center text-gray-400 p-4">Loading chat...</div>'; // Clear and show loading
-            loadChatHistory(activeSessionId);
-
-            // Update active class in sidebar
-            Array.from(sessionsListEl.children).forEach(child => {
-                child.classList.remove('active');
-                // A bit hacky to find which child corresponds to sessionID if IDs aren't on elements
-            });
-            // A better way: give session items an ID or data-attribute like `data-session-id="${sessionId}"`
-            const activeItem = Array.from(sessionsListEl.children).find(child => child.textContent.startsWith(document.querySelector(`[data-session-id="${sessionId}"]`)?.querySelector('span').textContent)); //This is not robust
-            // Simpler: just re-run loadChatSessions which will re-render with correct active class or rely on its own logic.
-            // For now, user will see messages change, list might not visually update active state until next full list render.
-            // Or, more directly:
-             const sessionItems = sessionsListEl.querySelectorAll('.session-item');
-             sessionItems.forEach(item => {
-                 // Assuming item.dataset.sessionId was set when creating session items
-                 if (item.dataset.sessionId === sessionId) {
-                     item.classList.add('active');
-                 } else {
-                     item.classList.remove('active');
-                 }
-             });
-
-
+        isRecording = false;
+        voiceInputBtn.classList.remove('recording');
+        voiceInputBtn.title = "Voice Input";
+        if (userInput.placeholder === "Listening...") {
+            userInput.placeholder = "Ask ChatIQ or describe image...";
         }
+    }
 
-
-        async function saveMessageToFirestore(messageData) { 
-            if (!currentUserId || !activeSessionId) { showError("Not signed in or no active session. Message not saved."); return; }
-            try { 
-                const path = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}/messages`; 
-                await addDoc(collection(db, path), { ...messageData, userId: currentUserId, timestamp: serverTimestamp() }); 
-                // Also update the session's lastActivity or title potentially
-                const sessionDocPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}`;
-                // For title: if it's the first user message and session title is default
-                const sessionDocRef = doc(db, sessionDocPath);
-                const sessionSnap = await getDoc(sessionDocRef); // import getDoc
-                if (sessionSnap.exists()) {
-                    const sessionData = sessionSnap.data();
-                    let updateData = { lastActivity: serverTimestamp() };
-                    if ((sessionData.title === `Chat ${new Date(sessionData.createdAt?.toDate()).toLocaleString()}` || sessionData.title?.startsWith("New Chat")) && messageData.sender === 'user' && messageData.type === 'text' && messageData.content) {
-                        updateData.title = messageData.content.substring(0, 30) + (messageData.content.length > 30 ? '...' : '');
-                    }
-                     await updateDoc(sessionDocRef, updateData); // import updateDoc
-                }
-
-
-            } 
-            catch (error) { console.error("Error saving to Firestore:", error); showError("Error saving message."); }
+    // --- Adapter for "Start Voice Chat" buttons ---
+    function startListeningAdapter() {
+        const mainChatSection = document.getElementById('interactiveChatSection');
+        if (mainChatSection) {
+            mainChatSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-
-        // Import updateDoc and getDoc
-        // import { ..., getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-        function loadChatHistory(sessionIdToLoad) { 
-            if (!db || !chatBox || !sessionIdToLoad) { 
-                if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Select a chat or start a new one.</div>';
-                return; 
+        // Delay to allow scroll and then focus/start mic
+        setTimeout(() => {
+            if (userInput) userInput.focus();
+            if (!isRecording) { // Only start if not already recording
+                startRecording();
             }
-            if (messagesUnsubscribe) messagesUnsubscribe(); 
-            
-            const path = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToLoad}/messages`;
-            const q = query(collection(db, path), orderBy("timestamp", "asc")); 
-            
-            chatBox.innerHTML = ''; 
-            let initialWelcomeAdded = false;
+        }, 400); // Adjusted delay
+    }
 
-            messagesUnsubscribe = onSnapshot(q, (snapshot) => {
-                chatBox.innerHTML = ''; let count = 0;
-                snapshot.forEach((doc) => { 
-                    count++; 
-                    const msg = doc.data(); 
-                    if (msg.type === 'image') addImageToChatLog(msg.content, msg.mimeType, msg.sender); 
-                    else addMessageToChat(msg.content, msg.sender); 
-                });
-                if (count === 0 && !snapshot.metadata.hasPendingWrites && !initialWelcomeAdded) { 
-                    const welcome="Chat started! How can I assist you today?"; 
-                    addMessageToChat(welcome, "bot");
-                    // Do not save this session-specific welcome to DB as it's just a UI placeholder for empty chats
-                    initialWelcomeAdded = true; 
-                }
-                if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; 
-            }, (error) => { console.error("Error loading messages for session:", sessionIdToLoad, error); showError("Failed to load messages: " + error.message); });
+    // --- Event Listeners ---
+    if(sendBtn) sendBtn.addEventListener('click', handleSendMessage);
+    if(userInput) userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) { // Send on Enter, allow Shift+Enter for new line
+            e.preventDefault(); // Prevent default Enter behavior (e.g., new line in some cases)
+            handleSendMessage();
         }
-        
-        // Other functions (addMessageToChat, addImageToChatLog, showLoading, handleSendMessageWrapper, handleSendMessage, initializeSpeechRecognition, getMurfAudioUrl, speakResponse, toggleVoiceInput, startRecording, stopRecording, camera/file handling, containsVulgar, startListeningAdapter)
-        // need to be included here. I'll keep them compact for brevity but they are the same as the previous full code.
-        // ... (ensure ALL other functions are here from previous complete script) ...
-        // For handleSendMessage: it will now save to the activeSessionId.
-        // For addMessageToChat: the code block rendering should be there.
+    });
+    if(fileUploadBtn) fileUploadBtn.addEventListener('click', () => fileInput.click()); // Trigger hidden file input
+    if(fileInput) fileInput.addEventListener('change', handleFileSelect);
+    if(removeImageBtn) removeImageBtn.addEventListener('click', removeImagePreview);
+    if(cameraBtn) cameraBtn.addEventListener('click', startCamera);
+    if(captureImageBtn) captureImageBtn.addEventListener('click', captureImageFromVideo);
+    if(stopCameraBtn) stopCameraBtn.addEventListener('click', stopCameraStream);
+    if(voiceInputBtn) voiceInputBtn.addEventListener('click', toggleVoiceInput);
 
-        // --- Full set of functions from previous versions (ensure they are complete) ---
-        function addMessageToChat(text, sender) { /* ... same as before with code block rendering ... */ if (!chatBox) return; const messageDiv = document.createElement('div'); messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'py-1'); const bubbleDiv = document.createElement('div'); bubbleDiv.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot'); const codeBlockRegex = /```(\w*)\n([\s\S]*?)\n```/gm; let lastIndex = 0; let hasCode = false; let contentToAdd = document.createDocumentFragment(); text.replace(codeBlockRegex, (match, lang, codeContent, offset) => { hasCode = true; if (offset > lastIndex) { contentToAdd.appendChild(document.createTextNode(text.substring(lastIndex, offset))); } const preElement = document.createElement('pre'); const codeElement = document.createElement('code'); if (lang) codeElement.classList.add(`language-${lang}`); codeElement.textContent = codeContent.trim(); preElement.appendChild(codeElement); contentToAdd.appendChild(preElement); lastIndex = offset + match.length; return match; }); if (lastIndex < text.length) { contentToAdd.appendChild(document.createTextNode(text.substring(lastIndex))); } if (contentToAdd.hasChildNodes()) { bubbleDiv.appendChild(contentToAdd); } else if (!hasCode) { bubbleDiv.textContent = text; } messageDiv.appendChild(bubbleDiv); chatBox.appendChild(messageDiv); if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; }
-        function addImageToChatLog(base64, mime, sender) { /* ... same as before ... */ if (!chatBox) return; const div = document.createElement('div'); div.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'my-1'); const bubble = document.createElement('div'); bubble.classList.add('image-chat-bubble'); bubble.style.backgroundColor = sender === 'user' ? '#DBEAFE' : '#D1FAE5'; const img = document.createElement('img'); img.src = `data:${mime};base64,${base64}`; img.alt = sender === 'user' ? "User image" : "Bot image"; bubble.appendChild(img); div.appendChild(bubble); chatBox.appendChild(div); if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; }
-        function showLoading(isLoading) { /* ... same as before ... */ if(!loadingIndicator) return; loadingIndicator.classList.toggle('hidden', !isLoading); }
-        async function handleSendMessageWrapper() { /* ... same as before, but ensure activeSessionId is checked if needed ... */ if (!userInput || !chatBox || !currentUserId || !activeSessionId) { showError("Chat not ready. Please sign in and select/start a chat."); return; } await handleSendMessage(); }
-        async function handleSendMessage() { /* ... ensure it uses activeSessionId for saving ... */
-            const textContent = userInput.value.trim(); const img64 = currentBase64Image; const imgMime = currentMimeType;
-            if (!textContent && !img64) { showError("Please type, speak, or upload an image."); return; }
-            if (!activeSessionId) { showError("No active chat session. Please start a new chat."); return; } // Check for active session
+    // --- Initial API Key Check ---
+    function checkApiKeys() {
+        let warnings = [];
+        if (GOOGLE_API_KEY === "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM" || !GOOGLE_API_KEY) {
+            warnings.push("Placeholder Google API Key detected. Replace with your actual key for Gemini functionality.");
+        }
+        if (MURF_API_KEY === "ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e7" || !MURF_API_KEY) {
+            warnings.push("Placeholder Murf API Key detected. Replace with your actual key for Murf TTS, or TTS will use browser defaults.");
+        }
 
-            if (img64 && imgMime) await saveMessageToFirestore({ sender: 'user', type: 'image', content: img64, mimeType: imgMime });
-            if (textContent) await saveMessageToFirestore({ sender: 'user', type: 'text', content: textContent });
-            
-            if(userInput) userInput.value = ''; removeImagePreview(); showLoading(true);
-            if (containsVulgar(textContent)) { const msg = "I cannot assist with that."; await saveMessageToFirestore({ sender: 'bot', type: 'text', content: msg }); showLoading(false); speakResponse(msg); return; }
-            try {
-                let parts = []; let prompt = botPersonaInstructions;
-                if (textContent) prompt += "\n\nUSER QUERY TEXT: " + textContent; else if (img64 && !textContent) prompt += "\n\nUSER QUERY TEXT: (No text provided, analyze image)";
-                parts.push({ text: prompt }); if (img64 && imgMime) parts.push({ inlineData: { mimeType: imgMime, data: img64 } });
-                const payload = { contents: [{ role: "user", parts: parts }] };
-                const resp = await fetch(geminiApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                let botText = "Sorry, couldn't process.";
-                if (!resp.ok) { const errData = await resp.json().catch(()=>({error:{message:"API error"}})); botText = `API Error: ${errData.error?.message || resp.statusText}`; }
-                else { const res = await resp.json(); if (res.candidates?.[0]?.content?.parts?.[0]?.text) botText = res.candidates[0].content.parts[0].text; else if (res.promptFeedback?.blockReason) botText = `Blocked: ${res.promptFeedback.blockReason}.`; }
-                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: botText }); speakResponse(botText);
-            } catch (error) { console.error('API call error:', error); showError(`Error: ${error.message}`); await saveMessageToFirestore({ sender: 'bot', type: 'text', content: `Error: ${error.message}` });
-            } finally { showLoading(false); }
+        if (warnings.length > 0) {
+            console.warn("API KEY WARNINGS:\n" + warnings.join("\n") +
+                "\nIMPORTANT: For production, never expose API keys on the client-side. Use a backend proxy.");
+            // Optionally, show a non-blocking UI warning to the developer
+            // showError("Developer Notice: Placeholder API keys are in use. Check console for details.");
         }
-        function initializeSpeechRecognition() { /* ... same ... */ 
-            const SR_API = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SR_API) { speechRecognition = new SR_API(); speechRecognition.continuous = false; speechRecognition.lang = 'hi-IN'; speechRecognition.interimResults = false; speechRecognition.maxAlternatives = 1;
-                speechRecognition.onresult = (e) => { const r = e.results[0][0].transcript.trim(); if(userInput)userInput.value=r; stopRecording(); if(r)handleSendMessageWrapper(); else showError("Voice empty.");};
-                speechRecognition.onerror = (e) => { let m=`Speech error: ${e.error}.`; if(e.error==='no-speech')m="No speech."; else if(e.error==='audio-capture')m="Mic error."; else if(e.error==='not-allowed')m="Mic denied."; else if(e.error==='language-not-supported')m=`Lang '${speechRecognition.lang}' not supported for STT.`; showError(m); stopRecording();};
-                speechRecognition.onend = () => { if (isRecording) stopRecording(); };
-            } else { if(voiceInputBtn) voiceInputBtn.disabled = true; showError('Voice input not supported.'); }
-        }
-        async function getMurfAudioUrl(text, lang = 'en-US') { /* ... same ... */ 
-            if (!MURF_API_KEY || MURF_API_KEY==="YOUR_MURF_API_KEY" ) { console.warn("Murf key invalid/placeholder."); return null; }
-            const cfg={'en-US':{voice:'en-US-wesley',style:'Conversational'},'hi-IN':{voice:'en-UK-ruby',style:'Conversational'}}; const sel=cfg[lang]||cfg['en-US'];
-            const url="https://api.murf.ai/speech/generate"; const p={text,voice:sel.voice,style:sel.style,format:"mp3"};
-            try { const r=await fetch(url,{method:"POST",headers:{"api-key":MURF_API_KEY,"Content-Type":"application/json"},body:JSON.stringify(p)}); const d=await r.json();
-                if(!r.ok){showError(`Murf Err(${r.status}): ${d.message||'Unknown'}. Voice:${sel.voice}`);return null;} if(!d.audioUrl){showError(`Murf Err: No audioURL. ${d.message||''}`);return null;} return d.audioUrl;
-            } catch(err){showError(`Murf Ex: ${err.message}.`);return null;}
-        }
-        async function speakResponse(text) { /* ... same ... */ 
-            if(currentBotAudio&&!currentBotAudio.paused)currentBotAudio.pause(); if('speechSynthesis'in window)speechSynthesis.cancel(); let lang='en-US'; if(/[\u0900-\u097F]/.test(text))lang='hi-IN'; let spoken=false;
-            const audioUrl=await getMurfAudioUrl(text,lang); if(audioUrl){try{currentBotAudio=new Audio(audioUrl);await currentBotAudio.play();spoken=true;}catch(e){console.error("Murf play err:",e);currentBotAudio=null;}}
-            if(!spoken&&'speechSynthesis'in window){const utt=new SpeechSynthesisUtterance(text); utt.lang=lang; 
-                try { const voices = speechSynthesis.getVoices(); if(voices.length>0){const v=voices.find(i=>i.lang===lang);if(v)utt.voice=v;} } catch(e) { console.warn("Could not get/set voices for browser TTS", e); }
-                speechSynthesis.speak(utt);}else if(!spoken)console.warn('TTS N/A.');
-        }
-        function toggleVoiceInput(){ /* ... same ... */ if(!speechRecognition){showError('Voice N/A.');return;}if(isRecording)stopRecording();else startRecording();}
-        function startRecording() { /* ... same, but now using SVGs, so CSS handles .recording class for icon state ... */ 
-            try { if(userInput)userInput.value=""; if(currentBotAudio&&!currentBotAudio.paused)currentBotAudio.pause(); if('speechSynthesis'in window)speechSynthesis.cancel(); speechRecognition.start();isRecording=true; 
-                if(voiceInputBtn) { voiceInputBtn.classList.add('recording'); voiceInputBtn.title="Stop Recording"; }
-            }
-            catch(e){if(e.name==='InvalidStateError')stopRecording();else showError("Voice start error: "+e.message); isRecording=false; 
-                if(voiceInputBtn) { voiceInputBtn.classList.remove('recording'); voiceInputBtn.title="Voice Input"; }
-            }
-        }
-        function stopRecording(){ /* ... same, but now using SVGs ... */ if(speechRecognition&&isRecording)speechRecognition.stop();isRecording=false; if(voiceInputBtn) { voiceInputBtn.classList.remove('recording'); voiceInputBtn.title="Voice Input";}}
-        function handleFileSelect(e){ /* ... same ... */ const f=e.target.files[0];if(f&&f.type.startsWith('image/')){closeCameraModalAndStream();const r=new FileReader();r.onload=(ev)=>{if(imagePreview)imagePreview.src=ev.target.result;currentBase64Image=ev.target.result.split(',')[1];currentMimeType=f.type;if(imagePreviewContainer)imagePreviewContainer.classList.remove('hidden');};r.readAsDataURL(f);}else if(f){showError("Select image file.");if(fileInput)fileInput.value=null;}}
-        function removeImagePreview(){ /* ... same ... */ if(imagePreview)imagePreview.src='#';if(imagePreviewContainer)imagePreviewContainer.classList.add('hidden');currentBase64Image=null;currentMimeType=null;if(fileInput)fileInput.value=null;}
-async function openCameraModal() {
-            removeImagePreview(); // Clear any uploaded image first
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                try {
-                    mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); // Correct assignment
-                    if(videoPreviewModal) videoPreviewModal.srcObject = mediaStream; 
-                    if(cameraModal) cameraModal.classList.remove('hidden'); 
-                } catch (err) { 
-                    showError("Camera access error: " + err.message); 
-                } 
-            } else { 
-                showError("Camera API not supported."); 
-            } 
-        }        function closeCameraModalAndStream() { /* ... same ... */ if (mediaStream) { mediaStream.getTracks().forEach(track => track.stop()); mediaStream = null; } if(videoPreviewModal) videoPreviewModal.srcObject = null; if(cameraModal) cameraModal.classList.add('hidden'); }
-        function captureImageFromModal() { /* ... same ... */ if (!mediaStream || !videoPreviewModal || !videoPreviewModal.videoWidth) { showError("Camera not ready."); return; } const canvas = document.createElement('canvas'); canvas.width = videoPreviewModal.videoWidth; canvas.height = videoPreviewModal.videoHeight; canvas.getContext('2d').drawImage(videoPreviewModal, 0, 0, canvas.width, canvas.height); const dataUrl = canvas.toDataURL('image/png'); currentBase64Image = dataUrl.split(',')[1]; currentMimeType = 'image/png'; closeCameraModalAndStream(); showError("Image captured! Describe it or add text and send."); }
-        function containsVulgar(t){if(!t)return false;const V=["badword1","offensiveword","fuck","shit","asshole","bitch"];return V.some(b=>t.toLowerCase().includes(b));}
-        function startListeningAdapter() { /* ... same ... */ 
-            const mainChat = document.getElementById('interactiveChatSection');
-            const signInBtn = document.getElementById('googleSignInBtnHeader');
-            if (mainChat) { 
-                if(currentUserId) { mainChat.scrollIntoView({ behavior: 'smooth', block: 'start' }); setTimeout(() => { if (userInput) userInput.focus(); toggleVoiceInput(); }, 300); } 
-                else { if(signInBtn && signInBtn.style.display !== 'none') { signInBtn.click(); } else { showError("Please sign in with Google first to use voice chat."); } }
-            }
-        }
+    }
+    checkApiKeys(); // Run check on load
+
+    // Initial greeting if needed, or clear placeholder
+    // chatBox.innerHTML = ''; // Clear initial "Hello" if you want to start fresh or load history
+    // addMessageToChat("Hello! I am ChatIQ. How can I assist you today?", 'bot'); // Or a dynamic greeting
+    // speakResponse("Hello! I am ChatIQ. How can I assist you today?");
 
     </script>
 </body>
