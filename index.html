@@ -12,10 +12,17 @@
         .chat-bubble-bot { background-color: #D1FAE5; color: #065F46; border-radius: 0.75rem; padding: 0.75rem 1rem; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.05); word-wrap: break-word; }
         .image-chat-bubble { padding: 0.375rem; border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); max-width: 60%; display: inline-block; }
         .image-chat-bubble img { max-width: 100%; height: auto; border-radius: 0.25rem; object-fit: contain; max-height: 20rem; }
-        
+
+        .code-block-container { 
+    position: relative; 
+    margin-top: 0.5rem; 
+    margin-bottom: 0.5rem; 
+}
+
         .chat-bubble-bot pre, .chat-bubble-user pre { background-color: #1F2937; color: #F3F4F6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; margin-top: 0.5rem; margin-bottom: 0.5rem;}
         .chat-bubble-bot code, .chat-bubble-user code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 0.875em; }
 
+        
         #chatBoxWrapper::-webkit-scrollbar, #sessionsList::-webkit-scrollbar, main::-webkit-scrollbar { width: 6px; } /* Changed #chatBox to #chatBoxWrapper */
         #chatBoxWrapper::-webkit-scrollbar-track, #sessionsList::-webkit-scrollbar-track, main::-webkit-scrollbar-track { background: #F3F4F6; border-radius: 10px; }
         #chatBoxWrapper::-webkit-scrollbar-thumb, #sessionsList::-webkit-scrollbar-thumb, main::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 10px; }
@@ -293,7 +300,7 @@
 
         const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; 
         const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
-        const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form, without bullet points or unnecessary special characters. When a user asks "who are you", respond: 'I am a smart ChatIQ bot.' If the user asks about "your name", respond: 'I am a smart ChatIQ bot.' If the user asks "who made you", respond: 'I was made by ChatIQ.' --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
+        const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form. Use Markdown for formatting like lists (* item), bold (**bold**), or italics (*italics*) when it enhances clarity. For code, always use triple backticks. --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
 
         function showError(messageText) { 
             console.error("ChatIQ Error:", messageText); 
@@ -631,21 +638,76 @@
             });
         }
         
-        function addMessageToChat(text, sender) { 
-            if (!chatBox || !chatBoxWrapper) return; const msgDiv = document.createElement('div'); 
-            msgDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'py-1'); 
-            const bubble = document.createElement('div'); bubble.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot'); 
-            const rgx = /```(\w*)\n([\s\S]*?)\n```/gm; let lastIdx = 0; let hasCode = false; const frag = document.createDocumentFragment(); 
-            text.replace(rgx, (m, lang, code, off) => { 
-                hasCode = true; if (off > lastIdx) frag.appendChild(document.createTextNode(text.substring(lastIdx, off))); 
-                const pre = document.createElement('pre'); const c = document.createElement('code'); 
-                if (lang) c.classList.add(`language-${lang}`); c.textContent = code.trim(); 
-                pre.appendChild(c); frag.appendChild(pre); lastIdx = off + m.length; return m; 
+                function addMessageToChat(text, sender) { 
+            if (!chatBox || !chatBoxWrapper) return; 
+            const messageDiv = document.createElement('div'); 
+            messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'py-1'); 
+            const bubbleDiv = document.createElement('div'); 
+            bubbleDiv.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot'); 
+            
+            const codeBlockRegex = /```(\w*)\n([\s\S]*?)\n```/gm; 
+            let lastIndex = 0; 
+            const contentFragment = document.createDocumentFragment(); 
+
+            text.replace(codeBlockRegex, (match, lang, codeContent, offset) => { 
+                // Add text before the code block
+                if (offset > lastIndex) { 
+                    const textNode = document.createTextNode(text.substring(lastIndex, offset));
+                    contentFragment.appendChild(textNode); 
+                } 
+                
+                // Create container for code block and copy button
+                const codeContainer = document.createElement('div');
+                codeContainer.classList.add('code-block-container'); // Uses the new CSS class
+
+                const preElement = document.createElement('pre'); 
+                const codeElement = document.createElement('code'); 
+                if (lang) codeElement.classList.add(`language-${lang}`); 
+                codeElement.textContent = codeContent.trim(); // Ensure only code content is set here
+                preElement.appendChild(codeElement); 
+                codeContainer.appendChild(preElement);
+
+                // Create and add copy button
+                const copyButton = document.createElement('button');
+                copyButton.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg><span class="ml-1">Copy</span>`;
+                copyButton.classList.add('absolute', 'top-2', 'right-2', 'bg-slate-700', 'hover:bg-slate-600', 'text-white', 'text-xs', 'font-semibold', 'py-1', 'px-2', 'rounded-md', 'opacity-75', 'hover:opacity-100', 'transition-opacity', 'flex', 'items-center', 'z-10'); // Added z-10
+                copyButton.title = "Copy code";
+                copyButton.addEventListener('click', () => {
+                    const codeToCopy = codeElement.textContent;
+                    const tempTextArea = document.createElement('textarea');
+                    tempTextArea.value = codeToCopy;
+                    document.body.appendChild(tempTextArea);
+                    tempTextArea.select();
+                    try {
+                        document.execCommand('copy');
+                        copyButton.innerHTML = `<svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="ml-1 text-green-400">Copied!</span>`;
+                        setTimeout(() => {
+                           copyButton.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg><span class="ml-1">Copy</span>`;
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy code: ', err);
+                        showError("Failed to copy code. Your browser might not support this feature or there was an error.");
+                    }
+                    document.body.removeChild(tempTextArea);
+                });
+                codeContainer.appendChild(copyButton);
+                contentFragment.appendChild(codeContainer); 
+                lastIndex = offset + match.length; 
+                return match; // Required by .replace
             }); 
-            if (lastIdx < text.length) frag.appendChild(document.createTextNode(text.substring(lastIdx))); 
-            if (frag.hasChildNodes()) bubble.appendChild(frag); else if (!hasCode) bubble.textContent = text; 
-            msgDiv.appendChild(bubble); chatBox.appendChild(msgDiv); chatBoxWrapper.scrollTop = chatBoxWrapper.scrollHeight; 
+
+            // Add any remaining text after the last code block (or all text if no code blocks)
+            if (lastIndex < text.length) { 
+                const textNode = document.createTextNode(text.substring(lastIndex));
+                contentFragment.appendChild(textNode); 
+            } 
+
+            bubbleDiv.appendChild(contentFragment); 
+            messageDiv.appendChild(bubbleDiv); 
+            chatBox.appendChild(messageDiv); 
+            if(chatBoxWrapper) chatBoxWrapper.scrollTop = chatBoxWrapper.scrollHeight; 
         }
+
 
         function addImageToChatLog(base64, mime, sender) { 
             if (!chatBox || !chatBoxWrapper) return; const div = document.createElement('div'); 
