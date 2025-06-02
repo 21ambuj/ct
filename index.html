@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>ChatIQ - Unified AI Chat</title>
+    <title>ChatIQ - AI Chat with History & New Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -12,23 +12,40 @@
         .chat-bubble-bot { background-color: #D1FAE5; color: #065F46; border-radius: 0.75rem; padding: 0.75rem 1rem; max-width: 80%; box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06); word-wrap: break-word; }
         .image-chat-bubble { padding: 0.375rem; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1); max-width: 60%; display: inline-block; }
         .image-chat-bubble img { max-width: 100%; height: auto; border-radius: 0.25rem; object-fit: contain; max-height: 20rem; }
+        
+        /* Code Block Styling */
+        .chat-bubble-bot pre, .chat-bubble-user pre { 
+            background-color: #1F2937; /* gray-800 */
+            color: #F3F4F6; /* gray-100 */
+            padding: 1rem; 
+            border-radius: 0.5rem; /* rounded-lg */
+            overflow-x: auto; 
+            white-space: pre-wrap; /* Allow wrapping but preserve formatting */
+            word-wrap: break-word;
+        }
+        .chat-bubble-bot code, .chat-bubble-user code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.875em; /* Slightly smaller than bubble text */
+        }
+
         #chatBox::-webkit-scrollbar { width: 8px; }
         #chatBox::-webkit-scrollbar-track { background: #F3F4F6; border-radius: 10px; }
         #chatBox::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 10px; }
         #chatBox::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
         .chat-input-bar-container { background-color: #F9FAFB; border-top: 1px solid #E5E7EB; }
-        .control-button { border-radius: 0.5rem; padding: 0.75rem; /* p-3 */ transition: background-color 0.15s ease-in-out; display: flex; align-items: center; justify-content: center; }
+        .control-button { border-radius: 0.5rem; padding: 0.75rem; transition: background-color 0.15s ease-in-out; display: flex; align-items: center; justify-content: center; }
         .control-button.glassmorphism { background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px); }
         .control-button.glassmorphism:hover { background-color: rgba(255, 255, 255, 0.3); }
-        .control-button img { width: 1.25rem; height: 1.25rem; /* w-5 h-5 */ }
-        @media (min-width: 640px) { .control-button img { width: 1.5rem; height: 1.5rem; /* sm:w-6 sm:h-6 */ } }
+        .control-button svg { width: 1.25rem; height: 1.25rem; /* w-5 h-5 */ color: white; /* SVGs in glassmorphism buttons should be white */ }
+        @media (min-width: 640px) { .control-button svg { width: 1.5rem; height: 1.5rem; /* sm:w-6 sm:h-6 */ } }
         @keyframes textGradientShiftSubtle { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .animate-text-gradient-subtle { background-size: 250% 250%; animation: textGradientShiftSubtle 8s ease infinite; }
+        #voiceInputBtn.recording .mic-icon-path { fill: #ef4444 !important; /* Red 500 for recording state */ }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <header class="relative bg-gradient-to-r from-cyan-500 to-indigo-600 text-white py-4 sm:py-6 text-center shadow-xl overflow-hidden">
+    <header class="relative bg-gradient-to-r from-cyan-500 to-indigo-600 text-white py-4 sm:py-6 shadow-xl overflow-hidden">
         <div class="container mx-auto px-4 flex justify-between items-center">
             <div class="text-left">
                 <h1 class="text-2xl font-black tracking-tight sm:text-3xl lg:text-4xl 
@@ -38,11 +55,12 @@
                     Your AI Companion
                 </p>
             </div>
-            <div id="authContainer" class="text-right">
-                <button id="googleSignInBtn" class="bg-white text-indigo-600 hover:bg-indigo-50 text-xs sm:text-sm font-semibold py-2 px-3 sm:px-4 rounded-lg shadow-md transition duration-150 ease-in-out">Sign in with Google</button>
-                <div id="userDetails" class="hidden items-center">
-                    <span id="userDisplayName" class="text-xs sm:text-sm mr-2 sm:mr-3"></span>
-                    <button id="signOutBtn" class="bg-pink-500 hover:bg-pink-600 text-white text-xs sm:text-sm font-semibold py-2 px-3 sm:px-4 rounded-lg shadow-md transition duration-150 ease-in-out">Sign Out</button>
+            <div id="authContainer" class="text-right flex items-center space-x-2">
+                <button id="newChatBtn" class="hidden bg-green-500 hover:bg-green-600 text-white text-xs sm:text-sm font-semibold py-2 px-3 rounded-lg shadow-md transition duration-150 ease-in-out">New Chat</button>
+                <button id="googleSignInBtnHeader" class="bg-white text-indigo-600 hover:bg-indigo-50 text-xs sm:text-sm font-semibold py-2 px-3 sm:px-4 rounded-lg shadow-md transition duration-150 ease-in-out">Sign in with Google</button>
+                <div id="userDetailsHeader" class="hidden items-center">
+                    <span id="userDisplayNameHeader" class="text-xs sm:text-sm mr-2 sm:mr-3"></span>
+                    <button id="signOutBtnHeader" class="bg-pink-500 hover:bg-pink-600 text-white text-xs sm:text-sm font-semibold py-2 px-3 sm:px-4 rounded-lg shadow-md transition duration-150 ease-in-out">Sign Out</button>
                 </div>
             </div>
         </div>
@@ -54,18 +72,17 @@
            bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 
            drop-shadow-md 
            animate-text-gradient-subtle 
-           inline-flex items-center justify-center space-x-1 sm:space-x-2 w-full">
+           inline-flex items-center justify-center space-x-1 sm:space-x-2 w-full" id="swipeDownPrompt" style="display: none;">
            <span>Scroll to Discover</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 sm:w-5 sm:h-5 ml-1 opacity-90">
               <path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.69l2.47-2.47a.75.75 0 111.06 1.06l-3.75 3.75a.75.75 0 01-1.06 0L6.22 13.03a.75.75 0 011.06-1.06l2.47 2.47V3.75A.75.75 0 0110 3z" clip-rule="evenodd" />
             </svg>
         </h4>
-
+        
         <section id="interactiveChatSection" 
                  class="w-full mx-auto sm:max-w-2xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl
                         bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col" 
-                 style="min-height: 65vh; max-height:80vh; display: none;"> {/* Initially hidden until user signs in */}
-
+                 style="min-height: 65vh; max-height:80vh; display: none;"> 
             <div class="flex-grow overflow-y-auto p-3 sm:p-4 space-y-3" id="chatBoxWrapper"> 
                 <div id="imagePreviewContainer" class="hidden flex flex-col items-center space-y-2 mb-3">
                     <img id="imagePreview" src="#" alt="Image Preview" class="max-w-full h-auto max-h-48 sm:max-h-60 rounded-lg shadow-md border-2 border-gray-200"/>
@@ -82,7 +99,7 @@
                     </div>
                 </div>
                 <div id="chatBox" class="space-y-4"> 
-                    {/* Chat messages will be loaded here by Firestore listener */}
+                    
                 </div>
             </div>
 
@@ -102,18 +119,28 @@
                                   focus:ring-2 focus:ring-sky-300 focus:bg-slate-900/40 
                                   transition duration-200 ease-in-out backdrop-blur-sm shadow-sm"/>
                     <button id="sendBtn" title="Send Message" class="control-button glassmorphism">
-                         <img src="https://placehold.co/24x24/FFFFFF/1F2937?text=➤&font=arial" alt="Send">
-                         </button>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+                            <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+                        </svg>
+                    </button>
                     <button id="fileUploadBtn" title="Upload Image" class="control-button glassmorphism">
-                        <img src="https://placehold.co/24x24/FFFFFF/1F2937?text=📎&font=arial" alt="Upload">
-                        </button>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+                            <path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V4.5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5V15c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9c0 1.66 1.34 3 3 3s3-1.34 3-3V4.5C16 2.01 13.99 0 11.5 0S7 2.01 7 4.5V15c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"></path>
+                        </svg>
+                    </button>
                     <input type="file" id="fileInput" class="hidden" accept="image/*">
                     <button id="cameraBtn" title="Use Camera" class="control-button glassmorphism">
-                        <img src="https://placehold.co/24x24/FFFFFF/1F2937?text=📷&font=arial" alt="Camera">
-                        </button>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 sm:w-6 sm:h-6">
+                            <path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" />
+                            <path fill-rule="evenodd" d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.426 1.458 2.426 2.915V19.5a2.25 2.25 0 01-2.25 2.25H5.25a2.25 2.25 0 01-2.25-2.25V9.525c0-1.456.994-2.676 2.426-2.915.382-.064.766-.123 1.152-.177.465-.067.87-.327 1.11-.71l.82-1.318a2.996 2.996 0 012.332-1.39zM12 6.75a5.25 5.25 0 100 10.5 5.25 5.25 0 000-10.5z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
                     <button id="voiceInputBtn" title="Voice Input" class="control-button glassmorphism">
-                        <img id="voiceIconImg" src="https://placehold.co/24x24/FFFFFF/1F2937?text=🎤&font=arial" alt="Voice Input">
-                        </button>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mic-icon w-5 h-5 sm:w-6 sm:h-6">
+                            <path class="mic-icon-path" fill-rule="evenodd" d="M12.75 3.006a3.75 3.75 0 013.75 3.75v6.75a3.75 3.75 0 01-7.5 0v-6.75a3.75 3.75 0 013.75-3.75zM8.25 8.254a.75.75 0 000 1.5v.75c0 1.657 1.343 3 3 3s3-1.343 3-3v-.75a.75.75 0 000-1.5h-.75a2.25 2.25 0 01-2.25-2.25v-.75a.75.75 0 00-1.5 0v.75A2.25 2.25 0 019 8.254h-.75zM15 13.5a.75.75 0 001.5 0v-2.628A6.002 6.002 0 006.75 8.25v2.628a.75.75 0 001.5 0V8.25c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5v5.25z" clip-rule="evenodd" fill="currentColor"/>
+                            <path class="mic-icon-path" d="M6 10.5a.75.75 0 01.75.75v.75a4.5 4.5 0 009 0V11.25a.75.75 0 011.5 0v.75a6 6 0 01-12 0V11.25A.75.75 0 016 10.5zM12 16.5a.75.75 0 00-.75.75v.75h1.5v-.75a.75.75 0 00-.75-.75z" fill="currentColor"/>
+                        </svg>
+                    </button>
                 </div>
                 <h6 class="text-slate-500 text-center text-xs mt-3 sm:mt-4">ChatIQ can make mistakes. Please recheck and verify information.</h6>
             </div>
@@ -127,11 +154,15 @@
             <div class="mt-6">
                 <button onclick="startListeningAdapter()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-md transition text-lg font-medium flex items-center justify-center mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="mr-2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm7 9a7 7 0 0 1-14 0H3a9 9 0 0 0 8 8.94V22h2v-3.06A9 9 0 0 0 21 10h-2z"></path></svg>
-                    Start Voice Chat
+                    Start Chat by login Below
                 </button>
             </div>
         </section>
         
+        <div id="signInPromptBelowVoiceBot" class="text-center text-gray-600 p-4 mt-4" style="display: none;"> 
+            <button id="inlineSignInBtn" class="text-indigo-600 hover:text-indigo-800 font-bold  text-xl bg-green-500 rounded px-2">Sign in with Google</button><br> to use all features and save your chat history.
+        </div>
+
         <section id="featuresSection" class="mt-8">
              <h2 class="text-2xl font-semibold text-center mb-8">Key Features</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -191,13 +222,16 @@
         const analytics = getAnalytics(app);
         const appIdForPath = firebaseConfig.appId;
 
-        let chatBox, userInput, sendBtn, fileUploadBtn, fileInput, cameraBtn, voiceInputBtn, imagePreviewContainer, imagePreview, removeImageBtn, videoPreviewContainer, videoPreview, captureImageBtn, stopCameraBtn, loadingIndicator, errorMessageDisplay, voiceIconImg, googleSignInBtn, userDetailsDiv, userDisplayNameSpan, signOutBtn, interactiveChatSection, alternativeVoiceSection;
+        let chatBox, userInput, sendBtn, fileUploadBtn, fileInput, cameraBtn, voiceInputBtn, imagePreviewContainer, imagePreview, removeImageBtn, videoPreviewContainer, videoPreview, captureImageBtn, stopCameraBtn, loadingIndicator, errorMessageDisplay, voiceIconImg, googleSignInBtnHeader, userDetailsHeaderDiv, userDisplayNameHeaderSpan, signOutBtnHeader, interactiveChatSection, alternativeVoiceSection, swipeDownPromptElement, newChatBtn, signInPromptBelowVoiceBot, inlineSignInBtn;
         let currentBase64Image = null, currentMimeType = null, mediaStream = null, speechRecognition = null, isRecording = false, currentBotAudio = null, currentUserId = null, messagesUnsubscribe = null;
 
-        const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; // <-- REPLACE!
-        const MURF_API_KEY = "ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e7";   // <-- REPLACE!
+        // --- IMPORTANT: REPLACE WITH YOUR ACTUAL API KEYS ---
+        const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; 
+        const MURF_API_KEY = "ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e7";   
+        // --- END OF API KEY PLACEHOLDERS ---
+
         const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GOOGLE_API_KEY}`;
-        const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. CORE LANGUAGE RULE: You MUST identify the language of the 'USER QUERY'. Your entire response, including any predefined answers, MUST be in that same language. RESPONSE STYLE FOR NATURAL SPEECH (IMPORTANT FOR VOICE OUTPUT): Your response will be read aloud. Structure answers as natural, flowing, conversational sentences. CRITICAL: AVOID using list markers like asterisks (*), hyphens (-), or bullet points (•). Integrate list items into full sentences. Aim for concise responses (5-6 lines or ~50 words for simple questions), but provide detail for complex requests, respecting language and spoken-style. You are smart and can answer any question. Answer humanized, in user's language. PREDEFINED ANSWERS (MUST BE TRANSLATED & SPOKEN NATURALLY): 1. "who are you" -> 'I am a smart ChatIQ bot.' 2. "your name" -> 'I am a smart ChatIQ bot.' (e.g., Hindi: 'मैं एक स्मार्ट चैटआईक्यू बॉट हूँ।'). 3. "who made you" -> 'I was made by ChatIQ.' --- User's request below. Determine language. If predefined, use translated answer. Otherwise, answer per guidelines. If image provided, consider it.`;
+        const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. CORE LANGUAGE RULE: You MUST identify the language of the 'USER QUERY'. Your entire response, including any predefined answers, MUST be in that same language. RESPONSE STYLE FOR NATURAL SPEECH (IMPORTANT FOR VOICE OUTPUT): Your response will be read aloud. Structure answers as natural, flowing, conversational sentences. CRITICAL: AVOID using list markers like asterisks (*), hyphens (-), or bullet points (•). Instead, integrate list items into full sentences. When providing code examples, ALWAYS enclose them in Markdown code blocks with language specification if possible (e.g., \`\`\`python\\nprint("Hello")\\n\`\`\`). Aim for concise responses (5-6 lines or ~50 words for simple questions), but provide detail for complex requests, respecting language and spoken-style. You are smart and can answer any question. Answer humanized, in user's language. PREDEFINED ANSWERS (MUST BE TRANSLATED & SPOKEN NATURALLY): 1. "who are you" -> 'I am a smart ChatIQ bot.' 2. "your name" -> 'I am a smart ChatIQ bot.' (e.g., Hindi: 'मैं एक स्मार्ट चैटआईक्यू बॉट हूँ।'). 3. "who made you" -> 'I was made by ChatIQ.' --- User's request below. Determine language. If predefined, use translated answer. Otherwise, answer per guidelines. If image provided, consider it.`;
 
         function showError(messageText) {
             console.log("showError called with:", messageText);
@@ -217,14 +251,19 @@
             captureImageBtn = document.getElementById('captureImageBtn'); stopCameraBtn = document.getElementById('stopCameraBtn');
             loadingIndicator = document.getElementById('loadingIndicator'); errorMessageDisplay = document.getElementById('errorMessage'); 
             voiceIconImg = document.getElementById('voiceIconImg');
-            googleSignInBtn = document.getElementById('googleSignInBtn');
-            userDetailsDiv = document.getElementById('userDetails');
-            userDisplayNameSpan = document.getElementById('userDisplayName');
-            signOutBtn = document.getElementById('signOutBtn');
+            googleSignInBtnHeader = document.getElementById('googleSignInBtnHeader');
+            userDetailsHeaderDiv = document.getElementById('userDetailsHeader');
+            userDisplayNameHeaderSpan = document.getElementById('userDisplayNameHeader');
+            signOutBtnHeader = document.getElementById('signOutBtnHeader');
             interactiveChatSection = document.getElementById('interactiveChatSection');
             alternativeVoiceSection = document.getElementById('alternativeVoiceSection');
+            swipeDownPromptElement = document.getElementById('swipeDownPrompt');
+            newChatBtn = document.getElementById('newChatBtn');
+            signInPromptBelowVoiceBot = document.getElementById('signInPromptBelowVoiceBot');
+            inlineSignInBtn = document.getElementById('inlineSignInBtn');
 
-            if(GOOGLE_API_KEY === "YOUR_GEMINI_API_KEY"||MURF_API_KEY === "YOUR_MURF_API_KEY"){showError("Placeholder API keys detected. Update in script.");}
+
+            if(GOOGLE_API_KEY === "YOUR_GEMINI_API_KEY"||MURF_API_KEY === "YOUR_MURF_API_KEY"){showError("Placeholder API keys for Gemini/Murf. Please update them in the script.");}
             
             initializeSpeechRecognition(); 
             setupEventListeners();
@@ -232,8 +271,11 @@
         });
         
         function setupEventListeners() {
-            if(googleSignInBtn) googleSignInBtn.addEventListener('click', signInWithGoogle);
-            if(signOutBtn) signOutBtn.addEventListener('click', signOutUser);
+            if(googleSignInBtnHeader) googleSignInBtnHeader.addEventListener('click', signInWithGoogle);
+            if(signOutBtnHeader) signOutBtnHeader.addEventListener('click', signOutUser);
+            if(newChatBtn) newChatBtn.addEventListener('click', startNewChat);
+            if(inlineSignInBtn) inlineSignInBtn.addEventListener('click', signInWithGoogle); // New sign-in trigger
+
             if(sendBtn) sendBtn.addEventListener('click', handleSendMessageWrapper);
             if(userInput) userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessageWrapper(); }});
             if(fileUploadBtn) fileUploadBtn.addEventListener('click', () => fileInput.click());
@@ -245,19 +287,13 @@
             if(voiceInputBtn) voiceInputBtn.addEventListener('click', toggleVoiceInput);
         }
 
-        async function signInWithGoogle() {
+        async function signInWithGoogle() { /* ... same as before ... */ 
             if (!auth) { showError("Firebase Auth not initialized."); return; }
             const provider = new GoogleAuthProvider();
-            try {
-                const result = await signInWithPopup(auth, provider);
-                // const user = result.user; // Handled by onAuthStateChanged
-            } catch (error) {
-                console.error("Google Sign-In Error:", error);
-                showError(`Google Sign-In Failed: ${error.message} (Code: ${error.code})`);
-            }
+            try { await signInWithPopup(auth, provider); } 
+            catch (error) { console.error("Google Sign-In Error:", error); showError(`Google Sign-In Failed: ${error.message} (Code: ${error.code})`); }
         }
-
-        async function signOutUser() {
+        async function signOutUser() { /* ... same as before ... */ 
             if (!auth) { showError("Firebase Auth not initialized."); return; }
             try { await signOut(auth); } 
             catch (error) { console.error("Sign Out Error:", error); showError("Error signing out: " + error.message); }
@@ -268,31 +304,53 @@
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     currentUserId = user.uid;
-                    if(userDisplayNameSpan) userDisplayNameSpan.textContent = `Hi, ${user.displayName || user.email.split('@')[0] || 'User'}!`;
-                    if(googleSignInBtn) googleSignInBtn.style.display = 'none';
-                    if(userDetailsDiv) userDetailsDiv.style.display = 'flex';
+                    if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = `Hi, ${user.displayName || user.email.split('@')[0] || 'User'}!`;
+                    if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'none';
+                    if(newChatBtn) newChatBtn.style.display = 'inline-block'; // Show New Chat button
+                    if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'flex';
                     if(interactiveChatSection) interactiveChatSection.style.display = 'flex';
-                    if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'none'; // Hide alternative voice CTAs
+                    if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'none'; 
+                    if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'none';
+                    if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'inline-flex';
                     loadChatHistory(currentUserId);
                 } else {
                     currentUserId = null;
-                    if(userDisplayNameSpan) userDisplayNameSpan.textContent = '';
-                    if(googleSignInBtn) googleSignInBtn.style.display = 'inline-block';
-                    if(userDetailsDiv) userDetailsDiv.style.display = 'none';
+                    if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = '';
+                    if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'inline-block';
+                    if(newChatBtn) newChatBtn.style.display = 'none'; // Hide New Chat button
+                    if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'none';
                     if(interactiveChatSection) interactiveChatSection.style.display = 'none';
-                    if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'block'; // Show alternative voice CTAs
+                    if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'block';
+                    if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'block';
+                    if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'none';
                     if(messagesUnsubscribe) messagesUnsubscribe(); 
                     if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Please sign in with Google to use ChatIQ and see your history.</div>';
                 }
             });
         }
+        
+        function startNewChat() {
+            if (!currentUserId) {
+                showError("Please sign in to start a new chat.");
+                return;
+            }
+            console.log("Starting new chat (UI reset)");
+            if (chatBox) chatBox.innerHTML = ''; // Clear the visual chat area
+            // Add initial bot message for the new chat
+            const welcomeMsg = "New chat started! How can I help you now?";
+            addMessageToChat(welcomeMsg, "bot");
+            // Note: This simplified version doesn't create a separate session in Firestore.
+            // New messages will append to the existing user's history.
+            // True session management would require updating Firestore paths and session IDs.
+            if (userInput) userInput.focus(); // Focus input for new chat
+        }
 
-        async function saveMessageToFirestore(messageData) { 
+        async function saveMessageToFirestore(messageData) { /* ... same as before ... */ 
             if (!currentUserId) { showError("Not signed in. Message not saved."); return; }
             try { const path = `artifacts/${appIdForPath}/users/${currentUserId}/chat_history`; await addDoc(collection(db, path), { ...messageData, userId: currentUserId, timestamp: serverTimestamp() }); } 
             catch (error) { console.error("Error saving to Firestore:", error); showError("Error saving message."); }
         }
-        function loadChatHistory(userId) { 
+        function loadChatHistory(userId) { /* ... same as before ... */ 
             if (!db || !chatBox) { console.error("Firestore DB or ChatBox not ready!"); return; }
             if (messagesUnsubscribe) messagesUnsubscribe(); 
             const path = `artifacts/${appIdForPath}/users/${userId}/chat_history`;
@@ -300,18 +358,63 @@
             chatBox.innerHTML = ''; 
             messagesUnsubscribe = onSnapshot(q, (snapshot) => {
                 chatBox.innerHTML = ''; let count = 0;
-                snapshot.forEach((doc) => { count++; const msg = doc.data(); if (msg.type === 'image') addImageToChatLog(msg.content, msg.mimeType, msg.sender); else addMessageToChat(msg.content, msg.sender); });
+                snapshot.forEach((doc) => { count++; const msg = doc.data(); if (msg.type === 'image') addImageToChatLog(msg.content, msg.mimeType, msg.sender); else addMessageToChat(msg.content, msg.sender, msg.isCodeBlock); }); // Pass isCodeBlock
                 if (count === 0 && !snapshot.metadata.hasPendingWrites) { const welcome="Welcome to ChatIQ! How can I assist you today?"; addMessageToChat(welcome, "bot"); }
                 if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; 
             }, (error) => { console.error("Error loading history:", error); showError("Failed to load history: " + error.message); });
         }
         
-        function addMessageToChat(text, sender) { if (!chatBox) return; const div = document.createElement('div'); div.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'py-1'); const bubble = document.createElement('div'); bubble.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot'); bubble.textContent = text; div.appendChild(bubble); chatBox.appendChild(div); if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; }
-        function addImageToChatLog(base64, mime, sender) { if (!chatBox) return; const div = document.createElement('div'); div.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'my-1'); const bubble = document.createElement('div'); bubble.classList.add('image-chat-bubble'); bubble.style.backgroundColor = sender === 'user' ? '#DBEAFE' : '#D1FAE5'; const img = document.createElement('img'); img.src = `data:${mime};base64,${base64}`; img.alt = sender === 'user' ? "User image" : "Bot image"; bubble.appendChild(img); div.appendChild(bubble); chatBox.appendChild(div); if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; }
-        function showLoading(isLoading) { if(!loadingIndicator) return; loadingIndicator.classList.toggle('hidden', !isLoading); }
+        function addMessageToChat(text, sender, isCode = false) {
+            if (!chatBox) return;
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'py-1');
+            
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot');
 
-        async function handleSendMessageWrapper() { if (!userInput || !chatBox || !currentUserId) { showError("Chat not ready. Please sign in / wait."); return; } await handleSendMessage(); }
-        async function handleSendMessage() {
+            // Basic Markdown code block detection and rendering
+            const codeBlockRegex = /```(\w*)\n([\s\S]*?)\n```/gm;
+            let lastIndex = 0;
+            let hasCode = false;
+
+            text.replace(codeBlockRegex, (match, lang, codeContent, offset) => {
+                hasCode = true;
+                // Add text before the code block
+                if (offset > lastIndex) {
+                    const textNode = document.createTextNode(text.substring(lastIndex, offset));
+                    bubbleDiv.appendChild(textNode);
+                }
+                // Add the code block
+                const preElement = document.createElement('pre');
+                const codeElement = document.createElement('code');
+                if (lang) {
+                    codeElement.classList.add(`language-${lang}`);
+                }
+                codeElement.textContent = codeContent.trim();
+                preElement.appendChild(codeElement);
+                bubbleDiv.appendChild(preElement);
+                
+                lastIndex = offset + match.length;
+                return match; // required for replace
+            });
+
+            // Add any remaining text after the last code block, or all text if no code blocks
+            if (lastIndex < text.length) {
+                const textNode = document.createTextNode(text.substring(lastIndex));
+                bubbleDiv.appendChild(textNode);
+            } else if (!hasCode) { // If no code blocks at all, just set textContent
+                 bubbleDiv.textContent = text;
+            }
+            
+            messageDiv.appendChild(bubbleDiv);
+            chatBox.appendChild(messageDiv);
+            if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function addImageToChatLog(base64, mime, sender) { /* ... same as before ... */ if (!chatBox) return; const div = document.createElement('div'); div.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'my-1'); const bubble = document.createElement('div'); bubble.classList.add('image-chat-bubble'); bubble.style.backgroundColor = sender === 'user' ? '#DBEAFE' : '#D1FAE5'; const img = document.createElement('img'); img.src = `data:${mime};base64,${base64}`; img.alt = sender === 'user' ? "User image" : "Bot image"; bubble.appendChild(img); div.appendChild(bubble); chatBox.appendChild(div); if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; }
+        function showLoading(isLoading) { /* ... same as before ... */ if(!loadingIndicator) return; loadingIndicator.classList.toggle('hidden', !isLoading); }
+        async function handleSendMessageWrapper() { /* ... same as before ... */ if (!userInput || !chatBox || !currentUserId) { showError("Chat not ready. Please sign in / wait."); return; } await handleSendMessage(); }
+        async function handleSendMessage() { /* ... same as before, but ensure botPersonaInstructions is the latest ... */
             const textContent = userInput.value.trim(); const img64 = currentBase64Image; const imgMime = currentMimeType;
             if (!textContent && !img64) { showError("Please type, speak, or upload an image."); return; }
             if (img64 && imgMime) await saveMessageToFirestore({ sender: 'user', type: 'image', content: img64, mimeType: imgMime });
@@ -319,7 +422,7 @@
             if(userInput) userInput.value = ''; removeImagePreview(); showLoading(true);
             if (containsVulgar(textContent)) { const msg = "I cannot assist with that."; await saveMessageToFirestore({ sender: 'bot', type: 'text', content: msg }); showLoading(false); speakResponse(msg); return; }
             try {
-                let parts = []; let prompt = botPersonaInstructions;
+                let parts = []; let prompt = botPersonaInstructions; // Use updated instructions
                 if (textContent) prompt += "\n\nUSER QUERY TEXT: " + textContent; else if (img64 && !textContent) prompt += "\n\nUSER QUERY TEXT: (No text provided, analyze image)";
                 parts.push({ text: prompt }); if (img64 && imgMime) parts.push({ inlineData: { mimeType: imgMime, data: img64 } });
                 const payload = { contents: [{ role: "user", parts: parts }] };
@@ -331,8 +434,7 @@
             } catch (error) { console.error('API call error:', error); showError(`Error: ${error.message}`); await saveMessageToFirestore({ sender: 'bot', type: 'text', content: `Error: ${error.message}` });
             } finally { showLoading(false); }
         }
-        
-        function initializeSpeechRecognition() { 
+        function initializeSpeechRecognition() { /* ... same as before ... */ 
             const SR_API = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (SR_API) { speechRecognition = new SR_API(); speechRecognition.continuous = false; speechRecognition.lang = 'hi-IN'; speechRecognition.interimResults = false; speechRecognition.maxAlternatives = 1;
                 speechRecognition.onresult = (e) => { const r = e.results[0][0].transcript.trim(); if(userInput)userInput.value=r; stopRecording(); if(r)handleSendMessageWrapper(); else showError("Voice empty.");};
@@ -340,7 +442,7 @@
                 speechRecognition.onend = () => { if (isRecording) stopRecording(); };
             } else { if(voiceInputBtn) voiceInputBtn.disabled = true; showError('Voice input not supported.'); }
         }
-        async function getMurfAudioUrl(text, lang = 'en-US') { 
+        async function getMurfAudioUrl(text, lang = 'en-US') { /* ... same as before ... */ 
             if (!MURF_API_KEY || MURF_API_KEY==="YOUR_MURF_API_KEY" ) { console.warn("Murf key invalid/placeholder."); return null; }
             const cfg={'en-US':{voice:'en-US-wesley',style:'Conversational'},'hi-IN':{voice:'en-UK-ruby',style:'Conversational'}}; const sel=cfg[lang]||cfg['en-US'];
             const url="https://api.murf.ai/speech/generate"; const p={text,voice:sel.voice,style:sel.style,format:"mp3"};
@@ -348,35 +450,35 @@
                 if(!r.ok){showError(`Murf Err(${r.status}): ${d.message||'Unknown'}. Voice:${sel.voice}`);return null;} if(!d.audioUrl){showError(`Murf Err: No audioURL. ${d.message||''}`);return null;} return d.audioUrl;
             } catch(err){showError(`Murf Ex: ${err.message}.`);return null;}
         }
-        async function speakResponse(text) { 
+        async function speakResponse(text) { /* ... same as before ... */ 
             if(currentBotAudio&&!currentBotAudio.paused)currentBotAudio.pause(); if('speechSynthesis'in window)speechSynthesis.cancel(); let lang='en-US'; if(/[\u0900-\u097F]/.test(text))lang='hi-IN'; let spoken=false;
             const audioUrl=await getMurfAudioUrl(text,lang); if(audioUrl){try{currentBotAudio=new Audio(audioUrl);await currentBotAudio.play();spoken=true;}catch(e){console.error("Murf play err:",e);currentBotAudio=null;}}
             if(!spoken&&'speechSynthesis'in window){const utt=new SpeechSynthesisUtterance(text); utt.lang=lang; 
                 try { const voices = speechSynthesis.getVoices(); if(voices.length>0){const v=voices.find(i=>i.lang===lang);if(v)utt.voice=v;} } catch(e) { console.warn("Could not get/set voices for browser TTS", e); }
                 speechSynthesis.speak(utt);}else if(!spoken)console.warn('TTS N/A.');
         }
-        function toggleVoiceInput(){ if(!speechRecognition){showError('Voice N/A.');return;}if(isRecording)stopRecording();else startRecording();}
-        function startRecording() { 
+        function toggleVoiceInput(){ /* ... same as before ... */ if(!speechRecognition){showError('Voice N/A.');return;}if(isRecording)stopRecording();else startRecording();}
+        function startRecording() { /* ... same as before, update voiceIconImg.src with your actual recording icon placeholder */ 
             try { if(userInput)userInput.value=""; if(currentBotAudio&&!currentBotAudio.paused)currentBotAudio.pause(); if('speechSynthesis'in window)speechSynthesis.cancel(); speechRecognition.start();isRecording=true; if(voiceIconImg)voiceIconImg.src='https://placehold.co/24x24/ff0000/ffffff?text=●&font=arial&bold'; if(voiceInputBtn)voiceInputBtn.title="Stop Recording";}
-            catch(e){if(e.name==='InvalidStateError')stopRecording();else showError("Voice start error: "+e.message); isRecording=false; if(voiceIconImg)voiceIconImg.src='https://placehold.co/24x24/ffffff/000000?text=🎤&font=arial';if(voiceInputBtn)voiceInputBtn.title="Voice Input";}
+            catch(e){if(e.name==='InvalidStateError')stopRecording();else showError("Voice start error: "+e.message); isRecording=false; if(voiceIconImg)voiceIconImg.src='https://placehold.co/24x24/ffffff/1F2937?text=🎤&font=arial';if(voiceInputBtn)voiceInputBtn.title="Voice Input";}
         }
-        function stopRecording(){ if(speechRecognition&&isRecording)speechRecognition.stop();isRecording=false; if(voiceIconImg)voiceIconImg.src='https://placehold.co/24x24/ffffff/000000?text=🎤&font=arial';if(voiceInputBtn)voiceInputBtn.title="Voice Input";}
-        function handleFileSelect(e){ const f=e.target.files[0];if(f&&f.type.startsWith('image/')){stopCameraStream();const r=new FileReader();r.onload=(ev)=>{if(imagePreview)imagePreview.src=ev.target.result;currentBase64Image=ev.target.result.split(',')[1];currentMimeType=f.type;if(imagePreviewContainer)imagePreviewContainer.classList.remove('hidden');if(videoPreviewContainer)videoPreviewContainer.classList.add('hidden');};r.readAsDataURL(f);}else if(f){showError("Select image file.");if(fileInput)fileInput.value=null;}}
-        function removeImagePreview(){ if(imagePreview)imagePreview.src='#';if(imagePreviewContainer)imagePreviewContainer.classList.add('hidden');currentBase64Image=null;currentMimeType=null;if(fileInput)fileInput.value=null;}
-        async function startCamera(){ removeImagePreview();if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){try{mediaStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});if(videoPreview)videoPreview.srcObject=mediaStream;if(videoPreviewContainer)videoPreviewContainer.classList.remove('hidden');if(imagePreviewContainer)imagePreviewContainer.classList.add('hidden');}catch(err){showError("Cam access error: "+err.message);}}else{showError("Cam API N/A.");}}
-        function stopCameraStream(){ if(mediaStream){mediaStream.getTracks().forEach(t=>t.stop());mediaStream=null;}if(videoPreview)videoPreview.srcObject=null;if(videoPreviewContainer)videoPreviewContainer.classList.add('hidden');}
-        function captureImageFromVideo(){ if(!mediaStream||!videoPreview||!videoPreview.videoWidth){showError("Cam not ready.");return;}const c=document.createElement('canvas');c.width=videoPreview.videoWidth;c.height=videoPreview.videoHeight;c.getContext('2d').drawImage(videoPreview,0,0,c.width,c.height);const du=c.toDataURL('image/png');if(imagePreview)imagePreview.src=du;currentBase64Image=du.split(',')[1];currentMimeType='image/png';if(imagePreviewContainer)imagePreviewContainer.classList.remove('hidden');stopCameraStream();}
+        function stopRecording(){ /* ... same as before, update voiceIconImg.src with your actual default icon placeholder */ if(speechRecognition&&isRecording)speechRecognition.stop();isRecording=false; if(voiceIconImg)voiceIconImg.src='https://placehold.co/24x24/ffffff/1F2937?text=🎤&font=arial';if(voiceInputBtn)voiceInputBtn.title="Voice Input";}
+        function handleFileSelect(e){ /* ... same as before ... */ const f=e.target.files[0];if(f&&f.type.startsWith('image/')){stopCameraStream();const r=new FileReader();r.onload=(ev)=>{if(imagePreview)imagePreview.src=ev.target.result;currentBase64Image=ev.target.result.split(',')[1];currentMimeType=f.type;if(imagePreviewContainer)imagePreviewContainer.classList.remove('hidden');if(videoPreviewContainer)videoPreviewContainer.classList.add('hidden');};r.readAsDataURL(f);}else if(f){showError("Select image file.");if(fileInput)fileInput.value=null;}}
+        function removeImagePreview(){ /* ... same as before ... */ if(imagePreview)imagePreview.src='#';if(imagePreviewContainer)imagePreviewContainer.classList.add('hidden');currentBase64Image=null;currentMimeType=null;if(fileInput)fileInput.value=null;}
+        async function startCamera(){ /* ... same as before ... */ removeImagePreview();if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){try{mediaStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});if(videoPreview)videoPreview.srcObject=mediaStream;if(videoPreviewContainer)videoPreviewContainer.classList.remove('hidden');if(imagePreviewContainer)imagePreviewContainer.classList.add('hidden');}catch(err){showError("Cam access error: "+err.message);}}else{showError("Cam API N/A.");}}
+        function stopCameraStream(){ /* ... same as before ... */ if(mediaStream){mediaStream.getTracks().forEach(t=>t.stop());mediaStream=null;}if(videoPreview)videoPreview.srcObject=null;if(videoPreviewContainer)videoPreviewContainer.classList.add('hidden');}
+        function captureImageFromVideo(){ /* ... same as before ... */ if(!mediaStream||!videoPreview||!videoPreview.videoWidth){showError("Cam not ready.");return;}const c=document.createElement('canvas');c.width=videoPreview.videoWidth;c.height=videoPreview.videoHeight;c.getContext('2d').drawImage(videoPreview,0,0,c.width,c.height);const du=c.toDataURL('image/png');if(imagePreview)imagePreview.src=du;currentBase64Image=du.split(',')[1];currentMimeType='image/png';if(imagePreviewContainer)imagePreviewContainer.classList.remove('hidden');stopCameraStream();}
         function containsVulgar(t){if(!t)return false;const V=["badword1","offensiveword","fuck","shit","asshole","bitch"];return V.some(b=>t.toLowerCase().includes(b));}
         function startListeningAdapter() { 
             const mainChat = document.getElementById('interactiveChatSection');
+            const signInBtn = document.getElementById('googleSignInBtnHeader');
             if (mainChat) { 
-                if(currentUserId) { // Only scroll and toggle voice if user is signed in
+                if(currentUserId) { 
                     mainChat.scrollIntoView({ behavior: 'smooth', block: 'start' });
                      setTimeout(() => { if (userInput) userInput.focus(); toggleVoiceInput(); }, 300);
                 } else {
-                    // If not signed in, clicking the adapter buttons could prompt Google Sign-In
-                    if(googleSignInBtn && googleSignInBtn.style.display !== 'none') {
-                        googleSignInBtn.click();
+                    if(signInBtn && signInBtn.style.display !== 'none') { 
+                        signInBtn.click(); 
                     } else {
                         showError("Please sign in with Google first to use voice chat.");
                     }
