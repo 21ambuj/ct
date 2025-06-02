@@ -22,7 +22,7 @@
         #chatBox::-webkit-scrollbar-thumb:hover, #sessionsList::-webkit-scrollbar-thumb:hover, main::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
         
         .chat-input-bar-container { background-color: #F9FAFB; border-top: 1px solid #E5E7EB; }
-        .control-button { padding: 0.625rem; /* 10px */ border-radius: 0.5rem; /* 8px */ display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease-in-out; }
+        .control-button { padding: 0.625rem; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease-in-out; }
         .control-button.glassmorphism { background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px); }
         .control-button.glassmorphism:hover { background-color: rgba(255, 255, 255, 0.3); }
         .control-button svg { width: 1.25rem; height: 1.25rem; color: white; }
@@ -33,57 +33,62 @@
         #voiceInputBtn.recording .mic-icon-path { fill: #ef4444 !important; }
 
         .session-item { transition: background-color 0.2s ease-in-out; }
-        .session-item.active { background-color: #DBEAFE; /* blue-100 */ color: #1E40AF; /* blue-800 */ font-weight: 600;}
-        .session-item:hover:not(.active) { background-color: #EFF6FF; /* blue-50 */}
+        .session-item.active { background-color: #DBEAFE; color: #1E40AF; font-weight: 600;}
+        .session-item:hover:not(.active) { background-color: #EFF6FF; }
 
-        /* Header entrance animation */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         .header-animate-entrance { animation: fadeInDown 0.7s ease-out forwards; }
 
-        /* Footer entrance animation */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .footer-animate-entrance { animation: fadeInUp 0.7s 0.3s ease-out forwards; /* Delay to start after header */ }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .footer-animate-entrance { animation: fadeInUp 0.7s 0.3s ease-out forwards; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 flex flex-col h-screen">
 
-    <header class="header-animate-entrance relative bg-gradient-to-r from-slate-800 via-purple-800 to-slate-800 text-white py-4 sm:py-5 shadow-2xl z-20">
+    <header class="header-animate-entrance relative bg-gradient-to-r from-slate-800 via-purple-800 to-slate-800 text-white py-3 shadow-2xl z-20">
         <div class="container mx-auto px-4 flex justify-between items-center relative">
-            <div class="text-left">
-                <h1 class="text-2xl font-black tracking-tight sm:text-3xl lg:text-4xl
+            <div class="flex items-center">
+                <div class="sm:hidden mr-2"> <button id="chatHistoryToggleBtn" aria-label="Toggle Chat History" class="text-white p-2 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </div>
+                <h1 class="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl
                             text-transparent bg-clip-text bg-gradient-to-br from-pink-400 via-purple-400 to-red-500
                             animate-text-gradient-subtle">ChatIQ</h1>
             </div>
-            <div id="authContainer" class="text-right flex items-center space-x-3">
-                <button id="newChatBtn" class="hidden group flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-semibold py-2.5 px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75">
-                    <svg class="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                    <span>New Chat</span>
+            <div id="authContainer" class="text-right flex items-center space-x-2 sm:space-x-3">
+                <button id="newChatBtn" class="hidden group flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75">
+                    <svg class="w-3 h-3 sm:w-4 sm:h-4 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    <span class="hidden sm:inline">New Chat</span>
+                    <span class="sm:hidden">New</span>
                 </button>
-                <button id="googleSignInBtnHeader" class="group flex items-center space-x-2 bg-white hover:bg-gray-200 text-slate-700 text-xs sm:text-sm font-semibold py-2.5 px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75">
-                    <span>Sign in with Google</span>
+                <button id="googleSignInBtnHeader" class="group flex items-center space-x-2 bg-white hover:bg-gray-200 text-slate-700 text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/><path fill="none" d="M1 1h22v22H1z"/></svg>
+                    <span class="hidden sm:inline">Sign in with Google</span>
+                    <span class="sm:hidden">Sign In</span>
                 </button>
-                <div id="userDetailsHeader" class="hidden items-center space-x-3">
-                    <span id="userDisplayNameHeader" class="text-sm font-medium text-gray-100 mr-2 sm:mr-3 truncate max-w-[100px] sm:max-w-[150px]"></span>
-                    <button id="signOutBtnHeader" class="group flex items-center space-x-2 bg-pink-600 hover:bg-pink-700 text-white text-xs sm:text-sm font-semibold py-2.5 px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-75">
-                        <svg class="w-4 h-4 group-hover:opacity-80 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                        <span>Sign Out</span>
+                <div id="userDetailsHeader" class="hidden items-center space-x-2 sm:space-x-3">
+                    <span id="userDisplayNameHeader" class="text-xs sm:text-sm font-medium text-gray-100 truncate max-w-[70px] sm:max-w-[150px]"></span>
+                    <button id="signOutBtnHeader" class="group flex items-center space-x-2 bg-pink-600 hover:bg-pink-700 text-white text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-75">
+                        <svg class="w-3 h-3 sm:w-4 sm:h-4 group-hover:opacity-80 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        <span class="hidden sm:inline">Sign Out</span>
+                        <span class="sm:hidden">Out</span>
                     </button>
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="flex flex-1 overflow-hidden">
-        <aside id="chatHistorySidebar" class="w-0 sm:w-64 bg-slate-50 border-r border-slate-200 flex-col p-3 space-y-2 overflow-y-auto transition-all duration-300 ease-in-out hidden">
+    <div class="flex flex-1 overflow-hidden relative"> {/* Added relative for overlay positioning context */}
+        <aside id="chatHistorySidebar" 
+               class="fixed top-0 left-0 h-screen w-60 bg-slate-100 border-r border-slate-300 shadow-xl 
+                      flex flex-col p-3 space-y-2 overflow-y-auto 
+                      transition-transform duration-300 ease-in-out z-40 transform -translate-x-full 
+                      sm:relative sm:translate-x-0 sm:w-0 sm:border-none sm:shadow-none sm:p-0">
             <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider px-2">Chat History</h3>
             <div id="sessionsList" class="space-y-1">
-                </div>
+                {/* Session items will be populated here */}
+            </div>
         </aside>
 
         <main id="mainContentArea" class="flex-1 flex flex-col overflow-y-auto container mx-auto px-0 sm:px-2 py-4 relative">
@@ -100,8 +105,7 @@
             </h4>
             
             <section id="interactiveChatSection" 
-                     class="w-full mx-auto 
-                            bg-white rounded-xl sm:rounded-2xl shadow-xl overflow-hidden flex flex-col" 
+                     class="w-full mx-auto bg-white rounded-xl sm:rounded-2xl shadow-xl overflow-hidden flex flex-col" 
                      style="display: none; min-height: 400px;"> 
                 <div class="flex-grow overflow-y-auto p-3 sm:p-4 space-y-3" id="chatBoxWrapper"> 
                     <div id="imagePreviewContainer" class="hidden flex flex-col items-center space-y-2 mb-3">
@@ -111,8 +115,7 @@
                             Remove Image
                         </button>
                     </div>
-                    <div id="chatBox" class="space-y-4"> 
-                        </div>
+                    <div id="chatBox" class="space-y-4"></div>
                 </div>
                 <div class="chat-input-bar-container p-2 sm:p-3 border-t border-gray-200">
                     <div id="loadingIndicator" class="hidden text-center pb-2">
@@ -121,86 +124,51 @@
                     <div id="errorMessage" class="hidden bg-red-100 text-red-700 p-2 rounded-md text-center mb-2 text-sm"></div>
                     <div class="flex items-center flex-wrap gap-2 sm:gap-3 p-3 bg-gradient-to-r from-cyan-500 to-indigo-600 rounded-xl shadow-lg">
                         <input type="text" id="userInput" placeholder="Ask ChatIQ or describe image..."
-                               class="flex-grow min-w-[150px] p-3 rounded-lg text-sm sm:text-base outline-none bg-slate-900/30 text-white placeholder:text-slate-300 focus:ring-2 focus:ring-sky-300 focus:bg-slate-900/40 transition duration-200 ease-in-out backdrop-blur-sm shadow-sm"/>
-                        <button id="sendBtn" title="Send Message" class="control-button glassmorphism">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg>
-                        </button>
-                        <button id="fileUploadBtn" title="Upload Image" class="control-button glassmorphism">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V4.5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5V15c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9c0 1.66 1.34 3 3 3s3-1.34 3-3V4.5C16 2.01 13.99 0 11.5 0S7 2.01 7 4.5V15c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"></path></svg>
-                        </button>
+                               class="flex-grow min-w-[100px] p-3 rounded-lg text-sm sm:text-base outline-none bg-slate-900/30 text-white placeholder:text-slate-300 focus:ring-2 focus:ring-sky-300 focus:bg-slate-900/40 transition duration-200 ease-in-out backdrop-blur-sm shadow-sm"/>
+                        <button id="sendBtn" title="Send Message" class="control-button glassmorphism p-2.5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg></button>
+                        <button id="fileUploadBtn" title="Upload Image" class="control-button glassmorphism p-2.5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V4.5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5V15c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9c0 1.66 1.34 3 3 3s3-1.34 3-3V4.5C16 2.01 13.99 0 11.5 0S7 2.01 7 4.5V15c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"></path></svg></button>
                         <input type="file" id="fileInput" class="hidden" accept="image/*">
-                        <button id="cameraBtn" title="Use Camera" class="control-button glassmorphism">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" /><path fill-rule="evenodd" d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.426 1.458 2.426 2.915V19.5a2.25 2.25 0 01-2.25 2.25H5.25a2.25 2.25 0 01-2.25-2.25V9.525c0-1.456.994-2.676 2.426-2.915.382-.064.766-.123 1.152-.177.465-.067.87-.327 1.11-.71l.82-1.318a2.996 2.996 0 012.332-1.39zM12 6.75a5.25 5.25 0 100 10.5 5.25 5.25 0 000-10.5z" clip-rule="evenodd" /></svg>
-                        </button>
-                        <button id="voiceInputBtn" title="Voice Input" class="control-button glassmorphism">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mic-icon">
-                                <path class="mic-icon-path" fill-rule="evenodd" d="M12.75 3.006a3.75 3.75 0 013.75 3.75v6.75a3.75 3.75 0 01-7.5 0v-6.75a3.75 3.75 0 013.75-3.75zM8.25 8.254a.75.75 0 000 1.5v.75c0 1.657 1.343 3 3 3s3-1.343 3-3v-.75a.75.75 0 000-1.5h-.75a2.25 2.25 0 01-2.25-2.25v-.75a.75.75 0 00-1.5 0v.75A2.25 2.25 0 019 8.254h-.75zM15 13.5a.75.75 0 001.5 0v-2.628A6.002 6.002 0 006.75 8.25v2.628a.75.75 0 001.5 0V8.25c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5v5.25z" clip-rule="evenodd" fill="currentColor"/>
-                                <path class="mic-icon-path" d="M6 10.5a.75.75 0 01.75.75v.75a4.5 4.5 0 009 0V11.25a.75.75 0 011.5 0v.75a6 6 0 01-12 0V11.25A.75.75 0 016 10.5zM12 16.5a.75.75 0 00-.75.75v.75h1.5v-.75a.75.75 0 00-.75-.75z" fill="currentColor"/>
-                            </svg>
-                        </button>
+                        <button id="cameraBtn" title="Use Camera" class="control-button glassmorphism p-2.5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 9a3.75 3.75 0 100 7.5A3.75 3.75 0 0012 9z" /><path fill-rule="evenodd" d="M9.344 3.071a49.52 49.52 0 015.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.426 1.458 2.426 2.915V19.5a2.25 2.25 0 01-2.25 2.25H5.25a2.25 2.25 0 01-2.25-2.25V9.525c0-1.456.994-2.676 2.426-2.915.382-.064.766-.123 1.152-.177.465-.067.87-.327 1.11-.71l.82-1.318a2.996 2.996 0 012.332-1.39zM12 6.75a5.25 5.25 0 100 10.5 5.25 5.25 0 000-10.5z" clip-rule="evenodd" /></svg></button>
+                        <button id="voiceInputBtn" title="Voice Input" class="control-button glassmorphism p-2.5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mic-icon"><path class="mic-icon-path" fill-rule="evenodd" d="M12.75 3.006a3.75 3.75 0 013.75 3.75v6.75a3.75 3.75 0 01-7.5 0v-6.75a3.75 3.75 0 013.75-3.75zM8.25 8.254a.75.75 0 000 1.5v.75c0 1.657 1.343 3 3 3s3-1.343 3-3v-.75a.75.75 0 000-1.5h-.75a2.25 2.25 0 01-2.25-2.25v-.75a.75.75 0 00-1.5 0v.75A2.25 2.25 0 019 8.254h-.75zM15 13.5a.75.75 0 001.5 0v-2.628A6.002 6.002 0 006.75 8.25v2.628a.75.75 0 001.5 0V8.25c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5v5.25z" clip-rule="evenodd" fill="currentColor"/><path class="mic-icon-path" d="M6 10.5a.75.75 0 01.75.75v.75a4.5 4.5 0 009 0V11.25a.75.75 0 011.5 0v.75a6 6 0 01-12 0V11.25A.75.75 0 016 10.5zM12 16.5a.75.75 0 00-.75.75v.75h1.5v-.75a.75.75 0 00-.75-.75z" fill="currentColor"/></svg></button>
                     </div>
-                    <h6 class="text-slate-500 text-center text-xs mt-3 sm:mt-4">ChatIQ can make mistakes. Please recheck and verify information.</h6>
+                    <h6 class="text-slate-500 text-center text-xs mt-3 sm:mt-4">ChatIQ can make mistakes. Please recheck.</h6>
                 </div>
             </section>
 
             <section class="text-center mt-8" id="alternativeVoiceSection" style="display: block;">
                 <h2 class="text-2xl font-semibold mb-4">One-to-One Voice Interaction</h2>
-                <button onclick="startListeningAdapter()" aria-label="Start Voice Chat with GIF">
-                    <img src="https://cdn.dribbble.com/userupload/32122583/file/original-400827bdf243931c8ffd26a268a837ce.gif" alt="Voice Bot Banner" class="mx-auto w-full max-w-md rounded-2xl shadow-lg hover:scale-105 transition-transform"/>
-                </button>
-                <div class="mt-6">
-                    <button onclick="startListeningAdapter()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-md transition text-lg font-medium flex items-center justify-center mx-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="mr-2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm7 9a7 7 0 0 1-14 0H3a9 9 0 0 0 8 8.94V22h2v-3.06A9 9 0 0 0 21 10h-2z"></path></svg>
-                        Start Voice Chat
-                    </button>
-                </div>
+                <button onclick="startListeningAdapter()" aria-label="Start Voice Chat with GIF"><img src="https://cdn.dribbble.com/userupload/32122583/file/original-400827bdf243931c8ffd26a268a837ce.gif" alt="Voice Bot Banner" class="mx-auto w-full max-w-md rounded-2xl shadow-lg hover:scale-105 transition-transform"/></button>
+                <div class="mt-6"><button onclick="startListeningAdapter()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-md transition text-lg font-medium flex items-center justify-center mx-auto"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="mr-2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm7 9a7 7 0 0 1-14 0H3a9 9 0 0 0 8 8.94V22h2v-3.06A9 9 0 0 0 21 10h-2z"></path></svg>Start Voice Chat</button></div>
             </section>
-            <div id="signInPromptBelowVoiceBot" class="text-center text-gray-600 p-4 mt-2" style="display: block;">
-                Please <button id="inlineSignInBtn" class="text-indigo-600 hover:text-indigo-800 font-semibold underline">sign in with Google</button> to use all features and save your chat history.
-            </div>
+            <div id="signInPromptBelowVoiceBot" class="text-center text-gray-600 p-4 mt-2" style="display: block;">Please <button id="inlineSignInBtn" class="text-indigo-600 hover:text-indigo-800 font-semibold underline">sign in with Google</button> to use all features and save your chat history.</div>
             <section id="featuresSection" class="mt-8" style="display: block;">
                <h2 class="text-2xl font-semibold text-center mb-8">Key Features</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
-                        <img src="https://img.freepik.com/premium-vector/ai-chat-bot-technology-concept-people-chatting-with-robot-asking-questions-receiving-answers_36358-1867.jpg" 
-                             alt="AI Suggestions" class="mx-auto w-36 h-36 object-contain rounded mb-4"
-                             onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=AI+Feature';">
-                        <h3 class="font-semibold text-lg">AI-Powered Suggestions</h3>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
-                        <img src="https://i.pinimg.com/originals/7d/9b/1d/7d9b1d662b28cd365b33a01a3d0288e1.gif" 
-                             alt="Real-Time Voice Chat" class="mx-auto w-36 h-36 object-cover rounded-full mb-4"
-                             onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=Voice+Chat';">
-                        <h3 class="font-semibold text-lg">Real-Time Voice Chat</h3>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1048/1048937.png" 
-                             alt="Image Recognition" class="mx-auto w-36 h-36 object-contain rounded mb-4"
-                             onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=Image+AI';">
-                        <h3 class="font-semibold text-lg">Image Vision AI</h3>
-                    </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center"><img src="https://img.freepik.com/premium-vector/ai-chat-bot-technology-concept-people-chatting-with-robot-asking-questions-receiving-answers_36358-1867.jpg" alt="AI Suggestions" class="mx-auto w-32 h-32 sm:w-36 sm:h-36 object-contain rounded mb-4" onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=AI+Feature';"><h3 class="font-semibold text-lg">AI-Powered Suggestions</h3></div>
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center"><img src="https://i.pinimg.com/originals/7d/9b/1d/7d9b1d662b28cd365b33a01a3d0288e1.gif" alt="Real-Time Voice Chat" class="mx-auto w-32 h-32 sm:w-36 sm:h-36 object-cover rounded-full mb-4" onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=Voice+Chat';"><h3 class="font-semibold text-lg">Real-Time Voice Chat</h3></div>
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048937.png" alt="Image Recognition" class="mx-auto w-32 h-32 sm:w-36 sm:h-36 object-contain rounded mb-4" onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=Image+AI';"><h3 class="font-semibold text-lg">Image Vision AI</h3></div>
                 </div>
             </section>
-            <section id="feedbackSection" class="text-center mt-8 mb-8" style="display: block;">
+            <section id="feedbackSection" class="text-center mt-8" style="display: block;">
                 <h2 class="text-2xl font-semibold mb-4">We Value Your Feedback</h2>
                 <p class="mb-6 text-gray-600">Help us improve by sharing your thoughts.</p>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSc2N8OGqdbu2HFbxN4Y89Guv3Wnp9CHLYrz-bzu80kDjHQ3yg/viewform?usp=sharing" target="_blank" class="inline-block bg-gradient-to-r from-indigo-500 to-cyan-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:from-indigo-600 hover:to-cyan-500 transition">
-                    Give Feedback
-                </a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSc2N8OGqdbu2HFbxN4Y89Guv3Wnp9CHLYrz-bzu80kDjHQ3yg/viewform?usp=sharing" target="_blank" class="inline-block bg-gradient-to-r from-indigo-500 to-cyan-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:from-indigo-600 hover:to-cyan-500 transition">Give Feedback</a>
             </section>
 
-            <footer class="footer-animate-entrance bg-gradient-to-b from-slate-800 via-purple-800 to-slate-800 text-white py-10  text-center mt-auto pt-12">
-                <h2 class="text-2xl font-bold mb-4">About ChatIQ</h2>
-                <p class="max-w-2xl mx-auto mb-6 px-4">ChatIQ assists by providing accurate, real-time answers to your questions through voice, text, and image interactions.</p>
-                <div class="space-y-2">
+            <footer id="appFooter" class="footer-animate-entrance bg-gradient-to-b from-slate-800 via-purple-800 to-slate-800 text-white py-8 sm:py-10 text-center mt-auto pt-10 sm:pt-12" style="display: block;">
+                <h2 class="text-xl sm:text-2xl font-bold mb-4">About ChatIQ</h2>
+                <p class="max-w-2xl mx-auto mb-6 px-4 text-sm sm:text-base">ChatIQ assists by providing accurate, real-time answers to your questions through voice, text, and image interactions.</p>
+                <div class="space-y-2 text-sm sm:text-base">
                     <p>📞 <a href="tel:+919369572534" class="hover:underline hover:text-pink-300 transition-colors">+91 93695 72534</a></p>
                     <p>✉️ <a href="mailto:ambuj20maurya@gmail.com" class="hover:underline hover:text-pink-300 transition-colors">ambuj20maurya@gmail.com</a></p>
                     <p>📍 Mirzapur, Uttar Pradesh, India</p>
                 </div>
-                <p class="mt-6 text-sm opacity-90">&copy; 2025 ChatIQ. All rights reserved.</p>
+                <p class="mt-6 text-xs sm:text-sm opacity-90">&copy; 2025 ChatIQ. All rights reserved.</p>
             </footer>
         </main>
     </div>
+
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden sm:hidden transition-opacity duration-300 ease-in-out"></div>
 
     <div id="cameraModal" class="fixed top-0 left-0 w-full h-full bg-black/60 hidden items-center justify-center z-[1000]">
         <div class="bg-white p-6 rounded-xl shadow-2xl w-11/12 max-w-md text-center">
@@ -214,7 +182,6 @@
     </div>
 
     <script type="module">
-        // Firebase Configuration (User Provided - ensure these are correct for your project)
         const firebaseConfig = {
             apiKey: "AIzaSyCEpq8EAkEWbvxGab0wiW9qaYojUdVykyo", 
             authDomain: "chatiq-45203.firebaseapp.com",
@@ -226,13 +193,11 @@
             measurementId: "G-R135XXK005"
         };
 
-        // Firebase Imports
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, writeBatch, doc, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 
-        // Initialize Firebase
         let app;
         if (!getApps().length) { app = initializeApp(firebaseConfig); } else { app = getApp(); }
         const auth = getAuth(app);
@@ -240,29 +205,25 @@
         const analytics = getAnalytics(app); 
         const appIdForPath = firebaseConfig.appId; 
 
-        // DOM Element Variables
         let chatBox, userInput, sendBtn, fileUploadBtn, fileInput, cameraBtn, voiceInputBtn, 
             imagePreviewContainer, imagePreview, removeImageBtn, loadingIndicator, errorMessageDisplay, 
             googleSignInBtnHeader, userDetailsHeaderDiv, userDisplayNameHeaderSpan, signOutBtnHeader, 
             interactiveChatSection, alternativeVoiceSection, swipeDownPromptElement, newChatBtn, 
             signInPromptBelowVoiceBot, inlineSignInBtn, cameraModal, videoPreviewModal, 
-            captureModalBtn, closeCameraModalBtn, sessionsListEl, featuresSection, feedbackSection, mainContentAreaFooter; // Added mainContentAreaFooter
+            captureModalBtn, closeCameraModalBtn, sessionsListEl, featuresSection, feedbackSection, appFooter,
+            chatHistoryToggleBtn, chatHistorySidebar, sidebarOverlay; // Added mobile sidebar elements
 
-        // State Variables
         let currentBase64Image = null, currentMimeType = null, mediaStream = null, 
-            speechRecognition = null, isRecording = false, currentBotAudio = null, currentUserId = null;
+            speechRecognition = null, isRecording = false, currentUserId = null;
         
         let activeSessionId = null; 
         let messagesUnsubscribe = null; 
         let sessionsUnsubscribe = null; 
 
-        // API Keys & Endpoints (REPLACE WITH YOUR ACTUAL KEYS)
-        const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; 
-        const MURF_API_KEY = "ap2_1ed5cd30-2f51-4ebc-b8f6-33c6a31c81e7";   
+        const GOOGLE_API_KEY = "YOUR_GEMINI_API_KEY"; 
         const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
         const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form, without bullet points or unnecessary special characters unless the format is essential for clarity (like in a recipe's steps). When a user asks "who are you", respond: 'I am a smart ChatIQ bot.' If the user asks about "your name", respond: 'I am a smart ChatIQ bot.' If the user asks "who made you", respond: 'I was made by ChatIQ.' --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
 
-        // --- Utility Functions ---
         function showError(messageText) { 
             console.error("ChatIQ Error:", messageText); 
             const errorElement = document.getElementById('errorMessage');
@@ -270,14 +231,10 @@
                 errorElement.textContent = messageText; 
                 errorElement.classList.remove('hidden');
                 setTimeout(() => { errorElement.classList.add('hidden'); }, 5000);
-            } else { 
-                alert("Notice: " + messageText); 
-            }
+            } else { alert("Notice: " + messageText); }
         }
         
-        // --- DOMContentLoaded: Initialize after page loads ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Assign all DOM Elements
             chatBox = document.getElementById('chatBox'); 
             userInput = document.getElementById('userInput'); 
             sendBtn = document.getElementById('sendBtn');
@@ -307,12 +264,13 @@
             sessionsListEl = document.getElementById('sessionsList');
             featuresSection = document.getElementById('featuresSection');
             feedbackSection = document.getElementById('feedbackSection');
-            // The footer is now inside mainContentArea, so we don't need a separate variable if we're not directly manipulating its display via JS based on auth.
-            // mainContentAreaFooter = document.querySelector('#mainContentArea footer'); 
+            appFooter = document.getElementById('appFooter');
+            chatHistoryToggleBtn = document.getElementById('chatHistoryToggleBtn');
+            chatHistorySidebar = document.getElementById('chatHistorySidebar');
+            sidebarOverlay = document.getElementById('sidebarOverlay');
 
-
-            if(GOOGLE_API_KEY === "YOUR_GEMINI_API_KEY" || MURF_API_KEY === "YOUR_MURF_API_KEY"){
-                showError("CRITICAL: Placeholder API keys detected. Please update them in the script for ChatIQ to function correctly.");
+            if(GOOGLE_API_KEY === "YOUR_GEMINI_API_KEY"){
+                showError("CRITICAL: Placeholder Gemini API key detected. Update in script.");
             }
             
             initializeSpeechRecognition(); 
@@ -320,7 +278,6 @@
             setupAuthListener(); 
         });
         
-        // --- Event Listener Setup ---
         function setupEventListeners() { 
             if(googleSignInBtnHeader) googleSignInBtnHeader.addEventListener('click', signInWithGoogle);
             if(signOutBtnHeader) signOutBtnHeader.addEventListener('click', signOutUser);
@@ -340,18 +297,28 @@
             if(closeCameraModalBtn) closeCameraModalBtn.addEventListener('click', closeCameraModalAndStream);
 
             if(voiceInputBtn) voiceInputBtn.addEventListener('click', toggleVoiceInput);
+
+            if (chatHistoryToggleBtn && chatHistorySidebar && sidebarOverlay) {
+                chatHistoryToggleBtn.addEventListener('click', () => {
+                    chatHistorySidebar.classList.toggle('-translate-x-full');
+                    sidebarOverlay.classList.toggle('hidden');
+                });
+                sidebarOverlay.addEventListener('click', () => {
+                    chatHistorySidebar.classList.add('-translate-x-full');
+                    sidebarOverlay.classList.add('hidden');
+                });
+            }
         }
 
-        // --- Firebase Authentication ---
         async function signInWithGoogle() { 
-            if (!auth) { showError("Firebase Auth service is not available."); return; }
+            if (!auth) { showError("Firebase Auth not available."); return; }
             const provider = new GoogleAuthProvider();
             try { await signInWithPopup(auth, provider); } 
-            catch (error) { console.error("Google Sign-In Error:", error); showError(`Google Sign-In Failed: ${error.message} (Code: ${error.code})`); }
+            catch (error) { console.error("Google Sign-In Error:", error); showError(`Sign-In Failed: ${error.message}`); }
         }
 
         async function signOutUser() { 
-            if (!auth) { showError("Firebase Auth service is not available."); return; }
+            if (!auth) { showError("Firebase Auth not available."); return; }
             try { 
                 await signOut(auth); 
                 activeSessionId = null; 
@@ -364,21 +331,27 @@
         function setupAuthListener() { 
             if (!auth) { 
                 console.error("Firebase Auth not initialized for listener."); 
-                showError("Critical: Authentication service not ready."); 
-                // Fallback UI for unauthenticated state if auth fails completely
+                showError("Critical: Auth service not ready."); 
+                // Fallback UI for unauthenticated state
                 if(interactiveChatSection) interactiveChatSection.style.display = 'none';
                 if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'block';
                 if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'block';
                 if(featuresSection) featuresSection.style.display = 'block';
                 if(feedbackSection) feedbackSection.style.display = 'block';
-                // Footer visibility is handled by its position in HTML, should be visible.
+                if(appFooter) appFooter.style.display = 'block';
                 if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'inline-block';
                 if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'none';
                 if(newChatBtn) newChatBtn.style.display = 'none';
+                if(chatHistoryToggleBtn) chatHistoryToggleBtn.style.display = 'none'; // Hide toggle if not signed in
+                if(chatHistorySidebar) {
+                     chatHistorySidebar.classList.add('sm:w-0', 'sm:p-0'); // Collapse on desktop
+                     chatHistorySidebar.classList.remove('sm:w-64', 'sm:p-3', 'sm:border-r', 'sm:border-slate-200');
+                     chatHistorySidebar.classList.add('-translate-x-full'); // Ensure hidden on mobile
+                }
+                if(sidebarOverlay) sidebarOverlay.classList.add('hidden');
                 return; 
             }
 
-            const chatHistorySidebar = document.getElementById('chatHistorySidebar');
             onAuthStateChanged(auth, (user) => {
                 if (user) { 
                     currentUserId = user.uid;
@@ -392,16 +365,17 @@
                     if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'none';
                     if(featuresSection) featuresSection.style.display = 'none'; 
                     if(feedbackSection) feedbackSection.style.display = 'none'; 
+                    if(appFooter) appFooter.style.display = 'none'; // Hide footer on sign-in
 
                     if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'inline-flex'; 
-                    if(chatHistorySidebar) {
-                        chatHistorySidebar.classList.remove('hidden'); 
-                        chatHistorySidebar.classList.add('flex');
+                    if(chatHistorySidebar) { // Desktop sidebar visibility
+                        chatHistorySidebar.classList.remove('sm:w-0', 'sm:p-0');
+                        chatHistorySidebar.classList.add('sm:w-64', 'sm:p-3', 'sm:border-r', 'sm:border-slate-200');
                     }
+                    if(chatHistoryToggleBtn) chatHistoryToggleBtn.style.display = 'block'; // Show toggle on mobile
                     loadChatSessions(); 
                 } else { 
-                    currentUserId = null; 
-                    activeSessionId = null;
+                    currentUserId = null; activeSessionId = null;
                     if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = '';
                     if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'inline-block';
                     if(newChatBtn) newChatBtn.style.display = 'none'; 
@@ -412,53 +386,46 @@
                     if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'block';
                     if(featuresSection) featuresSection.style.display = 'block'; 
                     if(feedbackSection) feedbackSection.style.display = 'block'; 
+                    if(appFooter) appFooter.style.display = 'block'; // Show footer when signed out
 
                     if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'none';
-                    if(chatHistorySidebar) {
-                        chatHistorySidebar.classList.add('hidden');
-                        chatHistorySidebar.classList.remove('flex');
+                    if(chatHistorySidebar) { // Desktop sidebar visibility
+                        chatHistorySidebar.classList.add('sm:w-0', 'sm:p-0');
+                        chatHistorySidebar.classList.remove('sm:w-64', 'sm:p-3', 'sm:border-r', 'sm:border-slate-200');
+                        chatHistorySidebar.classList.add('-translate-x-full'); // Ensure hidden on mobile
                     }
+                    if(chatHistoryToggleBtn) chatHistoryToggleBtn.style.display = 'none'; // Hide toggle if not signed in
+                    if(sidebarOverlay) sidebarOverlay.classList.add('hidden');
+
 
                     if(messagesUnsubscribe) messagesUnsubscribe(); 
                     if(sessionsUnsubscribe) sessionsUnsubscribe();
-                    if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Please sign in with Google to use ChatIQ and see your history.</div>';
+                    if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Sign in to chat & see history.</div>';
                     if(sessionsListEl) sessionsListEl.innerHTML = '';
                 }
-                // The footer is inside <main> and its visibility is controlled by CSS and HTML structure,
-                // not directly by this auth listener for show/hide. It should always be at the end of <main>'s content.
             });
         }
         
-        // --- Chat Session Management (Firestore) ---
         async function startNewChatSession() {
             if (!currentUserId || !db) { showError("Please sign in to start a new chat."); return; }
-            console.log("Starting new chat session for user:", currentUserId);
             const newSessionName = `Chat ${new Date().toLocaleString()}`; 
             try {
                 const sessionsColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions`;
-                const sessionRef = await addDoc(collection(db, sessionsColPath), {
-                    title: newSessionName,
-                    createdAt: serverTimestamp(),
-                    lastActivity: serverTimestamp() 
-                });
+                const sessionRef = await addDoc(collection(db, sessionsColPath), { title: newSessionName, createdAt: serverTimestamp(), lastActivity: serverTimestamp() });
                 activeSessionId = sessionRef.id;
-                console.log("New session created with ID:", activeSessionId);
                 if (chatBox) chatBox.innerHTML = ''; 
                 loadChatHistory(activeSessionId); 
-            } catch (error) {
-                console.error("Error creating new session:", error);
-                showError("Could not start a new chat session. Firestore error: " + error.message);
-            }
+                // Close mobile sidebar if open
+                if (chatHistorySidebar && !chatHistorySidebar.classList.contains('-translate-x-full') && window.innerWidth < 640) {
+                    chatHistorySidebar.classList.add('-translate-x-full');
+                    if(sidebarOverlay) sidebarOverlay.classList.add('hidden');
+                }
+            } catch (error) { console.error("Error creating new session:", error); showError("Could not start new chat: " + error.message); }
         }
 
         async function deleteSession(sessionIdToDelete) {
-            if (!currentUserId || !db || !sessionIdToDelete) {
-                showError("Cannot delete session: missing user, database, or session ID."); return;
-            }
-            console.log(`Attempting to delete session: ${sessionIdToDelete} for user: ${currentUserId}`);
-            const confirmed = window.confirm("Are you sure you want to delete this chat session and all its messages permanently?");
-            if (!confirmed) return;
-
+            if (!currentUserId || !db || !sessionIdToDelete) { showError("Cannot delete session."); return; }
+            if (!window.confirm("Delete this chat session permanently?")) return;
             try {
                 const messagesPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToDelete}/messages`;
                 const messagesQuery = query(collection(db, messagesPath));
@@ -466,461 +433,271 @@
                 const batch = writeBatch(db);
                 messagesSnapshot.forEach(docMsg => { batch.delete(docMsg.ref); });
                 await batch.commit();
-                console.log(`Messages for session ${sessionIdToDelete} deleted.`);
-
                 const sessionDocPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToDelete}`;
                 await deleteDoc(doc(db, sessionDocPath)); 
-                console.log(`Session ${sessionIdToDelete} metadata deleted.`);
-
                 if (activeSessionId === sessionIdToDelete) {
                     activeSessionId = null;
-                    if (chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Session deleted. Start a new chat or select another.</div>';
+                    if (chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Session deleted.</div>';
                     const sessionItems = sessionsListEl.querySelectorAll('.session-item');
-                    if (sessionItems.length > 0 && sessionItems[0].dataset.sessionId) {
-                        selectSession(sessionItems[0].dataset.sessionId); 
-                    } else {
-                        startNewChatSession(); 
-                    }
+                    if (sessionItems.length > 0 && sessionItems[0].dataset.sessionId) selectSession(sessionItems[0].dataset.sessionId); 
+                    else startNewChatSession(); 
                 }
-            } catch (error) {
-                console.error(`Error deleting session ${sessionIdToDelete}:`, error);
-                showError("Failed to delete chat session. Firestore error: " + error.message);
-            }
+            } catch (error) { console.error(`Error deleting session ${sessionIdToDelete}:`, error); showError("Failed to delete chat: " + error.message); }
         }
 
         function loadChatSessions() {
             if (!currentUserId || !db || !sessionsListEl) {
-                console.warn("Cannot load chat sessions: missing user, DB, or sessions list element.");
                 if (sessionsListEl) sessionsListEl.innerHTML = '<div class="text-xs text-gray-400 p-2 text-center">Sign in to see history.</div>';
                 return;
             }
             if (sessionsUnsubscribe) sessionsUnsubscribe(); 
-
             const sessionsColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions`;
             const q = query(collection(db, sessionsColPath), orderBy("lastActivity", "desc")); 
-
             sessionsUnsubscribe = onSnapshot(q, (snapshot) => {
                 if (!sessionsListEl) return;
                 sessionsListEl.innerHTML = ''; 
                 let firstSessionIdFromSnapshot = null;
                 let sessionCount = 0;
-
                 if (snapshot.empty) {
-                    sessionsListEl.innerHTML = '<div class="text-xs text-gray-400 p-2 text-center">No chat history yet. Start a new chat!</div>';
-                    if (!activeSessionId) { startNewChatSession(); }
+                    sessionsListEl.innerHTML = '<div class="text-xs text-gray-400 p-2 text-center">No chat history yet.</div>';
+                    if (!activeSessionId) startNewChatSession();
                     return;
                 }
-
                 snapshot.forEach((docSnap) => {
                     sessionCount++;
-                    const session = docSnap.data();
-                    const sessionId = docSnap.id;
+                    const session = docSnap.data(); const sessionId = docSnap.id;
                     if (!firstSessionIdFromSnapshot) firstSessionIdFromSnapshot = sessionId; 
-
                     const item = document.createElement('div');
                     item.dataset.sessionId = sessionId; 
-                    item.classList.add('session-item', 'p-2', 'rounded-md', 'cursor-pointer', 'text-sm', 'text-slate-700', 'flex', 'justify-between', 'items-center', 'hover:bg-slate-100');
-                    if (sessionId === activeSessionId) {
-                        item.classList.add('active', 'bg-blue-100', 'text-blue-700'); 
-                    }
-                    
+                    item.classList.add('session-item', 'p-2', 'rounded-md', 'cursor-pointer', 'text-sm', 'text-slate-700', 'flex', 'justify-between', 'items-center', 'hover:bg-slate-200');
+                    if (sessionId === activeSessionId) item.classList.add('active', 'bg-blue-100', 'text-blue-700'); 
                     const titleSpan = document.createElement('span');
-                    titleSpan.textContent = session.title || `Chat from ${session.createdAt?.toDate().toLocaleDateString() || 'Unknown date'}`;
-                    titleSpan.classList.add('truncate', 'flex-1', 'mr-2');
-                    item.appendChild(titleSpan);
-
+                    titleSpan.textContent = session.title || `Chat ${session.createdAt?.toDate().toLocaleDateString() || ''}`;
+                    titleSpan.classList.add('truncate', 'flex-1', 'mr-2'); item.appendChild(titleSpan);
                     const deleteBtn = document.createElement('button');
                     deleteBtn.innerHTML = '&times;'; 
-                    deleteBtn.classList.add('text-red-400', 'hover:text-red-600', 'font-bold', 'px-2', 'py-1', 'rounded', 'hover:bg-red-100', 'transition-colors');
-                    deleteBtn.title = "Delete this chat session";
-                    deleteBtn.onclick = (event) => { event.stopPropagation(); deleteSession(sessionId); };
-                    item.appendChild(deleteBtn);
-                    
-                    item.onclick = () => selectSession(sessionId);
+                    deleteBtn.classList.add('text-red-400', 'hover:text-red-600', 'font-bold', 'px-2', 'py-1', 'rounded', 'hover:bg-red-100');
+                    deleteBtn.title = "Delete session"; deleteBtn.onclick = (e) => { e.stopPropagation(); deleteSession(sessionId); };
+                    item.appendChild(deleteBtn); item.onclick = () => selectSession(sessionId);
                     sessionsListEl.appendChild(item);
                 });
-
-                if (sessionCount > 0 && !activeSessionId && firstSessionIdFromSnapshot) { 
-                    selectSession(firstSessionIdFromSnapshot);
-                } else if (sessionCount > 0 && activeSessionId) {
+                if (sessionCount > 0 && !activeSessionId && firstSessionIdFromSnapshot) selectSession(firstSessionIdFromSnapshot);
+                else if (sessionCount > 0 && activeSessionId) {
                     const currentActiveItem = sessionsListEl.querySelector(`.session-item[data-session-id="${activeSessionId}"]`);
-                    if (currentActiveItem && !currentActiveItem.classList.contains('active')) {
-                        currentActiveItem.classList.add('active', 'bg-blue-100', 'text-blue-700');
-                    }
+                    if (currentActiveItem && !currentActiveItem.classList.contains('active')) currentActiveItem.classList.add('active', 'bg-blue-100', 'text-blue-700');
                 }
-
             }, (error) => {
-                console.error("Error loading chat sessions:", error);
-                showError("Could not load chat sessions. Firestore error: " + error.message);
+                console.error("Error loading chat sessions:", error); showError("Could not load chat sessions: " + error.message);
                 if (sessionsListEl) sessionsListEl.innerHTML = '<div class="text-xs text-red-500 p-2 text-center">Error loading history.</div>';
             });
         }
         
         function selectSession(sessionId) {
-            if (!sessionId) { console.warn("Attempted to select a null/undefined session ID."); return; }
+            if (!sessionId) { console.warn("selectSession: undefined sessionId."); return; }
             if (activeSessionId === sessionId && chatBox && !chatBox.innerHTML.includes('Loading chat...')) return; 
-
-            console.log("Selecting session:", sessionId);
             activeSessionId = sessionId;
             if (messagesUnsubscribe) messagesUnsubscribe(); 
             if (chatBox) chatBox.innerHTML = '<div class="text-center text-gray-400 p-4">Loading chat...</div>'; 
             loadChatHistory(activeSessionId);
-
             if (sessionsListEl) {
-                const sessionItems = sessionsListEl.querySelectorAll('.session-item');
-                sessionItems.forEach(item => {
-                    if (item.dataset.sessionId === sessionId) {
-                        item.classList.add('active', 'bg-blue-100', 'text-blue-700');
-                    } else {
-                        item.classList.remove('active', 'bg-blue-100', 'text-blue-700');
-                    }
+                sessionsListEl.querySelectorAll('.session-item').forEach(item => {
+                    item.classList.toggle('active', item.dataset.sessionId === sessionId);
+                    item.classList.toggle('bg-blue-100', item.dataset.sessionId === sessionId);
+                    item.classList.toggle('text-blue-700', item.dataset.sessionId === sessionId);
                 });
+            }
+            // Close mobile sidebar if open
+            if (chatHistorySidebar && !chatHistorySidebar.classList.contains('-translate-x-full') && window.innerWidth < 640) {
+                chatHistorySidebar.classList.add('-translate-x-full');
+                if(sidebarOverlay) sidebarOverlay.classList.add('hidden');
             }
         }
 
-        // --- Message Handling (Firestore & UI) ---
         async function saveMessageToFirestore(messageData) { 
-            if (!currentUserId || !activeSessionId) { showError("Cannot save message: Not signed in or no active chat session."); return; }
-            if (!db) { showError("Cannot save message: Database service not available."); return; }
+            if (!currentUserId || !activeSessionId) { showError("Cannot save message: Not signed in or no active chat."); return; }
+            if (!db) { showError("Cannot save message: DB not available."); return; }
             try { 
                 const messagesColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}/messages`; 
                 await addDoc(collection(db, messagesColPath), { ...messageData, userId: currentUserId, timestamp: serverTimestamp() }); 
-                
                 const sessionDocPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}`;
-                const sessionDocRef = doc(db, sessionDocPath);
-                const sessionSnap = await getDoc(sessionDocRef); 
-
+                const sessionDocRef = doc(db, sessionDocPath); const sessionSnap = await getDoc(sessionDocRef); 
                 if (sessionSnap.exists()) {
-                    const sessionData = sessionSnap.data();
-                    let updateData = { lastActivity: serverTimestamp() };
+                    const sessionData = sessionSnap.data(); let updateData = { lastActivity: serverTimestamp() };
                     if (messageData.sender === 'user' && messageData.type === 'text' && messageData.content) {
-                        const messagesQuery = query(collection(db, messagesColPath), orderBy("timestamp", "asc"));
-                        const existingMessagesSnap = await getDocs(messagesQuery);
-                        let userTextMessagesCount = 0;
-                        existingMessagesSnap.forEach(msgDoc => {
-                            if (msgDoc.data().sender === 'user' && msgDoc.data().type === 'text') userTextMessagesCount++;
-                        });
-                        if (userTextMessagesCount === 1 && sessionData.title && sessionData.title.startsWith("Chat ")) { 
+                        const msgsQuery = query(collection(db, messagesColPath), orderBy("timestamp", "asc"));
+                        const existingMsgsSnap = await getDocs(msgsQuery); let userTxtMsgs = 0;
+                        existingMsgsSnap.forEach(msgDoc => { if (msgDoc.data().sender === 'user' && msgDoc.data().type === 'text') userTxtMsgs++; });
+                        if (userTxtMsgs === 1 && sessionData.title && sessionData.title.startsWith("Chat ")) { 
                            updateData.title = messageData.content.substring(0, 35) + (messageData.content.length > 35 ? '...' : '');
                         }
                     }
                     await updateDoc(sessionDocRef, updateData); 
                 }
-            } 
-            catch (error) { console.error("Error saving message to Firestore:", error); showError("Error saving message. Firestore error: " + error.message); }
+            } catch (error) { console.error("Error saving to Firestore:", error); showError("Error saving message: " + error.message); }
         }
 
         function loadChatHistory(sessionIdToLoad) { 
             if (!db || !chatBox || !sessionIdToLoad || !currentUserId) { 
-                if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Select a chat or start a new one.</div>';
-                console.warn("Cannot load chat history: missing DB, chatBox, session ID, or user ID."); return; 
+                if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Select a chat.</div>'; return; 
             }
             if (messagesUnsubscribe) messagesUnsubscribe(); 
-            
             const messagesColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToLoad}/messages`;
             const q = query(collection(db, messagesColPath), orderBy("timestamp", "asc")); 
-            
-            chatBox.innerHTML = ''; 
-            let initialWelcomeMessageAdded = false;
-
+            chatBox.innerHTML = ''; let initialWelcomeAdded = false;
             messagesUnsubscribe = onSnapshot(q, (snapshot) => {
-                if (!chatBox) return;
-                chatBox.innerHTML = ''; 
-                let messageCount = 0;
+                if (!chatBox) return; chatBox.innerHTML = ''; let msgCount = 0;
                 snapshot.forEach((docMsg) => { 
-                    messageCount++;  
-                    const msg = docMsg.data();  
+                    msgCount++; const msg = docMsg.data();  
                     if (msg.type === 'image') addImageToChatLog(msg.content, msg.mimeType, msg.sender);  
                     else addMessageToChat(msg.content, msg.sender);  
                 });
-                if (messageCount === 0 && !snapshot.metadata.hasPendingWrites && !initialWelcomeMessageAdded) {  
-                     const welcomeMessage = "Chat started! How can I assist you today?";  
-                     addMessageToChat(welcomeMessage, "bot");
-                     initialWelcomeMessageAdded = true;  
+                if (msgCount === 0 && !snapshot.metadata.hasPendingWrites && !initialWelcomeAdded) {  
+                     addMessageToChat("Chat started! How can I help?", "bot"); initialWelcomeAdded = true;  
                 }
                 if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; 
             }, (error) => { 
-                console.error(`Error loading messages for session ${sessionIdToLoad}:`, error); 
-                showError("Failed to load messages. Firestore error: " + error.message); 
-                if (chatBox) chatBox.innerHTML = `<div class="text-center text-red-500 p-4">Error loading messages.</div>`;
+                console.error(`Error loading messages for ${sessionIdToLoad}:`, error); 
+                showError("Failed to load messages: " + error.message); 
+                if (chatBox) chatBox.innerHTML = `<div class="text-center text-red-500 p-4">Error loading.</div>`;
             });
         }
         
         function addMessageToChat(text, sender) { 
-            if (!chatBox) { console.warn("addMessageToChat: chatBox element not found."); return; }
-            const messageDiv = document.createElement('div'); 
-            messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'py-1'); 
-            const bubbleDiv = document.createElement('div'); 
-            bubbleDiv.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot'); 
-            const codeBlockRegex = /```(\w*)\n([\s\S]*?)\n```/gm; 
-            let lastIndex = 0; 
-            let hasCodeBlock = false; 
-            const contentFragment = document.createDocumentFragment(); 
-            text.replace(codeBlockRegex, (match, lang, codeContent, offset) => { 
-                hasCodeBlock = true; 
-                if (offset > lastIndex) contentFragment.appendChild(document.createTextNode(text.substring(lastIndex, offset))); 
-                const preElement = document.createElement('pre'); 
-                const codeElement = document.createElement('code'); 
-                if (lang) codeElement.classList.add(`language-${lang}`); 
-                codeElement.textContent = codeContent.trim(); 
-                preElement.appendChild(codeElement); 
-                contentFragment.appendChild(preElement); 
-                lastIndex = offset + match.length; 
-                return match; 
+            if (!chatBox) return; const msgDiv = document.createElement('div'); 
+            msgDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'py-1'); 
+            const bubble = document.createElement('div'); bubble.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot'); 
+            const rgx = /```(\w*)\n([\s\S]*?)\n```/gm; let lastIdx = 0; let hasCode = false; const frag = document.createDocumentFragment(); 
+            text.replace(rgx, (m, lang, code, off) => { 
+                hasCode = true; if (off > lastIdx) frag.appendChild(document.createTextNode(text.substring(lastIdx, off))); 
+                const pre = document.createElement('pre'); const c = document.createElement('code'); 
+                if (lang) c.classList.add(`language-${lang}`); c.textContent = code.trim(); 
+                pre.appendChild(c); frag.appendChild(pre); lastIdx = off + m.length; return m; 
             }); 
-            if (lastIndex < text.length) contentFragment.appendChild(document.createTextNode(text.substring(lastIndex))); 
-            if (contentFragment.hasChildNodes()) bubbleDiv.appendChild(contentFragment); 
-            else if (!hasCodeBlock) bubbleDiv.textContent = text; 
-            messageDiv.appendChild(bubbleDiv); 
-            chatBox.appendChild(messageDiv); 
-            if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; 
+            if (lastIdx < text.length) frag.appendChild(document.createTextNode(text.substring(lastIdx))); 
+            if (frag.hasChildNodes()) bubble.appendChild(frag); else if (!hasCode) bubble.textContent = text; 
+            msgDiv.appendChild(bubble); chatBox.appendChild(msgDiv); chatBox.scrollTop = chatBox.scrollHeight; 
         }
 
         function addImageToChatLog(base64, mime, sender) { 
-            if (!chatBox) { console.warn("addImageToChatLog: chatBox element not found."); return; }
-            const div = document.createElement('div'); 
+            if (!chatBox) return; const div = document.createElement('div'); 
             div.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'my-1'); 
-            const bubble = document.createElement('div'); 
-            bubble.classList.add('image-chat-bubble'); 
+            const bubble = document.createElement('div'); bubble.classList.add('image-chat-bubble'); 
             bubble.style.backgroundColor = sender === 'user' ? '#DBEAFE' : '#D1FAE5'; 
-            const img = document.createElement('img'); 
-            img.src = `data:${mime};base64,${base64}`; 
-            img.alt = sender === 'user' ? "User uploaded image" : "Bot generated image"; 
-            bubble.appendChild(img); 
-            div.appendChild(bubble); 
-            chatBox.appendChild(div); 
-            if(chatBox) chatBox.scrollTop = chatBox.scrollHeight; 
+            const img = document.createElement('img'); img.src = `data:${mime};base64,${base64}`; 
+            img.alt = sender === 'user' ? "User image" : "Bot image"; 
+            bubble.appendChild(img); div.appendChild(bubble); chatBox.appendChild(div); chatBox.scrollTop = chatBox.scrollHeight; 
         }
         
-        function showLoading(isLoading) { 
-            if(!loadingIndicator) { console.warn("showLoading: loadingIndicator element not found."); return; }
-            loadingIndicator.classList.toggle('hidden', !isLoading); 
-        }
+        function showLoading(isLoading) { if(!loadingIndicator) return; loadingIndicator.classList.toggle('hidden', !isLoading); }
 
-        // --- Send Message Wrapper & Core Logic ---
         async function handleSendMessageWrapper() { 
-            if (!userInput || !chatBox ) { showError("Chat interface is not ready."); return; }
-            if (!currentUserId || !activeSessionId) { showError("Please sign in and select or start a chat session."); return; } 
+            if (!userInput || !chatBox ) { showError("Chat not ready."); return; }
+            if (!currentUserId || !activeSessionId) { showError("Please sign in and select a chat."); return; } 
             await handleSendMessage(); 
         }
 
         async function handleSendMessage() { 
-            const textContent = userInput.value.trim(); 
-            const imageBase64 = currentBase64Image; 
-            const imageMimeType = currentMimeType;
-            if (!textContent && !imageBase64) { showError("Please type, speak, or upload an image."); return; }
-            if (!activeSessionId) { showError("No active chat session. Please start or select one."); return; }
-
-            if (imageBase64 && imageMimeType) await saveMessageToFirestore({ sender: 'user', type: 'image', content: imageBase64, mimeType: imageMimeType });
-            if (textContent) await saveMessageToFirestore({ sender: 'user', type: 'text', content: textContent });
-            
-            if(userInput) userInput.value = ''; 
-            removeImagePreview(); 
-            showLoading(true); 
-
-            if (textContent && containsVulgar(textContent)) { 
-                const vulgarResponseMessage = "I cannot assist with inappropriate language."; 
-                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: vulgarResponseMessage }); 
-                showLoading(false); speakResponse(vulgarResponseMessage); return; 
+            const text = userInput.value.trim(); const imgB64 = currentBase64Image; const imgMime = currentMimeType;
+            if (!text && !imgB64) { showError("Please type, speak, or upload an image."); return; }
+            if (!activeSessionId) { showError("No active chat. Start or select one."); return; }
+            if (imgB64 && imgMime) await saveMessageToFirestore({ sender: 'user', type: 'image', content: imgB64, mimeType: imgMime });
+            if (text) await saveMessageToFirestore({ sender: 'user', type: 'text', content: text });
+            if(userInput) userInput.value = ''; removeImagePreview(); showLoading(true); 
+            if (text && containsVulgar(text)) { 
+                const VULGAR_MSG = "Inappropriate language detected."; 
+                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: VULGAR_MSG }); 
+                showLoading(false); speakResponse(VULGAR_MSG); return; 
             }
             try {
-                let geminiParts = []; 
-                let combinedPromptForGemini = botPersonaInstructions; 
-                if (textContent) combinedPromptForGemini += "\n\nUSER QUERY TEXT: " + textContent;
-                else if (imageBase64 && !textContent) combinedPromptForGemini += "\n\nUSER QUERY TEXT: (No text, analyze image)";
-                geminiParts.push({ text: combinedPromptForGemini }); 
-                if (imageBase64 && imageMimeType) geminiParts.push({ inlineData: { mimeType: imageMimeType, data: imageBase64 } });
-                
-                const payload = { contents: [{ role: "user", parts: geminiParts }] };
-                const response = await fetch(geminiApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                
-                let botResponseText = "Sorry, issue processing request."; 
-                if (!response.ok) { 
-                    const errorData = await response.json().catch(()=>({error:{message:"API error/parsing failed"}})); 
-                    botResponseText = `API Error (${response.status}): ${errorData.error?.message || response.statusText || "Unknown API error"}`; 
-                    if (response.status === 429) botResponseText = "API rate limit exceeded. Try again later.";
-                    console.error("Gemini API Error:", botResponseText, errorData);
+                let parts = []; let prompt = botPersonaInstructions; 
+                if (text) prompt += "\n\nUSER QUERY: " + text;
+                else if (imgB64 && !text) prompt += "\n\nUSER QUERY: (Analyze image)";
+                parts.push({ text: prompt }); if (imgB64 && imgMime) parts.push({ inlineData: { mimeType: imgMime, data: imgB64 } });
+                const payload = { contents: [{ role: "user", parts: parts }] };
+                const resp = await fetch(geminiApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                let botText = "Sorry, error processing request."; 
+                if (!resp.ok) { 
+                    const errD = await resp.json().catch(()=>({error:{message:"API error/parse fail"}})); 
+                    botText = `API Error (${resp.status}): ${errD.error?.message || resp.statusText || "Unknown"}`; 
+                    if (resp.status === 429) botText = "API limit hit. Try later.";
                 } else { 
-                    const result = await response.json(); 
-                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) botResponseText = result.candidates[0].content.parts[0].text;
-                    else if (result.promptFeedback?.blockReason) botResponseText = `Request blocked: ${result.promptFeedback.blockReason}.`;
-                    else if (result.candidates?.[0]?.finishReason && result.candidates[0].finishReason !== "STOP") botResponseText = `AI stopped: ${result.candidates[0].finishReason}.`;
-                    else console.warn("Gemini API - Unexpected response:", result);
+                    const res = await resp.json(); 
+                    if (res.candidates?.[0]?.content?.parts?.[0]?.text) botText = res.candidates[0].content.parts[0].text;
+                    else if (res.promptFeedback?.blockReason) botText = `Blocked: ${res.promptFeedback.blockReason}.`;
+                    else if (res.candidates?.[0]?.finishReason && res.candidates[0].finishReason !== "STOP") botText = `AI stopped: ${res.candidates[0].finishReason}.`;
                 }
-                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: botResponseText }); 
-                speakResponse(botResponseText);
+                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: botText }); speakResponse(botText);
             } catch (error) { 
-                console.error('Gemini API call error:', error); 
-                let detailedErrorMessage = `Unexpected error: ${error.message}`;
-                showError(detailedErrorMessage); 
-                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: detailedErrorMessage });
+                showError(`Gemini API error: ${error.message}`); await saveMessageToFirestore({ sender: 'bot', type: 'text', content: `Error: ${error.message}` });
             } finally { showLoading(false); }
         }
 
         // --- Speech Recognition (STT) & Synthesis (TTS) ---
         function initializeSpeechRecognition() { 
-            const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SpeechRecognitionAPI) { 
-                speechRecognition = new SpeechRecognitionAPI(); 
-                speechRecognition.continuous = false; 
-                speechRecognition.lang = 'en-US'; 
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SR) { 
+                speechRecognition = new SR(); speechRecognition.continuous = false; speechRecognition.lang = 'en-US'; 
                 speechRecognition.interimResults = false; speechRecognition.maxAlternatives = 1;
-                speechRecognition.onresult = (event) => { 
-                    const transcript = event.results[0][0].transcript.trim(); 
-                    if(userInput) userInput.value = transcript; stopRecording(); 
-                    if(transcript) handleSendMessageWrapper(); 
-                    else showError("Voice input empty/unrecognized.");
-                };
-                speechRecognition.onerror = (event) => { 
-                    let errorMessage = `Speech error: ${event.error}.`; 
-                    if(event.error === 'no-speech') errorMessage = "No speech detected."; 
-                    else if(event.error === 'audio-capture') errorMessage = "Mic error."; 
-                    else if(event.error === 'not-allowed') errorMessage = "Mic access denied."; 
-                    else if(event.error === 'language-not-supported') errorMessage = `Lang '${speechRecognition.lang}' not supported.`;
-                    showError(errorMessage); stopRecording(); 
-                };
+                speechRecognition.onresult = (e) => { const r = e.results[0][0].transcript.trim(); if(userInput)userInput.value=r; stopRecording(); if(r)handleSendMessageWrapper(); else showError("Voice input empty.");};
+                speechRecognition.onerror = (e) => { let m=`Speech error: ${e.error}.`; if(e.error==='no-speech')m="No speech."; else if(e.error==='audio-capture')m="Mic error."; else if(e.error==='not-allowed')m="Mic denied."; else if(e.error==='language-not-supported')m=`Lang '${speechRecognition.lang}' not supported.`; showError(m); stopRecording();};
                 speechRecognition.onend = () => { if (isRecording) stopRecording(); };
-            } else { 
-                if(voiceInputBtn) voiceInputBtn.disabled = true; 
-                showError('Voice input not supported by browser.'); 
-                console.warn("SpeechRecognition API not available.");
-            }
+            } else { if(voiceInputBtn) voiceInputBtn.disabled = true; showError('Voice input not supported.'); }
         }
 
-        async function getMurfAudioUrl(textToSpeak, languageCode = 'en-US') { 
-            if (!MURF_API_KEY || MURF_API_KEY==="YOUR_MURF_API_KEY" ) { console.warn("Murf API key invalid. Skipping Murf TTS."); return null; }
-            const voiceConfig = {
-                'en-US': { voice: 'en-US-ryan', style: 'conversational', mood: 'neutral' }, 
-                'hi-IN': { voice: 'hi-IN-Diksha', style: 'conversational', mood: 'neutral' } 
-            };
-            const selectedVoice = voiceConfig[languageCode] || voiceConfig['en-US']; 
-            const murfApiUrl = "https://api.murf.ai/v1/speech/generate"; 
-            const payload = { text: textToSpeak, voice: selectedVoice.voice, style: selectedVoice.style, mood: selectedVoice.mood, format: "mp3", sampleRate: 24000, convertToSsml: true };
-            try { 
-                const response = await fetch(murfApiUrl, { method: "POST", headers: { "api-key": MURF_API_KEY, "Content-Type": "application/json" }, body: JSON.stringify(payload) }); 
-                const data = await response.json();
-                if(!response.ok){ showError(`Murf API Error (${response.status}): ${data.message || 'Unknown'}. Voice: ${selectedVoice.voice}`); console.error("Murf API Error:", data); return null; } 
-                if(!data.audioFile){ showError(`Murf API Error: No audioFile. ${data.message || ''}`); console.error("Murf API - No audioFile:", data); return null; } 
-                return data.audioFile; 
-            } catch(err){ showError(`Murf API Exception: ${err.message}.`); console.error("Murf API Exception:", err); return null; }
-        }
-
+        // Using only browser's SpeechSynthesis (Murf removed)
         async function speakResponse(textToSpeak) { 
-            if(currentBotAudio && !currentBotAudio.paused) currentBotAudio.pause(); 
             if('speechSynthesis' in window) window.speechSynthesis.cancel(); 
-            let languageCode = 'en-US'; 
-            if(/[\u0900-\u097F]/.test(textToSpeak)) languageCode = 'hi-IN'; 
-            let spokenViaMurf = false;
-            const murfAudioUrl = await getMurfAudioUrl(textToSpeak, languageCode); 
-            if(murfAudioUrl){
-                try{ currentBotAudio = new Audio(murfAudioUrl); await currentBotAudio.play(); spokenViaMurf = true; } 
-                catch(e){ console.error("Murf audio playback error:", e); currentBotAudio = null; }
-            }
-            if(!spokenViaMurf && 'speechSynthesis' in window){
-                const utterance = new SpeechSynthesisUtterance(textToSpeak); utterance.lang = languageCode; 
-                try { const voices = window.speechSynthesis.getVoices(); if(voices.length > 0){ const voiceForLang = voices.find(v => v.lang === languageCode); if(voiceForLang) utterance.voice = voiceForLang;}} 
-                catch(e) { console.warn("Could not get/set voices for browser TTS:", e); }
+            let langCode = 'en-US'; if(/[\u0900-\u097F]/.test(textToSpeak)) langCode = 'hi-IN'; 
+            if('speechSynthesis' in window){
+                const utterance = new SpeechSynthesisUtterance(textToSpeak); utterance.lang = langCode; 
+                try { 
+                    const voices = window.speechSynthesis.getVoices(); // May need to wait for voiceschanged event
+                    if(voices.length > 0){ const voice = voices.find(v => v.lang === langCode); if(voice) utterance.voice = voice;}
+                } catch(e) { console.warn("Could not set voices for TTS:", e); }
                 window.speechSynthesis.speak(utterance);
-            } else if (!spokenViaMurf) console.warn('TTS not available (Murf/browser).');
+            } else console.warn('Browser SpeechSynthesis not available.');
         }
 
-        function toggleVoiceInput(){ 
-            if(!speechRecognition){ showError('Voice input not available.'); return; }
-            if(isRecording) stopRecording(); else startRecording();
-        }
-
+        function toggleVoiceInput(){ if(!speechRecognition){ showError('Voice input unavailable.'); return; } if(isRecording) stopRecording(); else startRecording();}
         function startRecording() { 
-            if (!speechRecognition) { showError("Speech recognition not initialized."); return; }
+            if (!speechRecognition) { showError("Speech recognition not ready."); return; }
             try { 
-                if(userInput) userInput.value = ""; 
-                if(currentBotAudio && !currentBotAudio.paused) currentBotAudio.pause(); 
-                if('speechSynthesis' in window) window.speechSynthesis.cancel(); 
+                if(userInput) userInput.value = ""; if('speechSynthesis' in window) window.speechSynthesis.cancel(); 
                 speechRecognition.start(); isRecording = true; 
                 if(voiceInputBtn) { voiceInputBtn.classList.add('recording'); voiceInputBtn.title = "Stop Recording"; }
-            }
-            catch(e){
-                if(e.name === 'InvalidStateError'){ console.warn("Speech recognition InvalidStateError on start."); stopRecording(); } 
-                else { showError("Could not start voice recording: " + e.message); isRecording = false; if(voiceInputBtn) { voiceInputBtn.classList.remove('recording'); voiceInputBtn.title = "Voice Input"; }}
+            } catch(e){
+                if(e.name === 'InvalidStateError'){ stopRecording(); } 
+                else { showError("Voice recording error: " + e.message); isRecording = false; if(voiceInputBtn) { voiceInputBtn.classList.remove('recording'); voiceInputBtn.title = "Voice Input"; }}
             }
         }
-
         function stopRecording(){ 
             if(speechRecognition && isRecording) { try { speechRecognition.stop(); } catch (e) { console.warn("Error stopping speech recognition:", e.message); }}
             isRecording = false; if(voiceInputBtn) { voiceInputBtn.classList.remove('recording'); voiceInputBtn.title = "Voice Input"; }
         }
 
-        // --- File & Camera Handling ---
-        function handleFileSelect(event){ 
-            const file = event.target.files[0];
-            if(file && file.type.startsWith('image/')){
-                closeCameraModalAndStream(); 
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    if(imagePreview) imagePreview.src = e.target.result;
-                    currentBase64Image = e.target.result.split(',')[1]; 
-                    currentMimeType = file.type;
-                    if(imagePreviewContainer) imagePreviewContainer.classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            } else if (file) { showError("Please select a valid image file."); if(fileInput) fileInput.value = null; }
+        function handleFileSelect(e){ 
+            const f=e.target.files[0]; if(f&&f.type.startsWith('image/')){ closeCameraModalAndStream(); 
+            const r=new FileReader(); r.onload=(ev)=>{if(imagePreview)imagePreview.src=ev.target.result; currentBase64Image=ev.target.result.split(',')[1]; currentMimeType=f.type; if(imagePreviewContainer)imagePreviewContainer.classList.remove('hidden');}; r.readAsDataURL(f);
+            } else if(f){ showError("Please select an image file."); if(fileInput)fileInput.value=null;}
         }
-
-        function removeImagePreview(){ 
-            if(imagePreview) imagePreview.src = '#'; 
-            if(imagePreviewContainer) imagePreviewContainer.classList.add('hidden');
-            currentBase64Image = null; currentMimeType = null;
-            if(fileInput) fileInput.value = null; 
-        }
-
+        function removeImagePreview(){ if(imagePreview)imagePreview.src='#'; if(imagePreviewContainer)imagePreviewContainer.classList.add('hidden'); currentBase64Image=null; currentMimeType=null; if(fileInput)fileInput.value=null; }
         async function openCameraModal() { 
-            removeImagePreview(); 
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { 
-                try { 
-                    mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); 
-                    if(videoPreviewModal) videoPreviewModal.srcObject = mediaStream; 
-                    if(cameraModal) { cameraModal.classList.remove('hidden'); cameraModal.classList.add('flex'); }
-                } catch (err) { showError("Camera access error: " + err.message); console.error("Camera access error:", err); } 
-            } else { showError("Camera API not supported."); } 
-        }
-
-        function closeCameraModalAndStream() { 
-            if (mediaStream) { mediaStream.getTracks().forEach(track => track.stop()); mediaStream = null; } 
-            if(videoPreviewModal) videoPreviewModal.srcObject = null; 
-            if(cameraModal) { cameraModal.classList.add('hidden'); cameraModal.classList.remove('flex');}
-        }
-
+            removeImagePreview(); if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { 
+            try { mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }); if(videoPreviewModal) videoPreviewModal.srcObject = mediaStream; if(cameraModal) { cameraModal.classList.remove('hidden'); cameraModal.classList.add('flex'); }} 
+            catch (err) { showError("Camera error: " + err.message);}} else { showError("Camera API not supported.");}}
+        function closeCameraModalAndStream() { if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; } if(videoPreviewModal) videoPreviewModal.srcObject = null; if(cameraModal) {cameraModal.classList.add('hidden'); cameraModal.classList.remove('flex');}}
         function captureImageFromModal() { 
-            if (!mediaStream || !videoPreviewModal || !videoPreviewModal.videoWidth || videoPreviewModal.videoWidth === 0) { 
-                showError("Camera stream not ready."); return; 
-            } 
-            const canvas = document.createElement('canvas'); 
-            canvas.width = videoPreviewModal.videoWidth; canvas.height = videoPreviewModal.videoHeight; 
-            const context = canvas.getContext('2d');
-            if (!context) { showError("Could not get 2D context from canvas."); return; }
-            context.drawImage(videoPreviewModal, 0, 0, canvas.width, canvas.height); 
-            const dataUrl = canvas.toDataURL('image/png'); 
-            if(imagePreview) imagePreview.src = dataUrl; 
-            currentBase64Image = dataUrl.split(',')[1]; currentMimeType = 'image/png'; 
-            if(imagePreviewContainer) imagePreviewContainer.classList.remove('hidden');
-            closeCameraModalAndStream(); 
-            showError("Image captured! Describe it or add text and send."); 
+            if (!mediaStream || !videoPreviewModal || !videoPreviewModal.videoWidth) { showError("Camera not ready."); return; } 
+            const canv = document.createElement('canvas'); canv.width=videoPreviewModal.videoWidth; canv.height=videoPreviewModal.videoHeight; const ctx=canv.getContext('2d');
+            if (!ctx) { showError("Canvas context error."); return; } ctx.drawImage(videoPreviewModal,0,0,canv.width,canv.height); 
+            const dUrl=canv.toDataURL('image/png'); if(imagePreview)imagePreview.src=dUrl; currentBase64Image=dUrl.split(',')[1]; currentMimeType='image/png'; 
+            if(imagePreviewContainer)imagePreviewContainer.classList.remove('hidden'); closeCameraModalAndStream(); showError("Image captured!"); 
         }
-
-        // --- Miscellaneous ---
-        function containsVulgar(text){ 
-            if(!text) return false;
-            const vulgarWords = ["badword1", "offensiveword2", "exampleprofanity"]; 
-            return vulgarWords.some(word => text.toLowerCase().includes(word));
-        }
-        
+        function containsVulgar(t){if(!t)return false; const V=["badword","offensive"];return V.some(b=>t.toLowerCase().includes(b));}
         function startListeningAdapter() { 
-            const mainChatSection = document.getElementById('interactiveChatSection');
-            const signInButton = document.getElementById('googleSignInBtnHeader');
-            if (currentUserId && mainChatSection) { 
-                mainChatSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
-                setTimeout(() => { if (userInput) userInput.focus({preventScroll:true}); toggleVoiceInput(); }, 300); 
-            } else if (signInButton && signInButton.style.display !== 'none') { signInButton.click(); } 
-            else { showError("Please sign in with Google to use voice chat."); }
+            const chatSect = document.getElementById('interactiveChatSection'); const signInB = document.getElementById('googleSignInBtnHeader');
+            if (currentUserId && chatSect) { chatSect.scrollIntoView({behavior:'smooth',block:'start'}); setTimeout(() => { if(userInput)userInput.focus({preventScroll:true}); toggleVoiceInput();},300);} 
+            else if (signInB && signInB.style.display !== 'none') signInB.click(); else showError("Please sign in to use voice chat.");
         }
         window.startListeningAdapter = startListeningAdapter; 
     </script>
