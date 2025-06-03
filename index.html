@@ -8,8 +8,8 @@
         <meta http-equiv="Content-Security-Policy" 
               content="default-src 'self'; 
                        script-src 'self' 
-                                  'X/skoVefOl2fTapC7II8S4gQrxvtOmnW2NdH+/LksJU=' 
-                                  'lI4x7ybCsLLDL3N6NmQCepsOasv5PYdD8TrvHR05C2o='
+                                  'sha256-k5+bmWxj2hBeHm++LGbP4431hvv3GZLaYUhH5zXfM+s=' 
+                                  'sha256-lI4x7ybCsLLDL3N6NmQCepsOasv5PYdD8TrvHR05C2o='
                                   https://www.gstatic.com https://cdn.tailwindcss.com; 
                        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
                        font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;
@@ -19,7 +19,7 @@
                        object-src 'none';
                        base-uri 'self';">
     -->
-    <title>ChatIQ - AI Chat with Sessions</title>
+    <title>ChatIQ -Ambuj</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="config.js"></script> 
@@ -71,7 +71,7 @@
 </head>
 <body class="bg-gray-100 text-gray-800 flex flex-col h-screen">
 
-    <header class="header-animate-entrance relative bg-gradient-to-r from-slate-800 via-purple-800 to-slate-800 text-white py-3 shadow-2xl z-20">
+    <header class="header-animate-entrance relative bg-gradient-to-r from-slate-800 via-purple-800 to-slate-800 text-white py-3 shadow-2xl z-20 rounded-b">
         <div class="container mx-auto px-4 flex justify-between items-center relative">
             <div class="flex items-center">
                 <div class="sm:hidden mr-2"> 
@@ -85,12 +85,10 @@
             </div>
             <div id="authContainer" class="text-right flex items-center space-x-2 sm:space-x-3">
                 <button id="newChatBtn" class="hidden group flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75">
-                    <svg class="w-3 h-3 sm:w-4 sm:h-4 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                     <span class="hidden sm:inline">New Chat</span>
                     <span class="sm:hidden">New</span>
                 </button>
                 <button id="googleSignInBtnHeader" class="group flex items-center space-x-2 bg-white hover:bg-gray-200 text-slate-700 text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75">
-                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/><path fill="none" d="M1 1h22v22H1z"/></svg>
                     <span class="hidden sm:inline">Sign in with Google</span>
                     <span class="sm:hidden">Sign In</span>
                 </button>
@@ -114,7 +112,7 @@
                       sm:relative sm:translate-x-0 sm:w-0 sm:border-none sm:shadow-none sm:p-0">
             <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider px-2 pt-2 sm:pt-0">Chat History</h3>
             <div id="sessionsList" class="space-y-1 flex-grow">
-                {/* Session items populated by JS */}
+                
             </div>
             <div class="mt-auto pt-4 border-t border-slate-200">
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSc2N8OGqdbu2HFbxN4Y89Guv3Wnp9CHLYrz-bzu80kDjHQ3yg/viewform?usp=sharing" target="_blank" 
@@ -171,7 +169,7 @@
 
             <section class="text-center mt-8" id="alternativeVoiceSection" style="display: block;">
                 <h1 class="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl
-                            text-transparent bg-clip-text bg-gradient-to-br from-pink-400 via-purple-400 to-red-500
+                            text-transparent bg-clip-text bg-gradient-to-br from-pink-800 via-purple-800 to-red-800
                             animate-text-gradient-subtle mb-2">Welcome to ChatIQ</h1>
                 <button 
                     onclick="speakWelcomeMessage()" 
@@ -186,7 +184,7 @@
                 </button>
                 
                 <div class="mt-6">
-                    <button onclick="startListeningAdapter()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-md transition text-lg font-medium flex items-center justify-center mx-auto">
+                    <button onclick="speakWelcomeMessage()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-md transition text-lg font-medium flex items-center justify-center mx-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="mr-2">
                             <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm7 9a7 7 0 0 1-14 0H3a9 9 0 0 0 8 8.94V22h2v-3.06A9 9 0 0 0 21 10h-2z"></path>
                         </svg>
@@ -200,7 +198,7 @@
                 </div>
             </section>
 
-            <div id="signInPromptBelowVoiceBot" class="text-center pt-1 pb-1 bg-gradient-to-r from-indigo-500  from-blue-400 to-indigo-500 text-white mx-auto rounded mt-2 px-8 py-8" style="display: block;"><button id="inlineSignInBtn" class=" hover:text-indigo-800 font-bold ">Sign in with Google</button></div>
+            <div id="signInPromptBelowVoiceBot" class="text-center pt-3 pb-3 bg-gradient-to-r  from-indigo-500  from-blue-400 to-indigo-500 text-white mx-auto rounded mt-2 px-8 py-8" style="display: block;"><button id="inlineSignInBtn" class=" hover:text-indigo-800 font-bold ">Sign in with Google</button></div>
             <section id="featuresSection" class="mt-8" style="display: block;">
                    <h2 class="text-2xl font-semibold text-center mb-8">Key Features</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -215,9 +213,9 @@
                     <a href="https://docs.google.com/forms/d/e/1FAIpQLSc2N8OGqdbu2HFbxN4Y89Guv3Wnp9CHLYrz-bzu80kDjHQ3yg/viewform?usp=sharing" target="_blank" class="inline-block bg-gradient-to-r from-indigo-500 to-cyan-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:from-indigo-600 hover:to-cyan-500 transition">Give Feedback</a>
             </section>
 
-            <footer id="appFooter" class="footer-animate-entrance bg-gradient-to-b from-slate-800 via-purple-800 to-slate-800 text-white py-8 sm:py-10 text-center mt-auto pt-10 sm:pt-12" style="display: block;">
-                <h2 class="text-xl sm:text-2xl font-bold mb-4">About ChatIQ</h2>
-                <p class="max-w-2xl mx-auto mb-6 px-4 text-sm sm:text-base">ChatIQ assists by providing more precise, real-time answers to your questions through voice, text, and image interactions.</p>
+            <footer id="appFooter" class="footer-animate-entrance bg-gradient-to-b from-slate-800 via-purple-800 to-slate-800 text-white py-8 sm:py-10 text-center mt-auto pt-10 sm:pt-12 rounded rounded-b-2xl" style="display: block;">
+                <h2 class="text-xl sm:text-2xl font-bold mb-4">About ChatIQ</h2> 
+                <p class="max-w-2xl mx-auto mb-6 px-4 text-sm sm:text-base">ChatIQ assists provids more precise, real-time answers to your questions through voice, text, and image interactions.</p>
                 <div class="space-y-2 text-sm sm:text-base">
                     <p>📞 <a href="tel:+919369572534" class="hover:underline hover:text-pink-300 transition-colors">+91 93695 72534</a></p>
                     <p>✉️ <a href="mailto:ambuj20maurya@gmail.com" class="hover:underline hover:text-pink-300 transition-colors">ambuj20maurya@gmail.com</a></p>
@@ -242,7 +240,7 @@
     </div>
 
     <script type="module" src="main.js" 
-            integrity="lI4x7ybCsLLDL3N6NmQCepsOasv5PYdD8TrvHR05C2o=" 
+            integrity="sha256-k5+bmWxj2hBeHm++LGbP4431hvv3GZLaYUhH5zXfM+s=" 
             crossorigin="anonymous"></script>
 </body>
 </html>
