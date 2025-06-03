@@ -261,17 +261,25 @@
     </div>
 
     <script type="module">
-        // Firebase Configuration (Loaded from config.js)
+               // Firebase Configuration (Loaded from config.js)
         let firebaseConfig = {}; 
         if (typeof API_CONFIG !== 'undefined' && API_CONFIG.FIREBASE_CONFIG) {
             firebaseConfig = API_CONFIG.FIREBASE_CONFIG;
+            // Optional: Verify essential Firebase config properties
+            if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId) {
+                console.error("CRITICAL: Firebase configuration in config.js is missing essential properties (apiKey, authDomain, projectId).");
+                showError("Firebase configuration is incomplete. App functionality will be limited.");
+                // Fallback to a minimal structure if essential keys are missing from the loaded config
+                firebaseConfig = { apiKey: "", authDomain: "", projectId: "" }; 
+            } else {
+                console.log("Firebase configuration loaded successfully from config.js.");
+            }
         } else {
-            console.error("CRITICAL: Firebase configuration not found in config.js or API_CONFIG is undefined. Please ensure config.js is loaded correctly and API_CONFIG.FIREBASE_CONFIG is set.");
+            console.error("CRITICAL: API_CONFIG or API_CONFIG.FIREBASE_CONFIG is not defined. Ensure config.js is loaded before this script and properly structured.");
             showError("Firebase configuration is missing. App functionality will be limited.");
-            // Provide a minimal default to prevent immediate crashes if API_CONFIG is totally missing
-            firebaseConfig = { apiKey: "", authDomain: "", projectId: "" }; 
+            firebaseConfig = { apiKey: "", authDomain: "", projectId: "" }; // Minimal default
         }
-        // The const appIdForPath will also use this new firebaseConfig
+        
 
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -283,7 +291,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const analytics = getAnalytics(app); 
-        const appIdForPath = firebaseConfig.appId; 
+         const appIdForPath = firebaseConfig.appId || 'default-app-id-if-missing';
 
         let chatBox, chatBoxWrapper, userInput, sendBtn, fileUploadBtn, fileInput, cameraBtn, voiceInputBtn, 
             imagePreviewContainer, imagePreview, removeImageBtn, loadingIndicator, errorMessageDisplay, 
@@ -300,18 +308,32 @@
         let messagesUnsubscribe = null; 
         let sessionsUnsubscribe = null; 
 
-       // API Keys & Endpoints (GOOGLE_API_KEY is now from config.js)
-        let geminiApiUrl = ''; // Initialize
+        let geminiApiUrl = '';
+        // Define the placeholder string that your config.example.js would use.
+        // This helps in development to ensure a real key is provided.
+        const placeholderGeminiKeyString = "YOUR_ACTUAL_GEMINI_API_KEY_PLACEHOLDER"; 
 
-        if (typeof API_CONFIG !== 'undefined' && API_CONFIG.GOOGLE_API_KEY && API_CONFIG.GOOGLE_API_KEY !== "YOUR_ACTUAL_GEMINI_API_KEY_PLACEHOLDER") {
+        if (typeof API_CONFIG !== 'undefined' && API_CONFIG.GOOGLE_API_KEY && API_CONFIG.GOOGLE_API_KEY.trim() !== "" && API_CONFIG.GOOGLE_API_KEY !== placeholderGeminiKeyString) {
             geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_CONFIG.GOOGLE_API_KEY}`;
+            console.log("Gemini API Key loaded successfully from config.js.");
         } else {
-            console.error("CRITICAL: Gemini API key not found in config.js or is still a placeholder. Please set it up in config.js.");
-            showError("Gemini API key is missing or invalid. AI chat functionality will not work.");
-            // Potentially disable chat input if API key is missing
-            if(userInput) userInput.disabled = true;
-            if(sendBtn) sendBtn.disabled = true;
-        }        const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form. Use Markdown for formatting like lists (* item), bold (**bold**), or italics (*italics*) when it enhances clarity. For code, always use triple backticks. --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
+            let errorMessage = "CRITICAL: Gemini API key issue in config.js. AI chat functionality will not work.";
+            if (typeof API_CONFIG === 'undefined') {
+                errorMessage = "CRITICAL: API_CONFIG is not defined. Ensure config.js is loaded before this script.";
+            } else if (!API_CONFIG.GOOGLE_API_KEY || API_CONFIG.GOOGLE_API_KEY.trim() === "") {
+                errorMessage = "CRITICAL: API_CONFIG.GOOGLE_API_KEY is missing or empty in config.js.";
+            } else if (API_CONFIG.GOOGLE_API_KEY === placeholderGeminiKeyString) {
+                errorMessage = `CRITICAL: API_CONFIG.GOOGLE_API_KEY in config.js is still the placeholder value: "${placeholderGeminiKeyString}". Please replace it with your actual key.`;
+            }
+            console.error(errorMessage);
+            showError("Gemini API key is not configured correctly. AI chat is disabled.");
+            
+            const userInputEl = document.getElementById('userInput');
+            const sendBtnEl = document.getElementById('sendBtn');
+            if(userInputEl) userInputEl.disabled = true;
+            if(sendBtnEl) sendBtnEl.disabled = true;
+        } 
+       const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form. Use Markdown for formatting like lists (* item), bold (**bold**), or italics (*italics*) when it enhances clarity. For code, always use triple backticks. --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
 
         function showError(messageText) { 
             console.error("ChatIQ Error:", messageText); 
@@ -359,7 +381,7 @@
             chatHistorySidebar = document.getElementById('chatHistorySidebar');
             sidebarOverlay = document.getElementById('sidebarOverlay');
 
-            if(GOOGLE_API_KEY === "YOUR_GEMINI_API_KEY"){
+            if(API_CONFIG.GOOGLE_API_KEY === "YOUR_GEMINI_API_KEY"){
                 showError("CRITICAL: Placeholder Gemini API key detected. Update in script.");
             }
             
@@ -741,8 +763,15 @@
         function showLoading(isLoading) { if(!loadingIndicator) return; loadingIndicator.classList.toggle('hidden', !isLoading); }
 
         async function handleSendMessageWrapper() { 
-            if (!userInput || !chatBoxWrapper ) { showError("Chat not ready."); return; } // Check chatBoxWrapper
-            if (!currentUserId || !activeSessionId) { showError("Please sign in and select a chat."); return; } 
+            if (!userInput || !chatBoxWrapper ) { 
+                showError("Chat interface is not ready. Please wait a moment."); 
+                return; 
+            }
+            // CRITICAL CHECK: Ensure user is signed in and a session is active BEFORE proceeding
+            if (!currentUserId || !activeSessionId) { 
+                showError("Cannot send message: Not signed in or no active chat session. Please sign in and try again, or select/start a chat."); 
+                return; 
+            } 
             await handleSendMessage(); 
         }
 
