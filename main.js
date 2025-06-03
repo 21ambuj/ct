@@ -170,80 +170,84 @@ let firebaseConfig = {};
         }
 
         function setupAuthListener() { 
-            if (!auth) { 
-                console.error("Firebase Auth not initialized for listener."); 
-                showError("Critical: Auth service not ready."); 
-                if(interactiveChatSection) { interactiveChatSection.style.display = 'none'; interactiveChatSection.classList.remove('flex-1'); }
-                if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'block';
-                if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'block';
-                if(featuresSection) featuresSection.style.display = 'block';
-                if(feedbackSection) feedbackSection.style.display = 'block';
-                if(appFooter) appFooter.style.display = 'block';
-                if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'inline-block';
-                if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'none';
-                if(newChatBtn) newChatBtn.style.display = 'none';
-                if(chatHistoryToggleBtn) chatHistoryToggleBtn.style.display = 'none'; 
-                if(chatHistorySidebar) {
-                     chatHistorySidebar.classList.add('sm:w-0', 'sm:p-0'); 
-                     chatHistorySidebar.classList.remove('sm:w-64', 'sm:p-3', 'sm:border-r', 'sm:border-slate-200');
-                     chatHistorySidebar.classList.add('-translate-x-full'); 
-                }
-                if(sidebarOverlay) sidebarOverlay.classList.add('hidden');
-                return; 
-            }
-
-            onAuthStateChanged(auth, (user) => {
-                if (user) { 
-                    currentUserId = user.uid;
-                    if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = `Hi, ${user.displayName || user.email.split('@')[0] || 'User'}!`;
-                    if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'none';
-                    if(newChatBtn) newChatBtn.style.display = 'inline-block'; 
-                    if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'flex';
-                    
-                    if(interactiveChatSection) { interactiveChatSection.style.display = 'flex'; interactiveChatSection.classList.add('flex-1'); }
-                    if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'none'; 
-                    if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'none';
-                    if(featuresSection) featuresSection.style.display = 'none'; 
-                    if(feedbackSection) feedbackSection.style.display = 'none'; 
-                    if(appFooter) appFooter.style.display = 'none'; 
-
-                    if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'inline-flex'; 
-                    if(chatHistorySidebar) { 
-                        chatHistorySidebar.classList.remove('sm:w-0', 'sm:p-0');
-                        chatHistorySidebar.classList.add('sm:w-64', 'sm:p-3', 'sm:border-r', 'sm:border-slate-200');
-                    }
-                    if(chatHistoryToggleBtn) chatHistoryToggleBtn.style.display = 'block'; 
-                    loadChatSessions(); 
-                } else { 
-                    currentUserId = null; activeSessionId = null;
-                    if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = '';
-                    if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'inline-block';
-                    if(newChatBtn) newChatBtn.style.display = 'none'; 
-                    if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'none';
-
-                    if(interactiveChatSection) { interactiveChatSection.style.display = 'none'; interactiveChatSection.classList.remove('flex-1'); }
-                    if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'block';
-                    if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'block';
-                    if(featuresSection) featuresSection.style.display = 'block'; 
-                    if(feedbackSection) feedbackSection.style.display = 'block'; 
-                    if(appFooter) appFooter.style.display = 'block'; 
-
-                    if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'none';
-                    if(chatHistorySidebar) { 
-                        chatHistorySidebar.classList.add('sm:w-0', 'sm:p-0');
-                        chatHistorySidebar.classList.remove('sm:w-64', 'sm:p-3', 'sm:border-r', 'sm:border-slate-200');
-                        chatHistorySidebar.classList.add('-translate-x-full'); 
-                    }
-                    if(chatHistoryToggleBtn) chatHistoryToggleBtn.style.display = 'none'; 
-                    if(sidebarOverlay) sidebarOverlay.classList.add('hidden');
-
-                    if(messagesUnsubscribe) messagesUnsubscribe(); 
-                    if(sessionsUnsubscribe) sessionsUnsubscribe();
-                    if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Sign in to chat & see history.</div>';
-                    if(sessionsListEl) sessionsListEl.innerHTML = '';
-                }
-            });
+    if (!auth) { 
+        console.error("Firebase Auth not initialized for listener."); 
+        showError("Critical: Auth service not ready."); 
+        // Fallback UI for unauthenticated state
+        if(interactiveChatSection) { interactiveChatSection.style.display = 'none'; interactiveChatSection.classList.remove('flex-1'); }
+        if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'block';
+        if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'block';
+        if(featuresSection) featuresSection.style.display = 'block';
+        if(feedbackSection) feedbackSection.style.display = 'block';
+        if(appFooter) appFooter.style.display = 'block';
+        if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'inline-block';
+        if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'none';
+        if(newChatBtn) newChatBtn.style.display = 'none';
+        if(chatHistoryToggleBtn) chatHistoryToggleBtn.style.display = 'none'; 
+        if(chatHistorySidebar) {
+             chatHistorySidebar.classList.add('sm:w-0', 'sm:p-0'); 
+             chatHistorySidebar.classList.remove('sm:w-64', 'sm:p-3', 'sm:border-r', 'sm:border-slate-200');
+             chatHistorySidebar.classList.add('-translate-x-full'); 
         }
+        if(sidebarOverlay) sidebarOverlay.classList.add('hidden');
+        return; 
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) { 
+            currentUserId = user.uid;
+            if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = `Hi, ${user.displayName || user.email.split('@')[0] || 'User'}!`;
+            if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'none';
+            if(newChatBtn) newChatBtn.style.display = 'inline-block'; 
+            if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'flex';
+            
+            if(interactiveChatSection) { interactiveChatSection.style.display = 'flex'; interactiveChatSection.classList.add('flex-1'); }
+            if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'none'; 
+            if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'none';
+            if(featuresSection) featuresSection.style.display = 'none'; 
+            if(feedbackSection) feedbackSection.style.display = 'none'; 
+            if(appFooter) appFooter.style.display = 'none'; 
+
+            if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'inline-flex'; 
+            if(chatHistorySidebar) { 
+                chatHistorySidebar.classList.remove('sm:w-0', 'sm:p-0');
+                chatHistorySidebar.classList.add('sm:w-64', 'sm:p-3', 'sm:border-r', 'sm:border-slate-200');
+            }
+            if(chatHistoryToggleBtn) chatHistoryToggleBtn.style.display = 'block'; 
+            
+            loadChatSessions(); // Load existing sessions into history
+            startNewChatSession(); // <<< --- KEY CHANGE: Always start a new chat after loading history
+
+        } else { 
+            currentUserId = null; activeSessionId = null;
+            if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = '';
+            if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'inline-block';
+            if(newChatBtn) newChatBtn.style.display = 'none'; 
+            if(userDetailsHeaderDiv) userDetailsHeaderDiv.style.display = 'none';
+
+            if(interactiveChatSection) { interactiveChatSection.style.display = 'none'; interactiveChatSection.classList.remove('flex-1'); }
+            if(alternativeVoiceSection) alternativeVoiceSection.style.display = 'block';
+            if(signInPromptBelowVoiceBot) signInPromptBelowVoiceBot.style.display = 'block';
+            if(featuresSection) featuresSection.style.display = 'block'; 
+            if(feedbackSection) feedbackSection.style.display = 'block'; 
+            if(appFooter) appFooter.style.display = 'block'; 
+
+            if(swipeDownPromptElement) swipeDownPromptElement.style.display = 'none';
+            if(chatHistorySidebar) { 
+                chatHistorySidebar.classList.add('sm:w-0', 'sm:p-0');
+                chatHistorySidebar.classList.remove('sm:w-64', 'sm:p-3', 'sm:border-r', 'sm:border-slate-200');
+                chatHistorySidebar.classList.add('-translate-x-full'); 
+            }
+            if(chatHistoryToggleBtn) chatHistoryToggleBtn.style.display = 'none'; 
+            if(sidebarOverlay) sidebarOverlay.classList.add('hidden');
+
+            if(messagesUnsubscribe) messagesUnsubscribe(); 
+            if(sessionsUnsubscribe) sessionsUnsubscribe();
+            if(chatBox) chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Sign in to chat & see history.</div>';
+            if(sessionsListEl) sessionsListEl.innerHTML = '';
+        }
+    });
+}
         
         async function startNewChatSession() {
             if (!currentUserId || !db) { showError("Please sign in to start a new chat."); return; }
@@ -478,98 +482,177 @@ let firebaseConfig = {};
         }
 
         async function handleSendMessage() { 
-            const textContent = userInput.value.trim(); 
-            const imageBase64 = currentBase64Image; 
-            const imageMimeType = currentMimeType;
+    const textContent = userInput.value.trim(); 
+    const imageBase64 = currentBase64Image; 
+    const imageMimeType = currentMimeType;
+    
+    if (!textContent && !imageBase64) { 
+        showError("Please type, speak, or upload an image."); 
+        return; 
+    }
+    if (!activeSessionId || !currentUserId) { 
+        showError("No active session or user. Please sign in."); 
+        return; 
+    }
+
+    const currentMessageTextForHistoryContext = textContent; 
+
+    // Save user's current message(s) to Firestore first
+    if (imageBase64 && imageMimeType) {
+        await saveMessageToFirestore({ sender: 'user', type: 'image', content: imageBase64, mimeType: imageMimeType });
+    }
+    if (textContent) {
+        await saveMessageToFirestore({ sender: 'user', type: 'text', content: textContent });
+    }
+    
+    if(userInput) userInput.value = ''; 
+    removeImagePreview(); 
+    showLoading(true); 
+
+    if (textContent && containsVulgar(textContent)) { 
+        const VULGAR_MSG = "Inappropriate language detected."; 
+        await saveMessageToFirestore({ sender: 'bot', type: 'text', content: VULGAR_MSG }); 
+        showLoading(false); 
+        speakResponse(VULGAR_MSG); 
+        return; 
+    }
+
+    try {
+        let conversationHistoryContents = []; // For structured history
+
+        // Add system persona instructions as the first part of the context if desired by API
+        // For Gemini, it's often better to prepend system instructions to the first user message's text part.
+        // Or, if the API supports a "system" role, that would be ideal.
+        // For now, botPersonaInstructions will be prepended to the user's current query.
+
+        // Fetch recent messages for context
+        if (activeSessionId && currentUserId) {
+            const messagesQuery = query(
+                collection(db, `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}/messages`),
+                orderBy("timestamp", "desc"),
+                limit(11) // Fetch more to ensure we get up to 5 pairs + the current user message
+            );
+            const messagesSnapshot = await getDocs(messagesQuery);
+            let tempHistoryArray = [];
+            messagesSnapshot.docs.forEach(doc => {
+                tempHistoryArray.push(doc.data());
+            });
+
+            tempHistoryArray.reverse(); // Chronological order (oldest to newest)
             
-            if (!textContent && !imageBase64) { showError("Please type, speak, or upload an image."); return; }
-            if (!activeSessionId || !currentUserId) { showError("No active session or user. Please sign in."); return; }
+            let historyMessageCount = 0;
+            for (let i = 0; i < tempHistoryArray.length; i++) {
+                const msg = tempHistoryArray[i];
+                
+                // Skip the very last message if it's the user's current text input 
+                // (because it's already saved and will be part of the current turn)
+                if (i === tempHistoryArray.length - 1 && 
+                    msg.sender === 'user' && 
+                    msg.type === 'text' && 
+                    msg.content === currentMessageTextForHistoryContext &&
+                    !imageBase64 
+                   ) {
+                    continue; 
+                }
 
-            const currentMessageTextForHistoryContext = textContent; 
-
-            if (imageBase64 && imageMimeType) await saveMessageToFirestore({ sender: 'user', type: 'image', content: imageBase64, mimeType: imageMimeType });
-            if (textContent) await saveMessageToFirestore({ sender: 'user', type: 'text', content: textContent });
-            
-            if(userInput) userInput.value = ''; removeImagePreview(); showLoading(true); 
-
-            if (textContent && containsVulgar(textContent)) { 
-                const VULGAR_MSG = "Inappropriate language detected."; 
-                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: VULGAR_MSG }); 
-                showLoading(false); speakResponse(VULGAR_MSG); return; 
+                if (msg.type === 'text' && historyMessageCount < 10) { // Limit to 10 historical messages (5 turns)
+                    conversationHistoryContents.push({
+                        role: msg.sender === 'user' ? 'user' : 'model',
+                        parts: [{ text: msg.content }]
+                    });
+                    historyMessageCount++;
+                }
+                // Note: Historical images are not included in this context to manage complexity/token limits.
             }
-
-            try {
-                let historyForPrompt = "";
-                if (activeSessionId && currentUserId) {
-                    const messagesQuery = query(
-                        collection(db, `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}/messages`),
-                        orderBy("timestamp", "desc"),
-                        limit(7) 
-                    );
-                    const messagesSnapshot = await getDocs(messagesQuery);
-                    let tempHistoryArray = [];
-                    messagesSnapshot.docs.forEach(doc => { tempHistoryArray.push(doc.data()); });
-                    tempHistoryArray.reverse(); 
-                    let processedHistoryMessagesCount = 0;
-                    for (let i = 0; i < tempHistoryArray.length; i++) {
-                        const msg = tempHistoryArray[i];
-                        if (i === tempHistoryArray.length - 1 && msg.sender === 'user' && msg.type === 'text' && msg.content === currentMessageTextForHistoryContext && !imageBase64) {
-                            continue; 
-                        }
-                         if (msg.type === 'text' && processedHistoryMessagesCount < 6) {
-                            historyForPrompt += `${msg.sender === 'user' ? 'Previous User' : 'Previous ChatIQ'}: ${msg.content}\n`;
-                            processedHistoryMessagesCount++;
-                        }
-                    }
-                }
-
-                let promptForGemini = botPersonaInstructions;
-                if (historyForPrompt.trim() !== "") promptForGemini += "\n\nPREVIOUS CONVERSATION TURNS:\n" + historyForPrompt.trim();
-                if (textContent) promptForGemini += "\n\nCURRENT USER QUERY:\n" + textContent;
-                else if (imageBase64 && !textContent) promptForGemini += "\n\nCURRENT USER QUERY:\n(Analyze image below)";
-
-                let currentUserMessageParts = [{ text: promptForGemini }];
-                if (imageBase64 && imageMimeType) currentUserMessageParts.push({ inlineData: { mimeType: imageMimeType, data: imageBase64 } });
-                
-                const payload = { contents: [{ role: "user", parts: currentUserMessageParts }] };
-                if (!geminiApiUrl) { showError("Gemini API URL not configured. Check API key."); showLoading(false); return; }
-                const resp = await fetch(geminiApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                
-                let botResponseText = "Sorry, issue processing request."; 
-                if (!resp.ok) { 
-                    const errD = await resp.json().catch(()=>({error:{message:"API error/parse fail"}})); 
-                    botResponseText = `API Error (${resp.status}): ${errD.error?.message || resp.statusText || "Unknown"}`; 
-                    if (resp.status === 429) botResponseText = "API limit hit. Try later.";
-                } else { 
-                    const res = await resp.json(); 
-                    if (res.candidates?.[0]?.content?.parts?.[0]?.text) botResponseText = res.candidates[0].content.parts[0].text;
-                    else if (res.promptFeedback?.blockReason) botResponseText = `Blocked: ${res.promptFeedback.blockReason}.`;
-                    else if (res.candidates?.[0]?.finishReason && res.candidates[0].finishReason !== "STOP") botResponseText = `AI stopped: ${res.candidates[0].finishReason}.`;
-                }
-                if (currentUserId && activeSessionId) { 
-                    await saveMessageToFirestore({ sender: 'bot', type: 'text', content: botResponseText }); 
-                } else {
-                    console.error("Session became invalid before saving bot response.");
-                }
-                speakResponse(botResponseText);
-            } catch (error) { 
-                 let detailedErrorMessage;
-                if (error instanceof ReferenceError) { 
-                    detailedErrorMessage = `Programming error: ${error.message}. Check imports (like 'limit').`;
-                } else if (error && error.message) {
-                    detailedErrorMessage = `Gemini API error: ${error.message}`; 
-                } else if (typeof error === 'string') {
-                    detailedErrorMessage = `Gemini API error: ${error}`;
-                } else {
-                    detailedErrorMessage = "Gemini API call failed unexpectedly. Check console.";
-                }
-                console.error('Full error object in handleSendMessage catch:', error); 
-                showError(detailedErrorMessage); 
-                if (currentUserId && activeSessionId) { 
-                    await saveMessageToFirestore({ sender: 'bot', type: 'text', content: detailedErrorMessage });
-                }
-            } finally { showLoading(false); }
         }
+
+        // Construct current user message parts
+        let currentUserMessageParts = [];
+        let currentPromptText = botPersonaInstructions; // Start with persona
+
+        if (textContent) {
+            currentPromptText += "\n\nCURRENT USER QUERY:\n" + textContent;
+        } else if (imageBase64 && !textContent) { 
+            currentPromptText += "\n\nCURRENT USER QUERY:\n(No text provided, please analyze the image below and respond accordingly.)";
+        }
+        currentUserMessageParts.push({ text: currentPromptText });
+
+        if (imageBase64 && imageMimeType) {
+            currentUserMessageParts.push({ inlineData: { mimeType: imageMimeType, data: imageBase64 } });
+        }
+        
+        // Combine history with the current user message
+        const finalContentsForApi = [...conversationHistoryContents, { role: "user", parts: currentUserMessageParts }];
+        
+        const payload = {
+            contents: finalContentsForApi
+            // You might add generationConfig here if needed, e.g., for temperature, safety settings
+        };
+        
+        if (!geminiApiUrl) { 
+            showError("Gemini API URL not configured. Check API key."); 
+            showLoading(false); 
+            return; 
+        }
+        const resp = await fetch(geminiApiUrl, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify(payload) 
+        });
+        
+        let botResponseText = "Sorry, I encountered an issue processing your request at this moment."; 
+        if (!resp.ok) { 
+            const errD = await resp.json().catch(()=>({error:{message:"API error or non-JSON response"}})); 
+            botResponseText = `API Error (${resp.status}): ${errD.error?.message || resp.statusText || "Unknown API communication issue"}`; 
+            if (resp.status === 429) botResponseText = "I'm a bit busy right now. Please try again in a few moments.";
+            console.error("Gemini API Error Response (in handleSendMessage):", botResponseText, errD);
+        } else { 
+            const res = await resp.json(); 
+            if (res.candidates && res.candidates[0] && res.candidates[0].content && res.candidates[0].content.parts && res.candidates[0].content.parts[0] && res.candidates[0].content.parts[0].text) {
+                botResponseText = res.candidates[0].content.parts[0].text;
+            } else if (res.promptFeedback && res.promptFeedback.blockReason) {
+                botResponseText = `Your request was blocked. Reason: ${res.promptFeedback.blockReason}.`;
+                console.warn("Gemini API Blocked (in handleSendMessage):", res.promptFeedback);
+            } else if (res.candidates && res.candidates[0] && res.candidates[0].finishReason && res.candidates[0].finishReason !== "STOP") {
+                botResponseText = `My response was interrupted. Reason: ${res.candidates[0].finishReason}.`;
+                console.warn("Gemini API Finish Reason (in handleSendMessage):", res.candidates[0].finishReason);
+            } else {
+                console.warn("Gemini API - Unexpected response structure (in handleSendMessage):", res);
+                botResponseText = "I received an unusual response, please try rephrasing.";
+            }
+        }
+        
+        if (currentUserId && activeSessionId) {
+            await saveMessageToFirestore({ sender: 'bot', type: 'text', content: botResponseText }); 
+        } else {
+             console.error("Cannot save bot response: User session became invalid during API call.");
+             showError("Your session seems to have expired. Please try sending your message again.");
+        }
+        speakResponse(botResponseText);
+
+    } catch (error) { 
+        let detailedErrorMessage;
+        if (error instanceof ReferenceError) { 
+            detailedErrorMessage = `Programming error: ${error.message}. Check imports (like 'limit').`;
+        } else if (error && error.message) {
+            detailedErrorMessage = `Gemini API error: ${error.message}`; 
+        } else if (typeof error === 'string') {
+            detailedErrorMessage = `Gemini API error: ${error}`;
+        } else {
+            detailedErrorMessage = "Gemini API call failed unexpectedly. Check console for details.";
+        }
+        console.error('Full error object during Gemini API call (in handleSendMessage catch):', error); 
+        showError(detailedErrorMessage); 
+        
+        if (currentUserId && activeSessionId) {
+            await saveMessageToFirestore({ sender: 'bot', type: 'text', content: detailedErrorMessage });
+        } else {
+            console.error("Cannot save bot error message to Firestore: User session became invalid.");
+        }
+    } finally { 
+        showLoading(false); 
+    }
+}
 
         function initializeSpeechRecognition() { 
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
