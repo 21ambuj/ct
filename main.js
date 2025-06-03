@@ -677,6 +677,7 @@ let firebaseConfig = {};
                 window.speechSynthesis.speak(utterance);
             } else console.warn('Browser SpeechSynthesis not available.');
         }
+        
 
         function toggleVoiceInput(){ if(!speechRecognition){ showError('Voice input unavailable.'); return; } if(isRecording) stopRecording(); else startRecording();}
         function startRecording() { 
@@ -743,4 +744,6 @@ let firebaseConfig = {};
             if (currentUserId && chatSect) { chatSect.scrollIntoView({behavior:'smooth',block:'start'}); setTimeout(() => { if(userInput)userInput.focus({preventScroll:true}); toggleVoiceInput();},300);} 
             else if (signInB && signInB.style.display !== 'none') signInB.click(); else showError("Please sign in to use voice chat.");
         }
-        window.startListeningAdapter = startListeningAdapter; 
+        window.startListeningAdapter = startListeningAdapter;
+        
+         
