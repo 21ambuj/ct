@@ -1,4 +1,6 @@
+// main.js
 
+// Firebase Configuration (Loaded from config.js)
 let firebaseConfig = {}; 
 if (typeof API_CONFIG !== 'undefined' && API_CONFIG.FIREBASE_CONFIG) {
     firebaseConfig = API_CONFIG.FIREBASE_CONFIG;
@@ -18,7 +20,7 @@ if (typeof API_CONFIG !== 'undefined' && API_CONFIG.FIREBASE_CONFIG) {
 // Firebase Imports
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, writeBatch, doc, deleteDoc, updateDoc, getDoc, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // 'limit' is crucial here
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, writeBatch, doc, deleteDoc, updateDoc, getDoc, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 
 let app;
@@ -41,13 +43,13 @@ let chatBox, chatBoxWrapper, userInput, sendBtn, fileUploadBtn, fileInput, camer
 let currentBase64Image = null, currentMimeType = null, mediaStream = null, 
     speechRecognition = null, isRecording = false, currentUserId = null;
 
-let activeSessionId = null; // Can be a Firestore ID or "TEMP_NEW_SESSION"
+let activeSessionId = null; 
 let messagesUnsubscribe = null; 
 let sessionsUnsubscribe = null; 
 
 // API Configuration
 let geminiApiUrl = '';
-const placeholderGeminiKeyString = "YOUR_ACTUAL_GEMINI_API_KEY_PLACEHOLDER"; // Used to check if the key in config.js is still a placeholder
+const placeholderGeminiKeyString = "YOUR_ACTUAL_GEMINI_API_KEY_PLACEHOLDER"; 
 
 if (typeof API_CONFIG !== 'undefined' && API_CONFIG.GOOGLE_API_KEY && API_CONFIG.GOOGLE_API_KEY.trim() !== "" && API_CONFIG.GOOGLE_API_KEY !== placeholderGeminiKeyString) {
     geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_CONFIG.GOOGLE_API_KEY}`;
@@ -64,7 +66,6 @@ if (typeof API_CONFIG !== 'undefined' && API_CONFIG.GOOGLE_API_KEY && API_CONFIG
     console.error(errorMessage);
     showError("Gemini API key is not configured correctly. AI chat is disabled.");
     
-    // Disable chat input if API key is missing/invalid (check if elements exist first)
     const userInputElOnInit = document.getElementById('userInput');
     const sendBtnElOnInit = document.getElementById('sendBtn');
     if(userInputElOnInit) userInputElOnInit.disabled = true;
@@ -82,15 +83,12 @@ function showError(messageText) {
         errorElement.classList.remove('hidden');
         setTimeout(() => { errorElement.classList.add('hidden'); }, 5000);
     } else { 
-        // Fallback for early errors before DOM is fully ready
-        // alert("Notice: " + messageText); 
         console.warn("showError called before #errorMessage was available. Message:", messageText);
     }
 }
 
 // --- DOMContentLoaded: Initialize after page loads ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Assign all DOM Elements
     chatBox = document.getElementById('chatBox'); 
     chatBoxWrapper = document.getElementById('chatBoxWrapper'); 
     userInput = document.getElementById('userInput'); 
@@ -135,14 +133,14 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupEventListeners() { 
     if(googleSignInBtnHeader) googleSignInBtnHeader.addEventListener('click', signInWithGoogle);
     if(signOutBtnHeader) signOutBtnHeader.addEventListener('click', signOutUser);
-    if(newChatBtn) newChatBtn.addEventListener('click', startNewUnsavedChat); // Calls unsaved chat UI
+    if(newChatBtn) newChatBtn.addEventListener('click', startNewUnsavedChat); 
     if(inlineSignInBtn) inlineSignInBtn.addEventListener('click', signInWithGoogle); 
 
     if(sendBtn) sendBtn.addEventListener('click', handleSendMessageWrapper);
     if(userInput) userInput.addEventListener('keypress', (e) => { 
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessageWrapper(); }
     });
-    if(fileUploadBtn) fileUploadBtn.addEventListener('click', () => fileInput.click());
+    if(fileUploadBtn) fileUploadBtn.addEventListener('click', () => { if(fileInput) fileInput.click(); });
     if(fileInput) fileInput.addEventListener('change', handleFileSelect);
     if(removeImageBtn) removeImageBtn.addEventListener('click', removeImagePreview);
     
@@ -177,6 +175,7 @@ async function signOutUser() {
     try { 
         await signOut(auth); 
         activeSessionId = null; 
+        sessionStorage.removeItem('activeChatIQSessionId'); // Clear stored session on sign out
         if(sessionsListEl) sessionsListEl.innerHTML = ''; 
         if(chatBox) chatBox.innerHTML = '';
     } 
@@ -228,11 +227,32 @@ function setupAuthListener() {
             }
             if(chatHistoryToggleBtn) chatHistoryToggleBtn.style.display = 'block'; 
             
-            loadChatSessions(); 
-            startNewUnsavedChat(); // Always start with a new, unsaved chat UI
+            loadChatSessions(); // Load existing sessions into history
+
+            const restoredSessionId = sessionStorage.getItem('activeChatIQSessionId');
+            if (restoredSessionId && restoredSessionId !== "TEMP_NEW_SESSION") {
+                // Check if this session actually exists for the user before selecting
+                const sessionDocRef = doc(db, `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${restoredSessionId}`);
+                getDoc(sessionDocRef).then(docSnap => {
+                    if (docSnap.exists()) {
+                        console.log("Restoring active session from sessionStorage:", restoredSessionId);
+                        selectSession(restoredSessionId);
+                    } else {
+                        console.log("Stored session ID not found in Firestore, starting new unsaved chat.");
+                        sessionStorage.removeItem('activeChatIQSessionId'); // Clear invalid stored ID
+                        startNewUnsavedChat();
+                    }
+                }).catch(error => {
+                    console.error("Error checking stored session:", error);
+                    startNewUnsavedChat();
+                });
+            } else {
+                startNewUnsavedChat(); 
+            }
 
         } else { 
             currentUserId = null; activeSessionId = null;
+            sessionStorage.removeItem('activeChatIQSessionId'); // Clear stored session on sign out
             if(userDisplayNameHeaderSpan) userDisplayNameHeaderSpan.textContent = '';
             if(googleSignInBtnHeader) googleSignInBtnHeader.style.display = 'inline-block';
             if(newChatBtn) newChatBtn.style.display = 'none'; 
@@ -265,6 +285,7 @@ function setupAuthListener() {
 // --- Chat Session Management ---
 function startNewUnsavedChat() {
     activeSessionId = "TEMP_NEW_SESSION"; 
+    sessionStorage.removeItem('activeChatIQSessionId'); // Clear any stored session ID
     if (chatBox) {
         chatBox.innerHTML = ''; 
         addMessageToChat("New chat. Your conversation will be saved once you send a message.", "bot"); 
@@ -293,11 +314,13 @@ async function deleteSession(sessionIdToDelete) {
         await batch.commit();
         const sessionDocPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToDelete}`;
         await deleteDoc(doc(db, sessionDocPath)); 
+        
         if (activeSessionId === sessionIdToDelete) {
-            activeSessionId = null; // Clear active session
-            startNewUnsavedChat(); // Go to a new unsaved chat state
+            activeSessionId = null; 
+            sessionStorage.removeItem('activeChatIQSessionId');
+            startNewUnsavedChat(); 
         }
-        // loadChatSessions will refresh the list. If no sessions remain, it will call startNewUnsavedChat via its empty check.
+        // loadChatSessions will refresh the list.
     } catch (error) { console.error(`Error deleting session ${sessionIdToDelete}:`, error); showError("Failed to delete chat: " + error.message); }
 }
 
@@ -315,8 +338,7 @@ function loadChatSessions() {
         
         if (snapshot.empty) {
             sessionsListEl.innerHTML = '<div class="text-xs text-gray-400 p-2 text-center">No chat history yet.</div>';
-            // If no sessions and current active chat is not already a TEMP one, prepare new unsaved chat UI.
-            // This is mainly to handle the case where the last session was deleted.
+            // If history is empty and current active isn't already a temp new chat, set it up.
             if (activeSessionId !== "TEMP_NEW_SESSION") {
                 startNewUnsavedChat();
             }
@@ -349,15 +371,23 @@ function loadChatSessions() {
 }
 
 function selectSession(sessionId) {
-    if (!sessionId || sessionId === "TEMP_NEW_SESSION") { 
-        console.warn("selectSession: invalid or temporary sessionId."); 
-        // If trying to select a temp session, effectively start a new unsaved chat
+    if (!sessionId) { console.warn("selectSession: undefined sessionId."); return; }
+    if (sessionId === "TEMP_NEW_SESSION") { // If trying to select the placeholder for a new chat
         startNewUnsavedChat();
+        return;
+    }
+    // Avoid reloading if already active and loaded
+    if (activeSessionId === sessionId && chatBox && chatBox.innerHTML && !chatBox.innerHTML.includes('Loading chat...')) {
+        // Close mobile sidebar if open
+        if (chatHistorySidebar && !chatHistorySidebar.classList.contains('-translate-x-full') && window.innerWidth < 640) {
+            chatHistorySidebar.classList.add('-translate-x-full');
+            if(sidebarOverlay) sidebarOverlay.classList.add('hidden');
+        }
         return; 
     }
-    if (activeSessionId === sessionId && chatBoxWrapper && chatBoxWrapper.scrollTop !== undefined && chatBox.innerHTML && !chatBox.innerHTML.includes('Loading chat...')) return; 
     
-    activeSessionId = sessionId; // Set to a real ID
+    activeSessionId = sessionId; 
+    sessionStorage.setItem('activeChatIQSessionId', activeSessionId); // Store selected session
     if (messagesUnsubscribe) messagesUnsubscribe(); 
     if (chatBox) chatBox.innerHTML = '<div class="text-center text-gray-400 p-4">Loading chat...</div>'; 
     loadChatHistory(activeSessionId);
@@ -384,7 +414,7 @@ async function saveMessageToFirestore(messageData) {
 
     if (activeSessionId === "TEMP_NEW_SESSION") {
         const firstMessageContent = messageData.type === 'text' ? messageData.content : "Chat with image";
-        let newSessionName = "New Chat"; // Default title
+        let newSessionName = "New Chat"; 
         if (firstMessageContent) {
             newSessionName = firstMessageContent.substring(0, 35) + (firstMessageContent.length > 35 ? '...' : '');
         }
@@ -396,18 +426,16 @@ async function saveMessageToFirestore(messageData) {
                 createdAt: serverTimestamp(),
                 lastActivity: serverTimestamp() 
             });
-            activeSessionId = sessionRef.id; // Update global activeSessionId
+            activeSessionId = sessionRef.id; 
             sessionToSaveToId = activeSessionId;
+            sessionStorage.setItem('activeChatIQSessionId', activeSessionId); // Store new real ID
             console.log("New session created in Firestore with ID:", activeSessionId, "and title:", newSessionName);
-            // loadChatHistory will be called for this new activeSessionId after the first message is saved.
-            // loadChatSessions will also pick up this new session.
-            // Visually update the sidebar to mark this new session as active
-            if (sessionsListEl) {
-                 sessionsListEl.querySelectorAll('.session-item.active').forEach(item => {
-                    item.classList.remove('active', 'bg-blue-100', 'text-blue-700');
-                });
-                // The new item will be added and marked active by loadChatSessions when it refreshes
-            }
+            // After creating, we need to ensure loadChatHistory is called for this new ID
+            // and the sidebar updates. loadChatSessions will eventually pick it up.
+            // For immediate UI update of history list with the new session:
+            // We could manually add it or rely on onSnapshot, but ensure loadChatHistory is called for the new ID.
+            if (messagesUnsubscribe) messagesUnsubscribe(); // Unsubscribe from potential "TEMP" or old listeners
+            loadChatHistory(activeSessionId); // Load history for the newly created session
         } catch (error) {
             console.error("Error creating new session in Firestore:", error);
             showError("Could not save message: failed to create new session.");
@@ -435,7 +463,10 @@ async function saveMessageToFirestore(messageData) {
 function loadChatHistory(sessionIdToLoad) { 
     if (!db || !chatBoxWrapper || !sessionIdToLoad || !currentUserId || sessionIdToLoad === "TEMP_NEW_SESSION") { 
         if (sessionIdToLoad === "TEMP_NEW_SESSION" && chatBox) {
-            // UI for TEMP_NEW_SESSION is handled by startNewUnsavedChat
+            // UI for TEMP_NEW_SESSION is handled by startNewUnsavedChat, ensure it's not cleared here
+            if (!chatBox.innerHTML.includes("New chat. Your conversation will be saved")) {
+                 addMessageToChat("New chat. Your conversation will be saved once you send a message.", "bot");
+            }
         } else if (chatBox) {
             chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Select a chat or start a new one.</div>';
         }
@@ -445,7 +476,7 @@ function loadChatHistory(sessionIdToLoad) {
     if (messagesUnsubscribe) messagesUnsubscribe(); 
     const messagesColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToLoad}/messages`;
     const q = query(collection(db, messagesColPath), orderBy("timestamp", "asc")); 
-    if(chatBox) chatBox.innerHTML = ''; // Clear before loading
+    if(chatBox) chatBox.innerHTML = ''; 
     
     messagesUnsubscribe = onSnapshot(q, (snapshot) => {
         if (!chatBox || !chatBoxWrapper) return; 
@@ -455,7 +486,6 @@ function loadChatHistory(sessionIdToLoad) {
             if (msg.type === 'image') addImageToChatLog(msg.content, msg.mimeType, msg.sender);  
             else addMessageToChat(msg.content, msg.sender);  
         });
-        // Welcome message for truly empty (saved) sessions, not for TEMP_NEW_SESSION
         if (msgCount === 0 && !snapshot.metadata.hasPendingWrites && activeSessionId !== "TEMP_NEW_SESSION") {  
              addMessageToChat("This chat is empty. Send a message to start!", "bot");
         }
@@ -535,7 +565,7 @@ function showLoading(isLoading) { if(!loadingIndicator) return; loadingIndicator
 
 async function handleSendMessageWrapper() { 
     if (!userInput || !chatBoxWrapper ) { showError("Chat not ready."); return; } 
-    if (!currentUserId ) { // Removed activeSessionId check here, saveMessageToFirestore will handle TEMP_NEW_SESSION
+    if (!currentUserId ) { 
         showError("Please sign in to send messages."); 
         return; 
     } 
@@ -548,12 +578,10 @@ async function handleSendMessage() {
     const imageMimeType = currentMimeType;
     
     if (!textContent && !imageBase64) { showError("Please type, speak, or upload an image."); return; }
-    if (!currentUserId) { showError("Not signed in. Cannot send message."); return; } // activeSessionId can be TEMP
+    if (!currentUserId) { showError("Not signed in. Cannot send message."); return; }
 
     const currentMessageTextForHistoryContext = textContent; 
 
-    // This will create the session if activeSessionId is "TEMP_NEW_SESSION"
-    // and update activeSessionId to the real Firestore ID.
     if (imageBase64 && imageMimeType) {
         await saveMessageToFirestore({ sender: 'user', type: 'image', content: imageBase64, mimeType: imageMimeType });
     }
@@ -561,13 +589,18 @@ async function handleSendMessage() {
         await saveMessageToFirestore({ sender: 'user', type: 'text', content: textContent });
     }
     
-    // If session creation failed within saveMessageToFirestore, activeSessionId might still be TEMP or an error shown.
-    // The API call should only proceed if we have a real session ID for context.
-    if (activeSessionId === "TEMP_NEW_SESSION") {
-        console.warn("handleSendMessage: Attempting to send to API but session is still temporary. This indicates an issue saving the first message or creating the session.");
-        showLoading(false); // Ensure loading is stopped if we can't proceed
-        // showError might have already been called by saveMessageToFirestore
-        return; 
+    if (activeSessionId === "TEMP_NEW_SESSION" && !(await getDoc(doc(db, `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}`))).exists() ) {
+        // This condition might be tricky if saveMessageToFirestore updated activeSessionId but the getDoc is too fast.
+        // A better check is if activeSessionId was *just now* updated from TEMP_NEW_SESSION inside saveMessageToFirestore.
+        // For now, we rely on saveMessageToFirestore to have updated activeSessionId to a real one.
+        // If it's still TEMP_NEW_SESSION here, it means the first save failed to create a session.
+        const tempActiveIdCheck = activeSessionId; // Store current activeSessionId
+        await new Promise(resolve => setTimeout(resolve, 100)); // Give Firestore a moment if session was just created
+        if (activeSessionId === "TEMP_NEW_SESSION" || activeSessionId === tempActiveIdCheck && tempActiveIdCheck === "TEMP_NEW_SESSION") {
+             console.warn("handleSendMessage: Session creation might have failed or is pending. activeSessionId:", activeSessionId);
+             showLoading(false); 
+             return; 
+        }
     }
     
     if(userInput) userInput.value = ''; 
@@ -595,14 +628,7 @@ async function handleSendMessage() {
             tempHistoryArray.reverse(); 
             
             for (const msg of tempHistoryArray) {
-                // Exclude the user's current message which is already saved and will be part of the current turn
-                if (msg.sender === 'user' && msg.type === 'text' && msg.content === currentMessageTextForHistoryContext && !imageBase64 && msg === tempHistoryArray[tempHistoryArray.length -1] ) {
-                     // This condition might be too aggressive if timestamps are very close.
-                     // The goal is to not include the *just sent* user message in the *historical* context.
-                     // Since we query *after* saving, the current user message is in tempHistoryArray.
-                     // We can rely on the Gemini API to handle the sequence if the current message is the last in history.
-                     // A simpler approach: just send the last N messages, and the current query is the newest "user" turn.
-                } else if (msg.type === 'text') { 
+                if (msg.type === 'text') { 
                     conversationHistoryContents.push({
                         role: msg.sender === 'user' ? 'user' : 'model',
                         parts: [{ text: msg.content }]
@@ -613,7 +639,7 @@ async function handleSendMessage() {
 
         let currentPromptText = botPersonaInstructions; 
         if (textContent) {
-            currentPromptText += "\n\nUSER QUERY:\n" + textContent; // Changed from CURRENT USER QUERY
+            currentPromptText += "\n\nUSER QUERY:\n" + textContent; 
         } else if (imageBase64 && !textContent) { 
             currentPromptText += "\n\nUSER QUERY:\n(No text provided, please analyze the image below and respond accordingly.)";
         }
@@ -627,7 +653,7 @@ async function handleSendMessage() {
         
         const payload = { contents: finalContentsForApi };
         
-        if (!geminiApiUrl) { showError("Gemini API URL not configured."); showLoading(false); return; }
+        if (!geminiApiUrl) { showError("Gemini API URL not configured. Check API key."); showLoading(false); return; }
         const resp = await fetch(geminiApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         
         let botResponseText = "Sorry, issue processing request."; 
@@ -646,7 +672,7 @@ async function handleSendMessage() {
             await saveMessageToFirestore({ sender: 'bot', type: 'text', content: botResponseText }); 
         } else {
             console.error("Session became invalid or was temporary before saving bot response. Displaying in UI only.");
-            addMessageToChat(botResponseText, 'bot'); // Still show in UI if session saving failed
+            addMessageToChat(botResponseText, 'bot'); 
         }
         speakResponse(botResponseText);
     } catch (error) { 
@@ -665,7 +691,7 @@ async function handleSendMessage() {
         if (currentUserId && activeSessionId && activeSessionId !== "TEMP_NEW_SESSION") { 
             await saveMessageToFirestore({ sender: 'bot', type: 'text', content: detailedErrorMessage });
         } else {
-             addMessageToChat(detailedErrorMessage, 'bot'); // Still show error in UI
+             addMessageToChat(detailedErrorMessage, 'bot'); 
         }
     } finally { showLoading(false); }
 }
@@ -687,7 +713,12 @@ async function speakResponse(textToSpeak) {
     if('speechSynthesis' in window){
         const utterance = new SpeechSynthesisUtterance(textToSpeak); utterance.lang = langCode; 
         try { 
-            const voices = window.speechSynthesis.getVoices(); 
+            // Ensure voices are loaded before trying to use them
+            let voices = window.speechSynthesis.getVoices();
+            if (voices.length === 0) {
+                await new Promise(resolve => window.speechSynthesis.onvoiceschanged = resolve);
+                voices = window.speechSynthesis.getVoices();
+            }
             if(voices.length > 0){ const voice = voices.find(v => v.lang === langCode); if(voice) utterance.voice = voice;}
         } catch(e) { console.warn("Could not set voices for TTS:", e); }
         window.speechSynthesis.speak(utterance);
