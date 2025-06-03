@@ -6,6 +6,7 @@
     <title>ChatIQ - AI Chat with Sessions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="config.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         .chat-bubble-user { background-color: #DBEAFE; color: #1E3A8A; border-radius: 0.75rem; padding: 0.75rem 1rem; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.05); word-wrap: break-word; }
@@ -260,16 +261,17 @@
     </div>
 
     <script type="module">
-        const firebaseConfig = {
-            apiKey: "AIzaSyCEpq8EAkEWbvxGab0wiW9qaYojUdVykyo", 
-            authDomain: "chatiq-45203.firebaseapp.com",
-            databaseURL: "https://chatiq-45203-default-rtdb.firebaseio.com",
-            projectId: "chatiq-45203",
-            storageBucket: "chatiq-45203.appspot.com",
-            messagingSenderId: "642857846726",
-            appId: "1:642857846726:web:f95990ff4f4c37971514c7",
-            measurementId: "G-R135XXK005"
-        };
+        // Firebase Configuration (Loaded from config.js)
+        let firebaseConfig = {}; 
+        if (typeof API_CONFIG !== 'undefined' && API_CONFIG.FIREBASE_CONFIG) {
+            firebaseConfig = API_CONFIG.FIREBASE_CONFIG;
+        } else {
+            console.error("CRITICAL: Firebase configuration not found in config.js or API_CONFIG is undefined. Please ensure config.js is loaded correctly and API_CONFIG.FIREBASE_CONFIG is set.");
+            showError("Firebase configuration is missing. App functionality will be limited.");
+            // Provide a minimal default to prevent immediate crashes if API_CONFIG is totally missing
+            firebaseConfig = { apiKey: "", authDomain: "", projectId: "" }; 
+        }
+        // The const appIdForPath will also use this new firebaseConfig
 
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -298,9 +300,18 @@
         let messagesUnsubscribe = null; 
         let sessionsUnsubscribe = null; 
 
-        const GOOGLE_API_KEY = "AIzaSyC4RwK4x692XDcHZikOaKfpxWHmIXm4kuM"; 
-        const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
-        const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form. Use Markdown for formatting like lists (* item), bold (**bold**), or italics (*italics*) when it enhances clarity. For code, always use triple backticks. --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
+       // API Keys & Endpoints (GOOGLE_API_KEY is now from config.js)
+        let geminiApiUrl = ''; // Initialize
+
+        if (typeof API_CONFIG !== 'undefined' && API_CONFIG.GOOGLE_API_KEY && API_CONFIG.GOOGLE_API_KEY !== "YOUR_ACTUAL_GEMINI_API_KEY_PLACEHOLDER") {
+            geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_CONFIG.GOOGLE_API_KEY}`;
+        } else {
+            console.error("CRITICAL: Gemini API key not found in config.js or is still a placeholder. Please set it up in config.js.");
+            showError("Gemini API key is missing or invalid. AI chat functionality will not work.");
+            // Potentially disable chat input if API key is missing
+            if(userInput) userInput.disabled = true;
+            if(sendBtn) sendBtn.disabled = true;
+        }        const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form. Use Markdown for formatting like lists (* item), bold (**bold**), or italics (*italics*) when it enhances clarity. For code, always use triple backticks. --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
 
         function showError(messageText) { 
             console.error("ChatIQ Error:", messageText); 
@@ -906,7 +917,7 @@
             } catch (error) { 
                 showError(`Gemini API error: ${error.message}`); await saveMessageToFirestore({ sender: 'bot', type: 'text', content: `Error: ${error.message}` });
             } finally { showLoading(false); }
-        }
+        
 
         function initializeSpeechRecognition() { 
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
