@@ -557,6 +557,14 @@
                     item.appendChild(deleteBtn); item.onclick = () => selectSession(sessionId);
                     sessionsListEl.appendChild(item);
                 });
+                if (snapshot.empty) {
+    sessionsListEl.innerHTML = '<div class="text-xs text-gray-400 p-2 text-center">No chat history yet.</div>';
+    if (!activeSessionId) { // If no active session and history is empty, start a new one
+        startNewChatSession();
+    }
+    return;
+}
+                
                 if (sessionCount > 0 && !activeSessionId && firstSessionIdFromSnapshot) selectSession(firstSessionIdFromSnapshot);
                 else if (sessionCount > 0 && activeSessionId) {
                     const currentActiveItem = sessionsListEl.querySelector(`.session-item[data-session-id="${activeSessionId}"]`);
@@ -727,18 +735,155 @@
             await handleSendMessage(); 
         }
 
-        async function handleSendMessage() { 
-            const text = userInput.value.trim(); const imgB64 = currentBase64Image; const imgMime = currentMimeType;
-            if (!text && !imgB64) { showError("Please type, speak, or upload an image."); return; }
-            if (!activeSessionId) { showError("No active chat. Start or select one."); return; }
-            if (imgB64 && imgMime) await saveMessageToFirestore({ sender: 'user', type: 'image', content: imgB64, mimeType: imgMime });
-            if (text) await saveMessageToFirestore({ sender: 'user', type: 'text', content: text });
-            if(userInput) userInput.value = ''; removeImagePreview(); showLoading(true); 
-            if (text && containsVulgar(text)) { 
+         async function handleSendMessage() { 
+            const textContent = userInput.value.trim(); 
+            const imageBase64 = currentBase64Image; 
+            const imageMimeType = currentMimeType;
+            
+            if (!textContent && !imageBase64) { 
+                showError("Please type, speak, or upload an image."); 
+                return; 
+            }
+            if (!activeSessionId) { 
+                showError("No active chat. Start or select one."); 
+                return; 
+            }
+
+            // Save user's current message(s) to Firestore first
+            if (imageBase64 && imageMimeType) {
+                await saveMessageToFirestore({ sender: 'user', type: 'image', content: imageBase64, mimeType: imageMimeType });
+            }
+            if (textContent) {
+                await saveMessageToFirestore({ sender: 'user', type: 'text', content: textContent });
+            }
+            
+            const currentMessageForHistory = textContent; // Keep a copy of the text for history construction
+
+            if(userInput) userInput.value = ''; 
+            removeImagePreview(); 
+            showLoading(true); 
+
+            if (textContent && containsVulgar(textContent)) { 
                 const VULGAR_MSG = "Inappropriate language detected."; 
                 await saveMessageToFirestore({ sender: 'bot', type: 'text', content: VULGAR_MSG }); 
-                showLoading(false); speakResponse(VULGAR_MSG); return; 
+                showLoading(false); 
+                speakResponse(VULGAR_MSG); 
+                return; 
             }
+
+            try {
+                // Fetch recent messages for context
+                let historyText = "";
+                if (activeSessionId && currentUserId) {
+                    const messagesQuery = query(
+                        collection(db, `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}/messages`),
+                        orderBy("timestamp", "desc"),
+                        limit(7) // Fetch last ~3 pairs + current user message which is already saved
+                    );
+                    const messagesSnapshot = await getDocs(messagesQuery);
+                    let tempHistory = [];
+                    messagesSnapshot.docs.forEach(doc => {
+                        const msg = doc.data();
+                        // Exclude the message we *just* saved to avoid duplicating the current user input in history
+                        // This check is a bit simplistic if timestamps are identical; ideally, filter by doc ID if possible.
+                        // For now, we rely on the fact that the just-saved message will be among the latest.
+                        // A better way is to filter out the current `textContent` if it matches `msg.content` and `msg.sender` is 'user' from the very last message.
+                        // However, since we save *before* this fetch, the current message *is* in the snapshot.
+                        // We want history *before* the current message.
+                        // So, we can skip the most recent one if it matches current user's input.
+                        tempHistory.push(msg);
+                    });
+
+                    // Reverse to get chronological order and build history string, excluding the immediate last user input.
+                    // The limit(7) fetches the current user message + 6 previous. We want to show the 6 previous.
+                    tempHistory.reverse(); 
+                    
+                    let processedHistoryCount = 0;
+                    for (const msg of tempHistory) {
+                        // If it's the last message in tempHistory AND it's from user AND it's text AND it matches current input, skip it.
+                        if (msg === tempHistory[tempHistory.length - 1] && 
+                            msg.sender === 'user' && 
+                            msg.type === 'text' && 
+                            msg.content === currentMessageForHistory &&
+                            !imageBase64 // Only skip if the current input was *only* text that matches
+                           ) {
+                            continue; 
+                        }
+                         if (msg.type === 'text' && processedHistoryCount < 6) { // Limit to 6 previous messages in context
+                            historyText += `${msg.sender === 'user' ? 'Previous User' : 'Previous ChatIQ'}: ${msg.content}\n`;
+                            processedHistoryCount++;
+                        }
+                    }
+                }
+
+                let promptForGemini = botPersonaInstructions;
+                if (historyText.trim() !== "") {
+                    promptForGemini += "\n\nPREVIOUS CONVERSATION TURNS (most recent is last):\n" + historyText.trim();
+                }
+
+                if (textContent) {
+                    promptForGemini += "\n\nCURRENT USER QUERY:\n" + textContent;
+                } else if (imageBase64 && !textContent) { // Image only, add specific instruction
+                    promptForGemini += "\n\nCURRENT USER QUERY:\n(No text provided, please analyze the image below and respond.)";
+                }
+
+
+                let currentUserParts = [];
+                // The promptForGemini now contains persona, history, and current text query
+                currentUserParts.push({ text: promptForGemini });
+
+                if (imageBase64 && imageMimeType) {
+                    // Gemini prefers text before image if both are present in parts for a single turn
+                    if (currentUserParts.length > 0 && currentUserParts[0].text) {
+                         currentUserParts.push({ inlineData: { mimeType: imageMimeType, data: imageBase64 } });
+                    } else { // Only image, or image should come first
+                        currentUserParts.unshift({ inlineData: { mimeType: imageMimeType, data: imageBase64 } });
+                         // If only image, the text part (promptForGemini) should still exist
+                        if (!currentUserParts.find(p => p.text)) {
+                            currentUserParts.push({text: promptForGemini}); // ensure prompt is sent
+                        }
+                    }
+                }
+                
+                const payload = {
+                    contents: [{ role: "user", parts: currentUserParts }] 
+                };
+                
+                const resp = await fetch(geminiApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                
+                let botResponseText = "Sorry, I encountered an issue processing your request at this moment."; 
+                if (!resp.ok) { 
+                    const errD = await resp.json().catch(()=>({error:{message:"API error or non-JSON response"}})); 
+                    botResponseText = `API Error (${resp.status}): ${errD.error?.message || resp.statusText || "Unknown API communication issue"}`; 
+                    if (resp.status === 429) botResponseText = "I'm a bit busy right now. Please try again in a few moments.";
+                    console.error("Gemini API Error Response:", botResponseText, errD);
+                } else { 
+                    const res = await resp.json(); 
+                    if (res.candidates && res.candidates[0] && res.candidates[0].content && res.candidates[0].content.parts && res.candidates[0].content.parts[0] && res.candidates[0].content.parts[0].text) {
+                        botResponseText = res.candidates[0].content.parts[0].text;
+                    } else if (res.promptFeedback && res.promptFeedback.blockReason) {
+                        botResponseText = `Your request was blocked. Reason: ${res.promptFeedback.blockReason}.`;
+                        console.warn("Gemini API Blocked:", res.promptFeedback);
+                    } else if (res.candidates && res.candidates[0] && res.candidates[0].finishReason && res.candidates[0].finishReason !== "STOP") {
+                        botResponseText = `My response was interrupted. Reason: ${res.candidates[0].finishReason}.`;
+                        console.warn("Gemini API Finish Reason:", res.candidates[0].finishReason);
+                    } else {
+                        console.warn("Gemini API - Unexpected response structure:", res);
+                        botResponseText = "I received an unusual response, please try rephrasing.";
+                    }
+                }
+                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: botResponseText }); 
+                speakResponse(botResponseText);
+            } catch (error) { 
+                console.error('Error during Gemini API call or processing:', error); 
+                let detailedErrorMessage = `An unexpected error occurred while I was thinking: ${error.message}`;
+                showError(detailedErrorMessage); 
+                await saveMessageToFirestore({ sender: 'bot', type: 'text', content: detailedErrorMessage });
+            } finally { 
+                showLoading(false); 
+            }
+        }
+
             try {
                 let parts = []; let prompt = botPersonaInstructions; 
                 if (text) prompt += "\n\nUSER QUERY: " + text;
