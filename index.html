@@ -6,25 +6,25 @@
     <title>ChatIQ - AI Chat with Sessions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="config.js"></script>
+    <script src="config.js"></script> 
     <style>
         body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         .chat-bubble-user { background-color: #DBEAFE; color: #1E3A8A; border-radius: 0.75rem; padding: 0.75rem 1rem; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.05); word-wrap: break-word; }
         .chat-bubble-bot { background-color: #D1FAE5; color: #065F46; border-radius: 0.75rem; padding: 0.75rem 1rem; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.05); word-wrap: break-word; }
         .image-chat-bubble { padding: 0.375rem; border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); max-width: 60%; display: inline-block; }
         .image-chat-bubble img { max-width: 100%; height: auto; border-radius: 0.25rem; object-fit: contain; max-height: 20rem; }
-
+        
         .code-block-container { 
-    position: relative; 
-    margin-top: 0.5rem; 
-    margin-bottom: 0.5rem; 
-}
-
-        .chat-bubble-bot pre, .chat-bubble-user pre { background-color: #1F2937; color: #F3F4F6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; margin-top: 0.5rem; margin-bottom: 0.5rem;}
+            position: relative; 
+            margin-top: 0.5rem; 
+            margin-bottom: 0.5rem; 
+        }
+        /* Updated padding for pre to accommodate copy button */
+        .chat-bubble-bot pre, .chat-bubble-user pre { background-color: #1F2937; color: #F3F4F6; padding: 1rem; padding-top: 2.5rem; border-radius: 0.5rem; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; }
         .chat-bubble-bot code, .chat-bubble-user code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 0.875em; }
 
         
-        #chatBoxWrapper::-webkit-scrollbar, #sessionsList::-webkit-scrollbar, main::-webkit-scrollbar { width: 6px; } /* Changed #chatBox to #chatBoxWrapper */
+        #chatBoxWrapper::-webkit-scrollbar, #sessionsList::-webkit-scrollbar, main::-webkit-scrollbar { width: 6px; } 
         #chatBoxWrapper::-webkit-scrollbar-track, #sessionsList::-webkit-scrollbar-track, main::-webkit-scrollbar-track { background: #F3F4F6; border-radius: 10px; }
         #chatBoxWrapper::-webkit-scrollbar-thumb, #sessionsList::-webkit-scrollbar-thumb, main::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 10px; }
         #chatBoxWrapper::-webkit-scrollbar-thumb:hover, #sessionsList::-webkit-scrollbar-thumb:hover, main::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
@@ -49,14 +49,13 @@
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .footer-animate-entrance { animation: fadeInUp 0.7s 0.3s ease-out forwards; }
-                /* Hide scrollbar for main content area in WebKit browsers */
+        
         main::-webkit-scrollbar {
             display: none;
         }
-        /* Hide scrollbar for main content area in Firefox */
         main {
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none; 
+            -ms-overflow-style: none;  
         }
         
     </style>
@@ -77,10 +76,12 @@
             </div>
             <div id="authContainer" class="text-right flex items-center space-x-2 sm:space-x-3">
                 <button id="newChatBtn" class="hidden group flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75">
+                    <svg class="w-3 h-3 sm:w-4 sm:h-4 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                     <span class="hidden sm:inline">New Chat</span>
                     <span class="sm:hidden">New</span>
                 </button>
                 <button id="googleSignInBtnHeader" class="group flex items-center space-x-2 bg-white hover:bg-gray-200 text-slate-700 text-xs sm:text-sm font-semibold py-2 px-3 sm:py-2.5 sm:px-5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/><path fill="none" d="M1 1h22v22H1z"/></svg>
                     <span class="hidden sm:inline">Sign in with Google</span>
                     <span class="sm:hidden">Sign In</span>
                 </button>
@@ -104,6 +105,7 @@
                       sm:relative sm:translate-x-0 sm:w-0 sm:border-none sm:shadow-none sm:p-0">
             <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider px-2 pt-2 sm:pt-0">Chat History</h3>
             <div id="sessionsList" class="space-y-1 flex-grow">
+                {/* Session items populated by JS */}
             </div>
             <div class="mt-auto pt-4 border-t border-slate-200">
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSc2N8OGqdbu2HFbxN4Y89Guv3Wnp9CHLYrz-bzu80kDjHQ3yg/viewform?usp=sharing" target="_blank" 
@@ -162,76 +164,46 @@
                 <h1 class="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl
                             text-transparent bg-clip-text bg-gradient-to-br from-pink-400 via-purple-400 to-red-500
                             animate-text-gradient-subtle mb-2">Welcome to ChatIQ</h1>
-<button 
-  onclick="speakMessage()" 
-  onmouseover="speakOnHover()" 
-  aria-label="Start Voice Chat with GIF">
-  
-  <img 
-    src="https://cdn.dribbble.com/userupload/32122583/file/original-400827bdf243931c8ffd26a268a837ce.gif" 
-    alt="Voice Bot Banner" 
-    class="mx-auto w-full max-w-md rounded-2xl shadow-lg hover:scale-105 transition-transform"
-  />
-</button>
-
-<script>
-  let speechInProgress = false;
-
-  function speakMessage() {
-    speak("Please sign in with google to use all features and save your chat history. You can also use voice chat, image recognition, and AI suggestions.");
-  }
-
-  function speakOnHover() {
-    if (!speechInProgress) {
-      speak("please sign in with google to use all features and save your chat history. You can also use voice chat, image recognition, and AI suggestions.");
-    }
-  }
-
-  function speak(text) {
-    if ('speechSynthesis' in window) {
-      if (speechInProgress) return;
-      const msg = new SpeechSynthesisUtterance(text);
-      speechInProgress = true;
-      msg.onend = () => speechInProgress = false;
-      window.speechSynthesis.speak(msg);
-    }
-  }
-</script>
-<div class="mt-6">
-  <button onclick="speakMessage()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-md transition text-lg font-medium flex items-center justify-center mx-auto">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="mr-2">
-      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm7 9a7 7 0 0 1-14 0H3a9 9 0 0 0 8 8.94V22h2v-3.06A9 9 0 0 0 21 10h-2z"></path>
-    </svg>
-    Start Voice Chat
-  </button>
-</div>
-
-<script>
-  function speakMessage() {
-    const msg = new SpeechSynthesisUtterance("please sign in with google to use all features and save your chat history. You can also use voice chat, image recognition, and AI suggestions.");
-    window.speechSynthesis.speak(msg);
-  }
-</script>
-<div class="text-center p-4 mt-4 rounded-lg shadow-md text-gray-600 bg-transparent max-w-2xl mx-auto">
-  <p class="text-lg font-semibold">Please sign in with Google to use all features and save your chat history.</p>
-  <p class="mt-2 text-sm">You can also use <span class="font-medium underline">voice chat</span>, <span class="font-medium underline">image recognition</span>, and <span class="font-medium underline">AI suggestions</span>.</p>
-</div>
-
+                <button 
+                    onclick="speakWelcomeMessage()" 
+                    onmouseover="speakWelcomeMessageOnHover()" 
+                    aria-label="Start Voice Chat with GIF">
+                
+                    <img 
+                        src="https://cdn.dribbble.com/userupload/32122583/file/original-400827bdf243931c8ffd26a268a837ce.gif" 
+                        alt="Voice Bot Banner" 
+                        class="mx-auto w-full max-w-md rounded-2xl shadow-lg hover:scale-105 transition-transform"
+                    />
+                </button>
+                
+                <div class="mt-6">
+                    <button onclick="startListeningAdapter()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-md transition text-lg font-medium flex items-center justify-center mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="mr-2">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm7 9a7 7 0 0 1-14 0H3a9 9 0 0 0 8 8.94V22h2v-3.06A9 9 0 0 0 21 10h-2z"></path>
+                        </svg>
+                        Start Voice Chat
+                    </button>
+                </div>
+                
+                <div class="text-center p-4 mt-4 rounded-lg shadow-md text-gray-600 bg-transparent max-w-2xl mx-auto">
+                    <p class="text-lg font-semibold">Please sign in with Google to use all features and save your chat history.</p>
+                    <p class="mt-2 text-sm">You can also use <span class="font-medium underline">voice chat</span>, <span class="font-medium underline">image recognition</span>, and <span class="font-medium underline">AI suggestions</span>.</p>
+                </div>
             </section>
 
             <div id="signInPromptBelowVoiceBot" class="text-center pt-1 pb-1 bg-gradient-to-r from-indigo-500  from-blue-400 to-indigo-500 text-white mx-auto rounded mt-2 px-8 py-8" style="display: block;"><button id="inlineSignInBtn" class=" hover:text-indigo-800 font-bold ">Sign in with Google</button></div>
             <section id="featuresSection" class="mt-8" style="display: block;">
-               <h2 class="text-2xl font-semibold text-center mb-8">Key Features</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center"><img src="https://img.freepik.com/premium-vector/ai-chat-bot-technology-concept-people-chatting-with-robot-asking-questions-receiving-answers_36358-1867.jpg" alt="AI Suggestions" class="mx-auto w-32 h-32 sm:w-36 sm:h-36 object-contain rounded mb-4" onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=AI+Feature';"><h3 class="font-semibold text-lg">AI-Powered Suggestions</h3></div>
-                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center"><img src="https://i.pinimg.com/originals/7d/9b/1d/7d9b1d662b28cd365b33a01a3d0288e1.gif" alt="Real-Time Voice Chat" class="mx-auto w-32 h-32 sm:w-36 sm:h-36 object-cover rounded-full mb-4" onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=Voice+Chat';"><h3 class="font-semibold text-lg">Real-Time Voice Chat</h3></div>
-                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048937.png" alt="Image Recognition" class="mx-auto w-32 h-32 sm:w-36 sm:h-36 object-contain rounded mb-4" onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=Image+AI';"><h3 class="font-semibold text-lg">Image Vision AI</h3></div>
-                </div>
+                   <h2 class="text-2xl font-semibold text-center mb-8">Key Features</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center"><img src="https://img.freepik.com/premium-vector/ai-chat-bot-technology-concept-people-chatting-with-robot-asking-questions-receiving-answers_36358-1867.jpg" alt="AI Suggestions" class="mx-auto w-32 h-32 sm:w-36 sm:h-36 object-contain rounded mb-4" onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=AI+Feature';"><h3 class="font-semibold text-lg">AI-Powered Suggestions</h3></div>
+                        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center"><img src="https://i.pinimg.com/originals/7d/9b/1d/7d9b1d662b28cd365b33a01a3d0288e1.gif" alt="Real-Time Voice Chat" class="mx-auto w-32 h-32 sm:w-36 sm:h-36 object-cover rounded-full mb-4" onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=Voice+Chat';"><h3 class="font-semibold text-lg">Real-Time Voice Chat</h3></div>
+                        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048937.png" alt="Image Recognition" class="mx-auto w-32 h-32 sm:w-36 sm:h-36 object-contain rounded mb-4" onerror="this.onerror=null; this.src='https://placehold.co/144x144/E0E0E0/B0B0B0?text=Image+AI';"><h3 class="font-semibold text-lg">Image Vision AI</h3></div>
+                    </div>
             </section>
             <section id="feedbackSection" class="text-center mt-8 mb-10" style="display: block;">
-                <h2 class="text-2xl font-semibold mb-4">We Value Your Feedback</h2>
-                <p class="mb-6 text-gray-600">Help us improve by sharing your thoughts.</p>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSc2N8OGqdbu2HFbxN4Y89Guv3Wnp9CHLYrz-bzu80kDjHQ3yg/viewform?usp=sharing" target="_blank" class="inline-block bg-gradient-to-r from-indigo-500 to-cyan-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:from-indigo-600 hover:to-cyan-500 transition">Give Feedback</a>
+                    <h2 class="text-2xl font-semibold mb-4">We Value Your Feedback</h2>
+                    <p class="mb-6 text-gray-600">Help us improve by sharing your thoughts.</p>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSc2N8OGqdbu2HFbxN4Y89Guv3Wnp9CHLYrz-bzu80kDjHQ3yg/viewform?usp=sharing" target="_blank" class="inline-block bg-gradient-to-r from-indigo-500 to-cyan-400 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:from-indigo-600 hover:to-cyan-500 transition">Give Feedback</a>
             </section>
 
             <footer id="appFooter" class="footer-animate-entrance bg-gradient-to-b from-slate-800 via-purple-800 to-slate-800 text-white py-8 sm:py-10 text-center mt-auto pt-10 sm:pt-12" style="display: block;">
@@ -261,15 +233,13 @@
     </div>
 
     <script type="module">
-               // Firebase Configuration (Loaded from config.js)
+        // Firebase Configuration (Loaded from config.js)
         let firebaseConfig = {}; 
         if (typeof API_CONFIG !== 'undefined' && API_CONFIG.FIREBASE_CONFIG) {
             firebaseConfig = API_CONFIG.FIREBASE_CONFIG;
-            // Optional: Verify essential Firebase config properties
             if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId) {
                 console.error("CRITICAL: Firebase configuration in config.js is missing essential properties (apiKey, authDomain, projectId).");
                 showError("Firebase configuration is incomplete. App functionality will be limited.");
-                // Fallback to a minimal structure if essential keys are missing from the loaded config
                 firebaseConfig = { apiKey: "", authDomain: "", projectId: "" }; 
             } else {
                 console.log("Firebase configuration loaded successfully from config.js.");
@@ -277,13 +247,14 @@
         } else {
             console.error("CRITICAL: API_CONFIG or API_CONFIG.FIREBASE_CONFIG is not defined. Ensure config.js is loaded before this script and properly structured.");
             showError("Firebase configuration is missing. App functionality will be limited.");
-            firebaseConfig = { apiKey: "", authDomain: "", projectId: "" }; // Minimal default
+            firebaseConfig = { apiKey: "", authDomain: "", projectId: "" }; 
         }
         
 
+        // Firebase Imports - CRITICAL FIX: ADD 'limit' HERE
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, writeBatch, doc, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, writeBatch, doc, deleteDoc, updateDoc, getDoc, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // Ensure 'limit' is imported
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 
         let app;
@@ -291,7 +262,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const analytics = getAnalytics(app); 
-         const appIdForPath = firebaseConfig.appId || 'default-app-id-if-missing';
+        const appIdForPath = firebaseConfig.appId || 'default-app-id-if-missing';
 
         let chatBox, chatBoxWrapper, userInput, sendBtn, fileUploadBtn, fileInput, cameraBtn, voiceInputBtn, 
             imagePreviewContainer, imagePreview, removeImageBtn, loadingIndicator, errorMessageDisplay, 
@@ -309,8 +280,6 @@
         let sessionsUnsubscribe = null; 
 
         let geminiApiUrl = '';
-        // Define the placeholder string that your config.example.js would use.
-        // This helps in development to ensure a real key is provided.
         const placeholderGeminiKeyString = "YOUR_ACTUAL_GEMINI_API_KEY_PLACEHOLDER"; 
 
         if (typeof API_CONFIG !== 'undefined' && API_CONFIG.GOOGLE_API_KEY && API_CONFIG.GOOGLE_API_KEY.trim() !== "" && API_CONFIG.GOOGLE_API_KEY !== placeholderGeminiKeyString) {
@@ -333,7 +302,7 @@
             if(userInputEl) userInputEl.disabled = true;
             if(sendBtnEl) sendBtnEl.disabled = true;
         } 
-       const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form. Use Markdown for formatting like lists (* item), bold (**bold**), or italics (*italics*) when it enhances clarity. For code, always use triple backticks. --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
+        const botPersonaInstructions = `SYSTEM GUIDELINES: You are a smart ChatIQ bot. Aim for concise and precise responses. For simple questions, keep answers to around 5-6 lines or 50 words. For more complex requests, like recipes or explanations, provide a more detailed answer as needed. You are smart and intelligent and can answer any question asked by the user. Answer in a more humanized form. Use Markdown for formatting like lists (* item), bold (**bold**), or italics (*italics*) when it enhances clarity. For code, always use triple backticks. --- User's request is below. If the user's message specifically asks one of the predefined questions above (who are you, your name, who made you), use ONLY the predefined answer. Otherwise, answer their question following all the general persona guidelines. If an image is provided, consider it in your response along with the text.`;
 
         function showError(messageText) { 
             console.error("ChatIQ Error:", messageText); 
@@ -347,7 +316,7 @@
         
         document.addEventListener('DOMContentLoaded', () => {
             chatBox = document.getElementById('chatBox'); 
-            chatBoxWrapper = document.getElementById('chatBoxWrapper'); // Get chatBoxWrapper
+            chatBoxWrapper = document.getElementById('chatBoxWrapper'); 
             userInput = document.getElementById('userInput'); 
             sendBtn = document.getElementById('sendBtn');
             fileUploadBtn = document.getElementById('fileUploadBtn'); 
@@ -380,10 +349,6 @@
             chatHistoryToggleBtn = document.getElementById('chatHistoryToggleBtn');
             chatHistorySidebar = document.getElementById('chatHistorySidebar');
             sidebarOverlay = document.getElementById('sidebarOverlay');
-
-            if(API_CONFIG.GOOGLE_API_KEY === "YOUR_GEMINI_API_KEY"){
-                showError("CRITICAL: Placeholder Gemini API key detected. Update in script.");
-            }
             
             initializeSpeechRecognition(); 
             setupEventListeners();
@@ -569,7 +534,9 @@
                 let sessionCount = 0;
                 if (snapshot.empty) {
                     sessionsListEl.innerHTML = '<div class="text-xs text-gray-400 p-2 text-center">No chat history yet.</div>';
-                    if (!activeSessionId) startNewChatSession();
+                    if (!activeSessionId && !document.querySelector('.session-item.active')) { 
+                        startNewChatSession();
+                    }
                     return;
                 }
                 snapshot.forEach((docSnap) => {
@@ -590,18 +557,13 @@
                     item.appendChild(deleteBtn); item.onclick = () => selectSession(sessionId);
                     sessionsListEl.appendChild(item);
                 });
-                if (snapshot.empty) {
-    sessionsListEl.innerHTML = '<div class="text-xs text-gray-400 p-2 text-center">No chat history yet.</div>';
-    if (!activeSessionId) { // If no active session and history is empty, start a new one
-        startNewChatSession();
-    }
-    return;
-}
-                
-                if (sessionCount > 0 && !activeSessionId && firstSessionIdFromSnapshot) selectSession(firstSessionIdFromSnapshot);
-                else if (sessionCount > 0 && activeSessionId) {
+                if (sessionCount > 0 && !activeSessionId && firstSessionIdFromSnapshot) {
+                     selectSession(firstSessionIdFromSnapshot);
+                } else if (sessionCount > 0 && activeSessionId) {
                     const currentActiveItem = sessionsListEl.querySelector(`.session-item[data-session-id="${activeSessionId}"]`);
                     if (currentActiveItem && !currentActiveItem.classList.contains('active')) currentActiveItem.classList.add('active', 'bg-blue-100', 'text-blue-700');
+                } else if (sessionCount === 0 && !activeSessionId) { 
+                    startNewChatSession();
                 }
             }, (error) => {
                 console.error("Error loading chat sessions:", error); showError("Could not load chat sessions: " + error.message);
@@ -659,10 +621,10 @@
             if (messagesUnsubscribe) messagesUnsubscribe(); 
             const messagesColPath = `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${sessionIdToLoad}/messages`;
             const q = query(collection(db, messagesColPath), orderBy("timestamp", "asc")); 
-            if(chatBox) chatBox.innerHTML = ''; let initialWelcomeAdded = false; // Ensure chatBox is cleared before new messages
+            if(chatBox) chatBox.innerHTML = ''; let initialWelcomeAdded = false; 
             messagesUnsubscribe = onSnapshot(q, (snapshot) => {
                 if (!chatBox || !chatBoxWrapper) return; 
-                if(chatBox) chatBox.innerHTML = ''; let msgCount = 0; // Clear chatBox before adding messages from snapshot
+                if(chatBox) chatBox.innerHTML = ''; let msgCount = 0; 
                 snapshot.forEach((docMsg) => { 
                     msgCount++; const msg = docMsg.data();  
                     if (msg.type === 'image') addImageToChatLog(msg.content, msg.mimeType, msg.sender);  
@@ -679,7 +641,7 @@
             });
         }
         
-                function addMessageToChat(text, sender) { 
+        function addMessageToChat(text, sender) { 
             if (!chatBox || !chatBoxWrapper) return; 
             const messageDiv = document.createElement('div'); 
             messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start', 'w-full', 'py-1'); 
@@ -691,27 +653,20 @@
             const contentFragment = document.createDocumentFragment(); 
 
             text.replace(codeBlockRegex, (match, lang, codeContent, offset) => { 
-                // Add text before the code block
                 if (offset > lastIndex) { 
-                    const textNode = document.createTextNode(text.substring(lastIndex, offset));
-                    contentFragment.appendChild(textNode); 
+                    contentFragment.appendChild(document.createTextNode(text.substring(lastIndex, offset))); 
                 } 
-                
-                // Create container for code block and copy button
                 const codeContainer = document.createElement('div');
-                codeContainer.classList.add('code-block-container'); // Uses the new CSS class
-
+                codeContainer.classList.add('code-block-container', 'relative');
                 const preElement = document.createElement('pre'); 
                 const codeElement = document.createElement('code'); 
                 if (lang) codeElement.classList.add(`language-${lang}`); 
-                codeElement.textContent = codeContent.trim(); // Ensure only code content is set here
+                codeElement.textContent = codeContent.trim(); 
                 preElement.appendChild(codeElement); 
                 codeContainer.appendChild(preElement);
-
-                // Create and add copy button
                 const copyButton = document.createElement('button');
                 copyButton.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg><span class="ml-1">Copy</span>`;
-                copyButton.classList.add('absolute', 'top-2', 'right-2', 'bg-slate-700', 'hover:bg-slate-600', 'text-white', 'text-xs', 'font-semibold', 'py-1', 'px-2', 'rounded-md', 'opacity-75', 'hover:opacity-100', 'transition-opacity', 'flex', 'items-center', 'z-10'); // Added z-10
+                copyButton.classList.add('absolute', 'top-2', 'right-2', 'bg-slate-700', 'hover:bg-slate-600', 'text-white', 'text-xs', 'font-semibold', 'py-1', 'px-2', 'rounded-md', 'opacity-75', 'hover:opacity-100', 'transition-opacity', 'flex', 'items-center', 'z-10');
                 copyButton.title = "Copy code";
                 copyButton.addEventListener('click', () => {
                     const codeToCopy = codeElement.textContent;
@@ -725,30 +680,20 @@
                         setTimeout(() => {
                            copyButton.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg><span class="ml-1">Copy</span>`;
                         }, 2000);
-                    } catch (err) {
-                        console.error('Failed to copy code: ', err);
-                        showError("Failed to copy code. Your browser might not support this feature or there was an error.");
-                    }
+                    } catch (err) { console.error('Failed to copy: ', err); showError("Failed to copy code."); }
                     document.body.removeChild(tempTextArea);
                 });
                 codeContainer.appendChild(copyButton);
                 contentFragment.appendChild(codeContainer); 
                 lastIndex = offset + match.length; 
-                return match; // Required by .replace
+                return match; 
             }); 
-
-            // Add any remaining text after the last code block (or all text if no code blocks)
-            if (lastIndex < text.length) { 
-                const textNode = document.createTextNode(text.substring(lastIndex));
-                contentFragment.appendChild(textNode); 
-            } 
-
+            if (lastIndex < text.length) { contentFragment.appendChild(document.createTextNode(text.substring(lastIndex))); } 
             bubbleDiv.appendChild(contentFragment); 
             messageDiv.appendChild(bubbleDiv); 
             chatBox.appendChild(messageDiv); 
             if(chatBoxWrapper) chatBoxWrapper.scrollTop = chatBoxWrapper.scrollHeight; 
         }
-
 
         function addImageToChatLog(base64, mime, sender) { 
             if (!chatBox || !chatBoxWrapper) return; const div = document.createElement('div'); 
@@ -763,186 +708,104 @@
         function showLoading(isLoading) { if(!loadingIndicator) return; loadingIndicator.classList.toggle('hidden', !isLoading); }
 
         async function handleSendMessageWrapper() { 
-            if (!userInput || !chatBoxWrapper ) { 
-                showError("Chat interface is not ready. Please wait a moment."); 
-                return; 
-            }
-            if (!currentUserId || !activeSessionId) { 
-                showError("Cannot send message: Not signed in or no active chat session. Please sign in and try again, or select/start a chat."); 
-                return; 
-            } 
+            if (!userInput || !chatBoxWrapper ) { showError("Chat not ready."); return; } 
+            if (!currentUserId || !activeSessionId) { showError("Please sign in and select a chat."); return; } 
             await handleSendMessage(); 
         }
 
-           // 2. Complete and Updated handleSendMessage function
         async function handleSendMessage() { 
             const textContent = userInput.value.trim(); 
             const imageBase64 = currentBase64Image; 
             const imageMimeType = currentMimeType;
             
-            if (!textContent && !imageBase64) { 
-                showError("Please type, speak, or upload an image."); 
-                return; 
-            }
-            // This check is also in handleSendMessageWrapper, but good for direct calls if any.
-            if (!activeSessionId || !currentUserId) { 
-                showError("No active session or user not identified. Please ensure you are signed in and a chat is active."); 
-                return; 
-            }
+            if (!textContent && !imageBase64) { showError("Please type, speak, or upload an image."); return; }
+            if (!activeSessionId || !currentUserId) { showError("No active session or user. Please sign in."); return; }
 
-            // Save user's current message(s) to Firestore first
-            if (imageBase64 && imageMimeType) {
-                await saveMessageToFirestore({ sender: 'user', type: 'image', content: imageBase64, mimeType: imageMimeType });
-            }
-            if (textContent) {
-                await saveMessageToFirestore({ sender: 'user', type: 'text', content: textContent });
-            }
+            const currentMessageTextForHistoryContext = textContent; 
+
+            if (imageBase64 && imageMimeType) await saveMessageToFirestore({ sender: 'user', type: 'image', content: imageBase64, mimeType: imageMimeType });
+            if (textContent) await saveMessageToFirestore({ sender: 'user', type: 'text', content: textContent });
             
-            const currentMessageTextForHistoryContext = textContent; // For comparing with fetched history
-
-            if(userInput) userInput.value = ''; 
-            removeImagePreview(); 
-            showLoading(true); 
+            if(userInput) userInput.value = ''; removeImagePreview(); showLoading(true); 
 
             if (textContent && containsVulgar(textContent)) { 
-                const VULGAR_MSG = "Inappropriate language detected. I cannot process this request."; 
+                const VULGAR_MSG = "Inappropriate language detected."; 
                 await saveMessageToFirestore({ sender: 'bot', type: 'text', content: VULGAR_MSG }); 
-                showLoading(false); 
-                speakResponse(VULGAR_MSG); 
-                return; 
+                showLoading(false); speakResponse(VULGAR_MSG); return; 
             }
 
             try {
-                // Fetch recent messages for context
-                let historyForPrompt = ""; // Renamed to avoid confusion with other history variables
+                let historyForPrompt = "";
                 if (activeSessionId && currentUserId) {
-                    // Ensure 'limit' is imported from 'firebase/firestore' in your main script
                     const messagesQuery = query(
                         collection(db, `artifacts/${appIdForPath}/users/${currentUserId}/sessions/${activeSessionId}/messages`),
                         orderBy("timestamp", "desc"),
-                        limit(7) // Fetch the user's current message + up to 6 previous messages
+                        limit(7) 
                     );
                     const messagesSnapshot = await getDocs(messagesQuery);
                     let tempHistoryArray = [];
-                    messagesSnapshot.docs.forEach(doc => {
-                        tempHistoryArray.push(doc.data());
-                    });
-
-                    tempHistoryArray.reverse(); // Chronological order (oldest to newest)
-                    
+                    messagesSnapshot.docs.forEach(doc => { tempHistoryArray.push(doc.data()); });
+                    tempHistoryArray.reverse(); 
                     let processedHistoryMessagesCount = 0;
                     for (let i = 0; i < tempHistoryArray.length; i++) {
                         const msg = tempHistoryArray[i];
-                        // Exclude the very last message if it's the user's current text input to avoid redundancy in history context
-                        if (i === tempHistoryArray.length - 1 && 
-                            msg.sender === 'user' && 
-                            msg.type === 'text' && 
-                            msg.content === currentMessageTextForHistoryContext &&
-                            !imageBase64 // Only skip if the current input was *only* text that matches
-                           ) {
+                        if (i === tempHistoryArray.length - 1 && msg.sender === 'user' && msg.type === 'text' && msg.content === currentMessageTextForHistoryContext && !imageBase64) {
                             continue; 
                         }
-
-                        if (msg.type === 'text' && processedHistoryMessagesCount < 6) { // Limit context to about 3 turns
+                         if (msg.type === 'text' && processedHistoryMessagesCount < 6) {
                             historyForPrompt += `${msg.sender === 'user' ? 'Previous User' : 'Previous ChatIQ'}: ${msg.content}\n`;
                             processedHistoryMessagesCount++;
                         }
-                        // Note: Images from history are not explicitly added to 'historyForPrompt' text here,
-                        // but they are part of the Firestore record and influence the overall session.
-                        // For Gemini's multi-turn context, you'd typically format history as a series of user/model turns.
-                        // The current simple text concatenation is a basic form of context.
                     }
                 }
 
                 let promptForGemini = botPersonaInstructions;
-                if (historyForPrompt.trim() !== "") {
-                    promptForGemini += "\n\nPREVIOUS CONVERSATION TURNS (most recent is last in this block):\n" + historyForPrompt.trim();
-                }
+                if (historyForPrompt.trim() !== "") promptForGemini += "\n\nPREVIOUS CONVERSATION TURNS:\n" + historyForPrompt.trim();
+                if (textContent) promptForGemini += "\n\nCURRENT USER QUERY:\n" + textContent;
+                else if (imageBase64 && !textContent) promptForGemini += "\n\nCURRENT USER QUERY:\n(Analyze image below)";
 
-                // Add current query to the prompt
-                if (textContent) {
-                    promptForGemini += "\n\nCURRENT USER QUERY:\n" + textContent;
-                } else if (imageBase64 && !textContent) { 
-                    promptForGemini += "\n\nCURRENT USER QUERY:\n(No text provided, please analyze the image below and respond accordingly.)";
-                }
-
-                let currentUserMessageParts = [];
-                currentUserMessageParts.push({ text: promptForGemini }); // Combined persona, history, and current text query
-
-                if (imageBase64 && imageMimeType) {
-                    currentUserMessageParts.push({ inlineData: { mimeType: imageMimeType, data: imageBase64 } });
-                }
+                let currentUserMessageParts = [{ text: promptForGemini }];
+                if (imageBase64 && imageMimeType) currentUserMessageParts.push({ inlineData: { mimeType: imageMimeType, data: imageBase64 } });
                 
-                const payload = {
-                    contents: [{ role: "user", parts: currentUserMessageParts }] 
-                };
+                const payload = { contents: [{ role: "user", parts: currentUserMessageParts }] };
+                if (!geminiApiUrl) { showError("Gemini API URL not configured. Check API key."); showLoading(false); return; }
+                const resp = await fetch(geminiApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 
-                if (!geminiApiUrl) { 
-                    showError("Gemini API URL not configured. Check API key in config.js."); 
-                    showLoading(false); 
-                    return; 
-                }
-                const resp = await fetch(geminiApiUrl, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify(payload) 
-                });
-                
-                let botResponseText = "Sorry, I encountered an issue processing your request at this moment."; 
+                let botResponseText = "Sorry, issue processing request."; 
                 if (!resp.ok) { 
-                    const errD = await resp.json().catch(()=>({error:{message:"API error or non-JSON response"}})); 
-                    botResponseText = `API Error (${resp.status}): ${errD.error?.message || resp.statusText || "Unknown API communication issue"}`; 
-                    if (resp.status === 429) botResponseText = "I'm a bit busy right now. Please try again in a few moments.";
-                    console.error("Gemini API Error Response (in handleSendMessage):", botResponseText, errD);
+                    const errD = await resp.json().catch(()=>({error:{message:"API error/parse fail"}})); 
+                    botResponseText = `API Error (${resp.status}): ${errD.error?.message || resp.statusText || "Unknown"}`; 
+                    if (resp.status === 429) botResponseText = "API limit hit. Try later.";
                 } else { 
                     const res = await resp.json(); 
-                    if (res.candidates && res.candidates[0] && res.candidates[0].content && res.candidates[0].content.parts && res.candidates[0].content.parts[0] && res.candidates[0].content.parts[0].text) {
-                        botResponseText = res.candidates[0].content.parts[0].text;
-                    } else if (res.promptFeedback && res.promptFeedback.blockReason) {
-                        botResponseText = `Your request was blocked. Reason: ${res.promptFeedback.blockReason}.`;
-                        console.warn("Gemini API Blocked (in handleSendMessage):", res.promptFeedback);
-                    } else if (res.candidates && res.candidates[0] && res.candidates[0].finishReason && res.candidates[0].finishReason !== "STOP") {
-                        botResponseText = `My response was interrupted. Reason: ${res.candidates[0].finishReason}.`;
-                        console.warn("Gemini API Finish Reason (in handleSendMessage):", res.candidates[0].finishReason);
-                    } else {
-                        console.warn("Gemini API - Unexpected response structure (in handleSendMessage):", res);
-                        botResponseText = "I received an unusual response, please try rephrasing.";
-                    }
+                    if (res.candidates?.[0]?.content?.parts?.[0]?.text) botResponseText = res.candidates[0].content.parts[0].text;
+                    else if (res.promptFeedback?.blockReason) botResponseText = `Blocked: ${res.promptFeedback.blockReason}.`;
+                    else if (res.candidates?.[0]?.finishReason && res.candidates[0].finishReason !== "STOP") botResponseText = `AI stopped: ${res.candidates[0].finishReason}.`;
                 }
-                
-                // Ensure session is still valid before saving bot's response
-                if (currentUserId && activeSessionId) {
+                if (currentUserId && activeSessionId) { 
                     await saveMessageToFirestore({ sender: 'bot', type: 'text', content: botResponseText }); 
                 } else {
-                     console.error("Cannot save bot response: User session became invalid during API call.");
-                     showError("Your session seems to have expired. Please try sending your message again.");
+                    console.error("Session became invalid before saving bot response.");
                 }
                 speakResponse(botResponseText);
-
             } catch (error) { 
-                let detailedErrorMessage;
+                 let detailedErrorMessage;
                 if (error instanceof ReferenceError) { 
-                    detailedErrorMessage = `Programming error: ${error.message}. This often means a function or variable is used before it's defined or imported (like 'limit'). Please check the console for specifics.`;
+                    detailedErrorMessage = `Programming error: ${error.message}. Check imports (like 'limit').`;
                 } else if (error && error.message) {
                     detailedErrorMessage = `Gemini API error: ${error.message}`; 
                 } else if (typeof error === 'string') {
                     detailedErrorMessage = `Gemini API error: ${error}`;
                 } else {
-                    detailedErrorMessage = "Gemini API call failed unexpectedly. Check console for details.";
+                    detailedErrorMessage = "Gemini API call failed unexpectedly. Check console.";
                 }
-                console.error('Full error object during Gemini API call (in handleSendMessage catch):', error); 
+                console.error('Full error object in handleSendMessage catch:', error); 
                 showError(detailedErrorMessage); 
-                
-                if (currentUserId && activeSessionId) {
+                if (currentUserId && activeSessionId) { 
                     await saveMessageToFirestore({ sender: 'bot', type: 'text', content: detailedErrorMessage });
-                } else {
-                    console.error("Cannot save bot error message to Firestore: User session became invalid.");
                 }
-            } finally { 
-                showLoading(false); 
-            }
+            } finally { showLoading(false); }
         }
-        
 
         function initializeSpeechRecognition() { 
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1004,6 +867,30 @@
             if(imagePreviewContainer)imagePreviewContainer.classList.remove('hidden'); closeCameraModalAndStream(); showError("Image captured!"); 
         }
         function containsVulgar(t){if(!t)return false; const V=["badword","offensive"];return V.some(b=>t.toLowerCase().includes(b));}
+        
+        let welcomeSpeechInProgress = false;
+        function speakWelcomeMessageInternal(text) {
+            if ('speechSynthesis' in window) {
+                if (welcomeSpeechInProgress && window.speechSynthesis.speaking) { return; }
+                const msg = new SpeechSynthesisUtterance(text);
+                welcomeSpeechInProgress = true;
+                msg.onstart = () => { welcomeSpeechInProgress = true; }; 
+                msg.onend = () => { welcomeSpeechInProgress = false; };
+                msg.onerror = () => { welcomeSpeechInProgress = false; }; 
+                window.speechSynthesis.speak(msg);
+            }
+        }
+        function speakWelcomeMessage() { 
+            speakWelcomeMessageInternal("Please sign in with Google to use all features and save your chat history. You can also use voice chat, image recognition, and AI suggestions.");
+        }
+        function speakWelcomeMessageOnHover() { 
+            if ('speechSynthesis' in window && !window.speechSynthesis.speaking && !welcomeSpeechInProgress) {
+                 speakWelcomeMessageInternal("Please sign in with Google to use all features and save your chat history. You can also use voice chat, image recognition, and AI suggestions.");
+            }
+        }
+        window.speakWelcomeMessage = speakWelcomeMessage;
+        window.speakWelcomeMessageOnHover = speakWelcomeMessageOnHover;
+
         function startListeningAdapter() { 
             const chatSect = document.getElementById('interactiveChatSection'); const signInB = document.getElementById('googleSignInBtnHeader');
             if (currentUserId && chatSect) { chatSect.scrollIntoView({behavior:'smooth',block:'start'}); setTimeout(() => { if(userInput)userInput.focus({preventScroll:true}); toggleVoiceInput();},300);} 
