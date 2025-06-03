@@ -1,4 +1,3 @@
-// main.js
 
 // Firebase Configuration (Loaded from config.js)
 let firebaseConfig = {}; 
