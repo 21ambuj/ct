@@ -1,6 +1,4 @@
-// main.js
 
-// Firebase Configuration (Loaded from config.js)
 let firebaseConfig = {}; 
 if (typeof API_CONFIG !== 'undefined' && API_CONFIG.FIREBASE_CONFIG) {
     firebaseConfig = API_CONFIG.FIREBASE_CONFIG;
