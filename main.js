@@ -464,7 +464,7 @@ function loadChatHistory(sessionIdToLoad) {
         if (sessionIdToLoad === "TEMP_NEW_SESSION" && chatBox) {
             // UI for TEMP_NEW_SESSION is handled by startNewUnsavedChat, ensure it's not cleared here
             if (!chatBox.innerHTML.includes("New chat. Your conversation will be saved")) {
-                 addMessageToChat("New chat. Your conversation will be saved once you send a message.", "bot");
+                 addMessageToChat("Welcome to ChatIQ AI. How can i help you today?", "bot");
             }
         } else if (chatBox) {
             chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Select a chat or start a new one.</div>';
