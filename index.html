@@ -20,6 +20,48 @@
                        base-uri 'self';">
     -->
     <title>ChatIQ -Ambuj</title>
+    <style>
+  /* Define the CSS variable used by the button */
+  :root {
+    --text-on-gradient-button: #ffffff; /* Text color for the button */
+  }
+
+  /* Styles for the ChatIQ AI button */
+  .chatiq-button {
+    /* It's assumed that a base font-family like Montserrat is set on the body or a parent element. 
+       If this is a standalone snippet, you might want to add:
+       font-family: 'Montserrat', sans-serif; (ensure Google Font is linked)
+    */
+    background-image: linear-gradient(to right, #ec4899, #ef4444, #eab308); /* Gradient: pink-500, red-500, yellow-500 */
+    color: var(--text-on-gradient-button);
+    padding: 8px 12px; /* Default mobile padding */
+    border-radius: 9999px; /* Pill shape */
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 0.75rem; /* Default mobile font size */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    display: inline-block; /* Ensures padding and dimensions are respected */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    line-height: 1.4; /* For better vertical text alignment */
+    text-align: center;
+    white-space: nowrap; /* Prevents text from breaking into multiple lines too easily */
+  }
+
+  /* Styles for larger screens (e.g., tablets and desktops) */
+  @media (min-width: 640px) { /* Corresponds to Tailwind's 'sm' breakpoint */
+    .chatiq-button {
+      padding: 10px 20px;
+      font-size: 0.9rem;
+    }
+  }
+
+  /* Hover effect for the button */
+  .chatiq-button:hover {
+    transform: translateY(-2px) scale(1.02); /* Slight lift and scale effect */
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); /* Shadow using a color from the gradient */
+    opacity: 0.9; /* Slight transparency effect */
+  }
+</style>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="config.js"></script> 
