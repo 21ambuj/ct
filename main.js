@@ -302,7 +302,7 @@ function startNewUnsavedChat() {
     sessionStorage.removeItem('activeChatIQSessionId'); // Clear any stored session ID
     if (chatBox) {
         chatBox.innerHTML = ''; 
-        addMessageToChat("New chat. Your conversation will be saved once you send a message.", "bot"); 
+        addMessageToChat("Hi! how can i help you today?", "bot"); 
     }
     if (sessionsListEl) {
         sessionsListEl.querySelectorAll('.session-item.active').forEach(item => {
@@ -478,8 +478,8 @@ function loadChatHistory(sessionIdToLoad) {
     if (!db || !chatBoxWrapper || !sessionIdToLoad || !currentUserId || sessionIdToLoad === "TEMP_NEW_SESSION") { 
         if (sessionIdToLoad === "TEMP_NEW_SESSION" && chatBox) {
             // UI for TEMP_NEW_SESSION is handled by startNewUnsavedChat, ensure it's not cleared here
-            if (!chatBox.innerHTML.includes("New chat. Your conversation will be saved")) {
-                 addMessageToChat("New chat. Your conversation will be saved once you send a message.", "bot");
+            if (!chatBox.innerHTML.includes("Hi! How can i help you today?")) {
+                 addMessageToChat("Hi! How can i help you today?.", "bot");
             }
         } else if (chatBox) {
             chatBox.innerHTML = '<div class="text-center text-gray-500 p-4">Select a chat or start a new one.</div>';
